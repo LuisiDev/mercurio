@@ -98,36 +98,53 @@ include '../components/sidebar.php';
                         </div>
                     </div>
                     <div class="flex justify-end">
-                        <button type="button" onclick="window.location.href = 'nuevo'"
-                            class="inset-y-0 right-0 px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            <svg class="w-3 h-3 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M5 12h14m-7 7V5" />
-                            </svg>
-                            Generar ticket
-                        </button>
+                        <?php if ($_SESSION['tipo'] != 'tecnico'): ?>
+                            <button type="button" onclick="window.location.href = 'nuevo'"
+                                class="inset-y-0 right-0 px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M5 12h14m-7 7V5" />
+                                </svg>
+                                Generar ticket
+                            </button>
+                        <?php endif; ?>
                     </div>
                 </div>
 
                 <?php
-                $stmt = $conn->query('SELECT COUNT(*) FROM tbticket');
-                $row = $stmt->fetch_row();
-                $totalRegistros = $row[0];
+                $userId = $_SESSION['userId'];
+                $tipo = $_SESSION['tipo'];
 
+                if ($tipo == 'tecnico') {
+                    $stmt = $conn->prepare('SELECT COUNT(*) FROM tbticket WHERE asignado = ?');
+                    $row = $stmt->bind_param('i', $userId);
+                    $stmt->execute();
+                    $row = $stmt->get_result()->fetch_row();
+                } else {
+                    $stmt = $conn->query('SELECT COUNT(*) FROM tbticket');
+                    $row = $stmt->fetch_row();
+                }
+
+                $totalRegistros = $row[0];
                 $registrosPorPagina = 10;
                 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 $paginaActual = isset($_GET['page']) ? $_GET['page'] : 1;
                 $offset = ($paginaActual - 1) * $registrosPorPagina;
 
-                $sql = "SELECT * FROM tbticket ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
-                $resultado = $conn->query($sql);
+                if ($tipo == 'tecnico') {
+                    $stmt = $conn->prepare('SELECT * FROM tbticket WHERE asignado = ? ORDER BY fhticket DESC LIMIT ? OFFSET ?');
+                    $stmt->bind_param('iii', $userId, $registrosPorPagina, $offset);
+                } else {
+                    $stmt = $conn->prepare('SELECT * FROM tbticket ORDER BY fhticket DESC LIMIT ? OFFSET ?');
+                    $stmt->bind_param('ii', $registrosPorPagina, $offset);
+                }
 
                 $i = 0;
                 while ($fila = $resultado->fetch_assoc()): ?>
                     <div
                         class="ticket-card max-w-full p-6 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                        <a href="detalles.php?id=<?php echo $fila['idTicket']; ?>">
+                        <a href="detalles?id=<?php echo $fila['idTicket']; ?>">
                             <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                                 <?php echo $fila['asunto']; ?>
                             </h5>

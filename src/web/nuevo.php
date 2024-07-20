@@ -320,7 +320,8 @@ include '../components/sidebar.php';
                                 onclick="removeImage()" aria-hidden="true">Eliminar
                                 imagen</button>
                         </div>
-                        <img id="output" class="mx-auto h-32 w-32 object-cover my-8 hidden" alt="Visualización de evidencia">
+                        <img id="output" class="mx-auto h-32 w-32 object-cover my-8 hidden"
+                            alt="Visualización de evidencia">
                         <div class="mb-5">
                             <input id="checkCorreo" name="checkCorreo" type="checkbox" value=""
                                 class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800">
@@ -524,8 +525,8 @@ include '../components/sidebar.php';
         </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></>
-            <script src="../procesos/proceso_ticket.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../procesos/proceso_ticket.js"></script>
     <!-- <script src="../../assets/js/script.js"></script> -->
     <script src="../../assets/js/redir.js"></script>
     <script src="../../assets/js/nuevo.js"></script>

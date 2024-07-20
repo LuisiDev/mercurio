@@ -48,6 +48,30 @@ function getStatus($status)
             break;
     }
 }
+
+function getAsignado($asignado)
+{
+    global $conn;
+
+    if ($asignado == "") {
+        echo 'Sin asignar';
+    } else {
+        $query = "SELECT nombre, apellido FROM users WHERE userId = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $asignado);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            echo $row['nombre'] . ' ' . $row['apellido'];
+        } else {
+            echo 'Técnico no encontrado';
+        }
+
+        $stmt->close();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -177,6 +201,10 @@ function getStatus($status)
                     <span class="text-lg font-bold text-gray-800">Actividad del ticket</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
                         <p><span class="font-medium text-gray-700">Creado por: </span><?php echo $row['nombre']; ?></p>
+                        <?php if (!empty($row['asignado'])) { ?>
+                            <p><span class="font-medium text-gray-700">Atendido por:
+                                </span><?php getAsignado($row['asignado']); ?></p>
+                        <?php } ?>
                         <?php if (!empty($row['eliminadopor'])) { ?>
                             <p><span class="font-medium text-gray-700">Eliminado por:
                                 </span><?php echo $row['eliminadopor']; ?></p>

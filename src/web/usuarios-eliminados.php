@@ -1,5 +1,6 @@
 <?php
 include '../components/sidebar.php';
+include '../components/modal-activar-usuario.php';
 ?>
 
 <!DOCTYPE html>
@@ -220,8 +221,8 @@ include '../components/sidebar.php';
                                                 </button>
                                             </div>
                                             <div>
-                                                <button type="button" data-modal-target="popup-user-delete"
-                                                    data-modal-toggle="popup-user-delete"
+                                                <button type="button" data-modal-target="popup-user-activate"
+                                                    data-modal-toggle="popup-user-activate"
                                                     data-id="<?php echo $fila['userId']; ?>"
                                                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                                     <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
@@ -277,41 +278,13 @@ include '../components/sidebar.php';
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('[data-modal-toggle="popup-user-edit"]').click(function () {
-                var userId = $(this).attr('data-id');
-                $.ajax({
-                    url: '../configuration/getUserData.php',
-                    type: 'GET',
-                    data: { userId: userId },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data) {
-                            $('#userEdit').val(data.user);
-                            $('#nombreEdit').val(data.nombre);
-                            $('#apellidoEdit').val(data.apellido);
-                            $('#emailEdit').val(data.email);
-                            $('#tipoEdit').val(data.tipo);
-                            $('#userId').val(data.userId);
-                        } else {
-                            console.error(data.error);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            $('[data-modal-toggle="popup-user-delete"]').click(function () {
+            $('[data-modal-toggle="popup-user-activate"]').click(function () {
                 var userId = $(this).attr('data-id');
                 console.log(userId)
 
                 $('#dynamicUserId').text(userId);
                 $('#idUserHidden').val(userId);
-                $('#popup-user-delete').removeClass('hidden');
+                $('#popup-user-activate').removeClass('hidden');
             });
         });
     </script>

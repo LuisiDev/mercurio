@@ -240,7 +240,7 @@ function getStatus($status)
                         <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaRealizacion']) && empty($row['evidenciaTerminado'])): ?>
                             <p>No se han adjuntado evidencias</p>
                         <?php else: ?>
-                            <div class="grid grid-cols-4 gap-4 text-center">
+                            <div class="flex justify-start space-x-6 text-center">
                                 <div>
                                     <?php if (!empty($row['evidencia'])): ?>
                                         <p><span class="font-medium text-gray-700">Evidencia inicial:</span></p>
@@ -258,16 +258,16 @@ function getStatus($status)
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaRealizacion'])): ?>
+                                    <?php if (!empty($row['evidenciaHaciendo'])): ?>
                                         <p><span class="font-medium text-gray-700">Evidencia de realización:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaRealizacion']); ?>"
+                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHaciendo']); ?>"
                                             alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaTerminado'])): ?>
+                                    <?php if (!empty($row['evidenciaHecho'])): ?>
                                         <p><span class="font-medium text-gray-700">Evidencia de terminado:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaTerminado']); ?>"
+                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHecho']); ?>"
                                             alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
                                     <?php endif; ?>
                                 </div>
@@ -297,7 +297,8 @@ function getStatus($status)
                     <?php endif; ?>
 
                     <div class="relative">
-                        <form action="../procesos/atender.php" method="POST" class="max-w-sm mx-auto">
+                        <form action="../procesos/atender.php" method="POST" enctype="multipart/form-data"
+                            class="max-w-sm mx-auto">
                             <?php if (isset($_SESSION['tipo']) && ($_SESSION['tipo'] == 'admin' || $_SESSION['tipo'] == 'coordinador')): ?>
                                 <?php
                                 $asignadoId = $row['asignado'];
@@ -372,7 +373,7 @@ function getStatus($status)
                                     } ?>>Cancelado</option>
                                 </select>
                             </div>
-                            <div>
+                            <div class="mb-4">
                                 <label for="contestacion"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Motivo de
                                     cambio</label>
@@ -380,6 +381,50 @@ function getStatus($status)
                                     class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Escribir motivos de cambio..."></textarea>
                             </div>
+                            <div class="hidden" id="evidenciaInicio">
+                                <label for="evidenciaAbierto"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
+                                    de inicio</label>
+                                <input type="file" id="evidenciaAbierto" name="evidenciaAbierto"
+                                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    aria-describedby="evidencia-inicio">
+                                <div id="evidencia-inicio" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                                    Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
+                            </div>
+                            <div class="hidden" id="evidenciaRealizo">
+                                <label for="evidenciaHaciendo"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
+                                    de realización</label>
+                                <input type="file" id="evidenciaHaciendo" name="evidenciaHaciendo"
+                                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    aria-describedby="evidencia-haciendo">
+                                <div id="evidencia-haciendo" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                                    Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
+                            </div>
+                            <div class="hidden" id="evidenciaTerminado">
+                                <label for="evidenciaHecho"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
+                                    de hecho</label>
+                                <input type="file" id="evidenciaHecho" name="evidenciaHecho"
+                                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    aria-describedby="evidencia-hecho">
+                                <div id="evidencia-hecho" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                                    Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
+                            </div>
+                            <div class="flex justify-center my-3">
+                                <button type="button" id="btnMostrar"
+                                    class="hidden me-2 mb-2 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    onclick="showImage()" aria-hidden="true">Ver imagen</button>
+                                <button type="button" id="btnEliminar"
+                                    class="hidden me-2 mb-2 text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                                    onclick="removeImage()" aria-hidden="true">Eliminar
+                                    imagen</button>
+                            </div>
+                            <img id="output" class="mx-auto h-32 w-32 object-cover my-8 hidden"
+                                alt="Visualización de evidencia">
                             <div class="mt-6">
                                 <button type="button" onclick="returnBack()"
                                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Regresar</button>
@@ -396,6 +441,86 @@ function getStatus($status)
 
     <script src="../../assets/js/redir.js"></script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var estadoSelect = document.getElementById('estado');
+            var evidenciaInicioDiv = document.getElementById('evidenciaInicio');
+            var evidenciaRealizoDiv = document.getElementById('evidenciaRealizo');
+            var evidenciaTerminadoDiv = document.getElementById('evidenciaTerminado');
+            var inputsEvidencia = document.querySelectorAll('input[type="file"]');
+            var outputImage = document.getElementById('output');
+
+            function toggleEvidencia() {
+                evidenciaInicioDiv.style.display = 'none';
+                evidenciaRealizoDiv.style.display = 'none';
+                evidenciaTerminadoDiv.style.display = 'none';
+
+                resetFileInputsAndHideImage();
+
+                if (estadoSelect.value === "2") {
+                    evidenciaInicioDiv.style.display = 'block';
+                } else if (estadoSelect.value === "3") {
+                    evidenciaRealizoDiv.style.display = 'block';
+                } else if (estadoSelect.value === "4") {
+                    evidenciaTerminadoDiv.style.display = 'block';
+                }
+            }
+
+            // Función para resetear los inputs de archivo, ocultar la imagen de vista previa y los botones
+            function resetFileInputsAndHideImage() {
+                inputsEvidencia.forEach(function (input) {
+                    input.value = ''; // Resetea el input de archivo
+                });
+                document.getElementById('btnMostrar').classList.add('hidden'); // Oculta el botón de mostrar
+                document.getElementById('btnEliminar').classList.add('hidden'); // Oculta el botón de eliminar
+            }
+
+            // Llama a toggleEvidencia al cargar la página para establecer la visibilidad inicial correctamente
+            toggleEvidencia();
+
+            // Agrega el evento change al select de estado
+            estadoSelect.addEventListener('change', toggleEvidencia);
+        });
+
+        var currentInputId = ''; // Variable global para almacenar el ID del input actual
+
+        var loadFile = function (event) {
+            var input = event.target;
+            var file = input.files[0];
+            var type = file.type;
+
+            currentInputId = input.id; // Almacena el ID del input que cargó la imagen
+
+            var output = document.getElementById('output');
+            output.src = URL.createObjectURL(file);
+            output.onload = function () {
+                URL.revokeObjectURL(output.src); // Libera el objeto URL creado
+            }
+            document.getElementById('btnMostrar').classList.remove('hidden');
+            document.getElementById('btnEliminar').classList.remove('hidden');
+        };
+
+        function showImage() {
+            var output = document.getElementById('output');
+            if (output.classList.contains('hidden')) {
+                output.classList.remove('hidden');
+            } else {
+                output.classList.add('hidden');
+            }
+        }
+
+        function removeImage() {
+            var output = document.getElementById('output');
+            output.classList.add('hidden');
+            output.src = ''; // Elimina el src de la imagen
+            document.getElementById('btnMostrar').classList.add('hidden');
+            document.getElementById('btnEliminar').classList.add('hidden');
+
+            if (currentInputId) {
+                document.getElementById(currentInputId).value = ''; // Resetea el input de archivo específico
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -64,22 +64,26 @@ include '../components/sidebar.php';
 
     function getAsignado($asignado)
     {
-        switch ($asignado) {
-            case "":
-                echo 'Sin asignar';
-                break;
-            case "1":
-                echo 'Tecnico 1';
-                break;
-            case "2":
-                echo 'Tecnico 2';
-                break;
-            case "3":
-                echo 'Tecnico 3';
-                break;
-            case "4":
-                echo 'Tecnico 4';
-                break;
+        global $conn;
+
+        if ($asignado == "") {
+            echo 'Sin asignar';
+        } else {
+            $query = "SELECT nombre, apellido FROM users WHERE userId = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $asignado);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                echo $row['nombre'];
+                // echo $row['nombre'] . ' ' . $row['apellido'];
+            } else {
+                echo 'Técnico no encontrado';
+            }
+
+            $stmt->close();
         }
     }
     ?>
@@ -140,17 +144,32 @@ include '../components/sidebar.php';
                                 placeholder="Buscar ticket">
                         </div>
                     </div>
-                    <div class="flex justify-end">
-                        <button type="button" onclick="window.location.href = 'tickets-eliminados'"
-                            class="inset-y-0 right-0 px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-500 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-800 dark:focus:ring-red-900">
-                            <svg class="w-3 h-3 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            Tickets eliminados
-                        </button>
+                    <div class="flex space-x-2 justify-end">
+                        <?php if ($_SESSION['tipo'] != 'tecnico'): ?>
+                            <div>
+                                <button type="button" onclick="window.location.href = 'nuevo'"
+                                    class="inset-y-0 right-0 px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M5 12h14m-7 7V5" />
+                                    </svg>
+                                    Generar ticket
+                                </button>
+                            </div>
+                        <?php endif; ?>
+                        <div>
+                            <button type="button" onclick="window.location.href = 'tickets-eliminados'"
+                                class="inset-y-0 right-0 px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-500 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-800 dark:focus:ring-red-900">
+                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Tickets eliminados
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -318,7 +337,7 @@ include '../components/sidebar.php';
                                         <?php endif; ?>
                                         <?php if ($fila['estado'] == '1' && $fila['asignado'] == null): ?>
                                             <button type="button"
-                                                onclick="window.location.href = 'asignar.php?id=<?php echo $fila['idTicket']; ?>'"
+                                                onclick="window.location.href = 'asignar?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                                 <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
@@ -331,7 +350,7 @@ include '../components/sidebar.php';
                                         <?php endif; ?>
                                         <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '5' || $fila['estado'] == '6') && isset($fila['asignado']) && !empty($fila['asignado'])): ?>
                                             <button type="button"
-                                                onclick="window.location.href = 'atender.php?id=<?php echo $fila['idTicket']; ?>'"
+                                                onclick="window.location.href = 'atender?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2">
                                                 <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
@@ -343,7 +362,7 @@ include '../components/sidebar.php';
                                         <?php endif; ?>
                                         <?php if ($fila['estado'] == '1' && $fila['asignado'] == null): ?>
                                             <button type="button"
-                                                onclick="window.location.href = 'editar.php?id=<?php echo $fila['idTicket']; ?>'"
+                                                onclick="window.location.href = 'editar?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600 mb-2">
                                                 <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
                                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
@@ -385,19 +404,19 @@ include '../components/sidebar.php';
                 <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                     <?php if ($paginaActual > 1): ?>
                         <li>
-                            <a href="gestion.php?page=<?php echo $paginaActual - 1; ?>"
+                            <a href="gestion?page=<?php echo $paginaActual - 1; ?>"
                                 class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Anterior</a>
                         </li>
                     <?php endif; ?>
                     <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                         <li>
-                            <a href="gestion.php?page=<?php echo $i; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white <?php if ($i == $paginaActual)
+                            <a href="gestion?page=<?php echo $i; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white <?php if ($i == $paginaActual)
                                    echo 'bg-blue-50 text-blue-500'; ?>"><?php echo $i; ?></a>
                         </li>
                     <?php endfor; ?>
                     <?php if ($paginaActual < $totalPaginas): ?>
                         <li>
-                            <a href="gestion.php?page=<?php echo $paginaActual + 1; ?>"
+                            <a href="gestion?page=<?php echo $paginaActual + 1; ?>"
                                 class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Siguiente</a>
                         </li>
                     <?php endif; ?>
