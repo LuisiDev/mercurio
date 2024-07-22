@@ -264,19 +264,38 @@ include '../components/sidebar.php';
                         </thead>
                         <tbody>
                             <?php
-                            $stmt = $conn->query('SELECT COUNT(*) FROM tbticket WHERE estado <> 0');
-                            $row = $stmt->fetch_row();
-                            $totalRegistros = $row[0];
+                            $userId = $_SESSION['userId'];
+                            $tipo = $_SESSION['tipo'];
 
+                            if ($tipo == 'tecnico') {
+                                $stmt = $conn->prepare('SELECT COUNT(*) FROM tbticket WHERE asignado = ? AND estado <> 0');
+                                $row = $stmt->bind_param('i', $userId);
+                                $stmt->execute();
+                                $row = $stmt->get_result()->fetch_row();
+                            } else {
+                                $stmt = $conn->query('SELECT COUNT(*) FROM tbticket WHERE estado <> 0');
+                                $row = $stmt->fetch_row();
+                            }
+
+                            $totalRegistros = $row[0];
                             $registrosPorPagina = 10;
                             $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                             $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
                             $offset = ($paginaActual - 1) * $registrosPorPagina;
 
                             // '<>' es lo mismo que '!='
-                            $sql = "SELECT * FROM tbticket WHERE estado <> 0 ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
-                            $resultado = $conn->query($sql);
+                            if ($tipo == 'tecnico') {
+                                $sql = "SELECT * FROM tbticket WHERE asignado = ? AND estado <> 0 ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param('i', $userId);
+                                $stmt->execute();
+                                $resultado = $stmt->get_result();
+                            } else {
+                                $sql = "SELECT * FROM tbticket WHERE estado <> 0 ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                                $resultado = $conn->query($sql);
+                            }
 
+                            $i = 0;
                             while ($fila = $resultado->fetch_assoc()): ?>
                                 <?php include '../components/modal-baja-ticket.php'; ?>
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">

@@ -31,7 +31,7 @@ include '../components/sidebar.php';
             '06' => 'Jun',
             '07' => 'Jul',
             '08' => 'Ago',
-            '09' => 'Sep',
+            '09' => 'Sep', 
             '10' => 'Oct',
             '11' => 'Nov',
             '12' => 'Dic'
@@ -133,11 +133,14 @@ include '../components/sidebar.php';
                 $offset = ($paginaActual - 1) * $registrosPorPagina;
 
                 if ($tipo == 'tecnico') {
-                    $stmt = $conn->prepare('SELECT * FROM tbticket WHERE asignado = ? ORDER BY fhticket DESC LIMIT ? OFFSET ?');
-                    $stmt->bind_param('iii', $userId, $registrosPorPagina, $offset);
+                    $sql = "SELECT * FROM tbticket WHERE asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param('i', $userId);
+                    $stmt->execute();
+                    $resultado = $stmt->get_result();
                 } else {
-                    $stmt = $conn->prepare('SELECT * FROM tbticket ORDER BY fhticket DESC LIMIT ? OFFSET ?');
-                    $stmt->bind_param('ii', $registrosPorPagina, $offset);
+                    $sql = "SELECT * FROM tbticket ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                    $resultado = $conn->query($sql);
                 }
 
                 $i = 0;

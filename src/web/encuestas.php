@@ -100,17 +100,35 @@ include '../components/sidebar.php';
                 </div>
 
                 <?php
-                $stmt = $conn->query('SELECT COUNT(*) FROM tbticket WHERE estado = "0" || estado = "4"');
-                $row = $stmt->fetch_row();
-                $totalRegistros = $row[0];
+                $userId = $_SESSION['userId'];
+                $tipo = $_SESSION['tipo'];
 
+                if ($tipo == 'tecnico') {
+                    $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE estado = '0' || estado = '4' AND asignado = ?");
+                    $row = $stmt->bind_param("i", $userId);
+                    $stmt->execute();
+                    $row = $stmt->get_result()->fetch_row();
+                } else {
+                    $stmt = $conn->query("SELECT COUNT(*) FROM tbticket WHERE estado = '0' || estado = '4'");
+                    $row = $stmt->fetch_row();
+                }
+
+                $totalRegistros = $row[0];
                 $registrosPorPagina = 10;
                 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                 $paginaActual = isset($_GET['page']) ? $_GET['page'] : 1;
                 $offset = ($paginaActual - 1) * $registrosPorPagina;
 
-                $sql = "SELECT * FROM tbticket WHERE estado = '0' || estado = '4' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
-                $resultado = $conn->query($sql);
+                if ($tipo == 'tecnico') {
+                    $sql = "SELECT * FROM tbticket WHERE estado = '0' || estado = '4' AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $userId);
+                    $stmt->execute();
+                    $resultado = $stmt->get_result();
+                } else {
+                    $sql = "SELECT * FROM tbticket WHERE estado = '0' || estado = '4' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                    $resultado = $conn->query($sql);
+                }
 
                 $i = 0;
                 while ($fila = $resultado->fetch_assoc()): ?>

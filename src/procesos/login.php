@@ -29,6 +29,9 @@ if (isset($_POST['user']) && isset($_POST['password'])) {
             $_SESSION['apellido'] = $fila['apellido'];
             $_SESSION['imagen'] = $fila['imagen'];
             $_SESSION['email'] = $fila['email'];
+            
+            // Dentro de la verificación de contraseña exitosa en login.php
+            $_SESSION['userId'] = $fila['userId']; // Asegúrate de que 'id' sea la columna correcta en tu base de datos
 
             // Redirigir según el tipo de usuario
             if ($fila['tipo'] == 'admin') {
