@@ -21,11 +21,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (($tipoArchivo == "jpg" || $tipoArchivo == "png" || $tipoArchivo == "jpeg" || $tipoArchivo == "webp") && $_FILES['imagen']['size'] <= 1000000) {
             if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaArchivo)) {
                 echo "<script>alert('¡La imagen se subio correctamente!');</script>";
-                // echo "<script>window.location.href = '../web/usuarios.php';</script>";
+                echo "<script>window.location.href = '../web/usuarios.php';</script>";
             }
         } else {
-            echo "<script>alert('¡La imagen no se subio correctamente!');</script>";
-            // echo "<script>window.location.href = '../web/usuarios.php';</script>";
+            echo "<script>alert('¡Usuario actualizado correctamente!');</script>";
+            echo "<script>window.location.href = '../web/usuarios.php';</script>";
         }
     } else {
         $rutaArchivo = null;
@@ -38,10 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->affected_rows > 0) {
         echo "<script>alert('¡Usuario actualizado correctamente!');</script>";
-        // echo "<script>window.location.href = '../web/usuarios.php';</script>";
+        echo "<script>window.location.href = '../web/usuarios.php';</script>";
     } else {
         echo "<script>alert('¡No se pudo actualizar el usuario!');</script>";
-        // echo "<script>window.location.href = '../web/usuarios.php';</script>";
+        echo "<script>window.location.href = '../web/usuarios.php';</script>";
     }
 
     $stmt->close();

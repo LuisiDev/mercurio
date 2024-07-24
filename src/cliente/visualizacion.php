@@ -1,5 +1,6 @@
 <?php
 session_start();
+include '../configuration/connection.php';
 date_default_timezone_set('America/Chihuahua');
 
 if (isset($_GET['token'])) {
@@ -32,6 +33,54 @@ if (isset($_GET['token'])) {
     header('Location: ../error/no-valido');
     exit();
 }
+
+function traducirFecha($fhticket)
+{
+    $dia = date('d', strtotime($fhticket));
+    $mes = date('m', strtotime($fhticket));
+    $hora = date('h:i', strtotime($fhticket));
+    $am_pm = strtoupper(date('a', strtotime($fhticket)));
+    $meses = array(
+        '01' => 'Ene',
+        '02' => 'Feb',
+        '03' => 'Mar',
+        '04' => 'Abr',
+        '05' => 'May',
+        '06' => 'Jun',
+        '07' => 'Jul',
+        '08' => 'Ago',
+        '09' => 'Sep',
+        '10' => 'Oct',
+        '11' => 'Nov',
+        '12' => 'Dic'
+    );
+    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fhticket));
+}
+
+function getAsignado($asignado)
+{
+    global $conn;
+
+    if ($asignado == "") {
+        echo 'Sin asignar';
+    } else {
+        $query = "SELECT nombre, apellido FROM users WHERE userId = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $asignado);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            echo $row['nombre'];
+            // echo $row['nombre'] . ' ' . $row['apellido'];
+        } else {
+            echo 'Técnico no encontrado';
+        }
+
+        $stmt->close();
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,7 +108,8 @@ if (isset($_GET['token'])) {
                 <div class="p-5 mx-auto">
                     <div class="text-medium w-full mb-6">
                         <h2 class="text-2xl font-bold mb-2">Visualización de ticket #<?php echo $idTicket; ?> -
-                            <?php echo $asunto; ?></h2>
+                            <?php echo $asunto; ?>
+                        </h2>
                         <p class="text-gray-600">A continuación, se verá el estado del ticket por el que pasa,
                             junto con las evidencias y comentarios. Al finalizar, por favor, contesta el formulario de
                             satisfacción para la conclusión del ticket.</p>
@@ -81,8 +131,7 @@ if (isset($_GET['token'])) {
                                 <div class="mt-3 sm:pe-8">
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Generado</h3>
                                     <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">Fecha
-                                        y hora</time>
+                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fhticket); ?></time>
                                     <p class="text-base font-normal text-gray-500 dark:text-gray-400">Ticket
                                         creado.
                                         Esperando asignación del ticket.</p>
@@ -104,11 +153,11 @@ if (isset($_GET['token'])) {
                                 <div class="mt-3 sm:pe-8">
                                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Asignado</h3>
                                     <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">Fecha
-                                        y hora</time>
+                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
                                     <p class="text-base font-normal text-gray-500 dark:text-gray-400">Ticket
                                         asignado.
-                                        Ticket asignado a [], esperando inicio de trabajo.</p>
+                                        Ticket asignado a <?php getAsignado($asignado); ?>, esperando inicio de trabajo.
+                                    </p>
                                 </div>
                             </li>
                             <li class="relative mb-6 sm:mb-0">
@@ -129,8 +178,7 @@ if (isset($_GET['token'])) {
                                         trabajo
                                     </h3>
                                     <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">Fecha
-                                        y hora</time>
+                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
                                     <p class="text-base font-normal text-gray-500 dark:text-gray-400">Trabajo en
                                         inicio.
                                         El técnico llego a la unidad y se encuentra revisando la unidad de
@@ -154,8 +202,7 @@ if (isset($_GET['token'])) {
                                         trabajo
                                     </h3>
                                     <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">Fecha
-                                        y hora</time>
+                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
                                     <p class="text-base font-normal text-gray-500 dark:text-gray-400">Trabajo en
                                         proceso. El técnico se encuentra realizando el trabajo.</p>
                                 </div>
@@ -178,8 +225,7 @@ if (isset($_GET['token'])) {
                                         finalizado
                                     </h3>
                                     <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">Fecha
-                                        y hora</time>
+                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
                                     <p class="text-base font-normal text-gray-500 dark:text-gray-400">El trabajo
                                         a
                                         concluido, en espera del formulario de finalización.</p>
@@ -190,25 +236,41 @@ if (isset($_GET['token'])) {
                     <div class="text-medium w-full mb-6">
                         <h2 class="text-2xl font-bold mb-2">Evidencias</h2>
                         <p class="mb-6 text-gray-600">Aún no se han tomado evidencias.</p>
-                        <div class="columns-4">
-                            <p class="font-semibold text-base mb-2">Evidencia al crear ticket</p>
-                            <p class="font-semibold text-base mb-2">Evidencia de inicio</p>
-                            <p class="font-semibold text-base mb-2">Evidencia de realizando</p>
-                            <p class="font-semibold text-base mb-2">Evidencia de finalización</p>
+                        <div class="flex justify-center space-x-4">
+                            <div class="justify-items-center">
+                                <p class="font-semibold text-base mb-2">Evidencia al crear ticket</p>
+                                <img src="../../assets/imgTickets/<?php echo $evidencia; ?>"
+                                    alt="Evidencia al crear ticket" class="w-24 h-24 object-cover mb-4">
+                            </div>
+                            <div>
+                                <p class="font-semibold text-base mb-2">Evidencia de inicio</p>
+                                <img src="../../assets/imgTickets/<?php echo $evidenciaAbierto; ?>"
+                                    alt="Evidencia de inicio" class="w-24 h-24 object-cover mb-4">
+                            </div>
+                            <div>
+                                <p class="font-semibold text-base mb-2">Evidencia de realizando</p>
+                                <img src="../../assets/imgTickets/<?php echo $evidenciaHaciendo; ?>"
+                                    alt="Evidencia de realizando" class="w-24 h-24 object-cover mb-4">
+                            </div>
+                            <div>
+                                <p class="font-semibold text-base mb-2">Evidencia de finalización</p>
+                                <img src="../../assets/imgTickets/<?php echo $evidenciaHecho; ?>"
+                                    alt="Evidencia de finalización" class="w-24 h-24 object-cover mb-4">
+                            </div>
                         </div>
                     </div>
                     <div class="text-medium w-full mb-6">
                         <h2 class="text-2xl font-bold mb-2">Comentarios</h2>
                         <p class="mb-6 text-gray-600">Comentarios realizados al ticket</p>
                         <div>
-                            <p class="text-gray-600">[]</p>
+                            <p class="text-gray-600"><?php echo $txt_contestacion; ?></p>
                         </div>
                     </div>
                     <div class="text-center">
                         <h2 class="text-2xl font-bold mb-2">Formulario de finalización</h2>
                         <p class="mb-6 text-gray-600">El trabajo del ticket a terminado. Por favor, contesta el
                             formulario de finalización para la finalización completa.</p>
-                        <a href="formulario" type="button"
+                        <a href="formulario.php?token=<?php echo $token; ?>"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Contestar
                             formulario</a>
                     </div>

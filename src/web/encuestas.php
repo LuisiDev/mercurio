@@ -104,7 +104,7 @@ include '../components/sidebar.php';
                 $tipo = $_SESSION['tipo'];
 
                 if ($tipo == 'tecnico') {
-                    $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE estado = '0' || estado = '4' AND asignado = ?");
+                    $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '4') AND asignado = ?");
                     $row = $stmt->bind_param("i", $userId);
                     $stmt->execute();
                     $row = $stmt->get_result()->fetch_row();
@@ -120,7 +120,7 @@ include '../components/sidebar.php';
                 $offset = ($paginaActual - 1) * $registrosPorPagina;
 
                 if ($tipo == 'tecnico') {
-                    $sql = "SELECT * FROM tbticket WHERE estado = '0' || estado = '4' AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                    $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '4') AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("i", $userId);
                     $stmt->execute();

@@ -391,7 +391,7 @@ include '../components/sidebar.php';
                                                 </svg>
                                                 Editar</button>
                                         <?php endif; ?>
-                                        <?php if ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7'): ?>
+                                        <?php if ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' AND $tipo != 'tecnico'): ?>
                                             <button type="button" data-modal-target="popup-confirmation"
                                                 data-modal-toggle="popup-confirmation"
                                                 data-id="<?php echo $fila['idTicket']; ?>"

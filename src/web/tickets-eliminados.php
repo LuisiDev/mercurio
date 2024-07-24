@@ -46,22 +46,26 @@ include '../components/sidebar.php';
 
     function getAsignado($asignado)
     {
-        switch ($asignado) {
-            case "":
-                echo 'Sin asignar';
-                break;
-            case "1":
-                echo 'Tecnico 1';
-                break;
-            case "2":
-                echo 'Tecnico 2';
-                break;
-            case "3":
-                echo 'Tecnico 3';
-                break;
-            case "4":
-                echo 'Tecnico 4';
-                break;
+        global $conn;
+
+        if ($asignado == "") {
+            echo 'Sin asignar';
+        } else {
+            $query = "SELECT nombre, apellido FROM users WHERE userId = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $asignado);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                echo $row['nombre'];
+                // echo $row['nombre'] . ' ' . $row['apellido'];
+            } else {
+                echo 'Técnico no encontrado';
+            }
+
+            $stmt->close();
         }
     }
     ?>
@@ -226,18 +230,37 @@ include '../components/sidebar.php';
                         </thead>
                         <tbody>
                             <?php
-                            $stmt = $conn->query('SELECT COUNT(*) FROM tbticket  WHERE estado = "0"');
-                            $row = $stmt->fetch_row();
-                            $totalRegistros = $row[0];
+                            $userId = $_SESSION['userId'];
+                            $tipo = $_SESSION['tipo'];
 
+                            if ($tipo == 'tecnico') {
+                                $stmt = $conn->prepare('SELECT COUNT(*) FROM tbticket WHERE asignado = ? AND estado = "0"');
+                                $row = $stmt->bind_param('i', $userId);
+                                $stmt->execute();
+                                $row = $stmt->get_result()->fetch_row();
+                            } else {
+                                $stmt = $conn->query('SELECT COUNT(*) FROM tbticket WHERE estado = "0"');
+                                $row = $stmt->fetch_row();
+                            }
+
+                            $totalRegistros = $row[0];
                             $registrosPorPagina = 10;
                             $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                             $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
                             $offset = ($paginaActual - 1) * $registrosPorPagina;
 
-                            $sql = "SELECT * FROM tbticket WHERE estado = '0' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
-                            $resultado = $conn->query($sql);
-
+                            if ($tipo == 'tecnico') {
+                                $sql = "SELECT * FROM tbticket WHERE asignado = ? AND estado = '0' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param('i', $userId);
+                                $stmt->execute();
+                                $resultado = $stmt->get_result();
+                            } else {
+                                $sql = "SELECT * FROM tbticket WHERE estado = '0' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                                $resultado = $conn->query($sql);
+                            }
+                            
+                            $i = 0;
                             while ($fila = $resultado->fetch_assoc()): ?>
                                 <?php include '../components/modal-baja-ticket.php'; ?>
                                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">

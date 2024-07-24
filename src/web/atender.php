@@ -237,7 +237,7 @@ function getStatus($status)
                     </div>
                     <span class="text-lg font-bold text-gray-800">Evidencias</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
-                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaRealizacion']) && empty($row['evidenciaTerminado'])): ?>
+                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaHaciendo']) && empty($row['evidenciaHecho'])): ?>
                             <p>No se han adjuntado evidencias</p>
                         <?php else: ?>
                             <div class="flex justify-start space-x-6 text-center">
@@ -297,8 +297,11 @@ function getStatus($status)
                     <?php endif; ?>
 
                     <div class="relative">
-                        <form action="../procesos/atender.php" method="POST" enctype="multipart/form-data"
+                        <form action="../procesos/atender" method="POST" enctype="multipart/form-data"
                             class="max-w-sm mx-auto">
+                            <input type="hidden" name="idTicket" value="<?php echo $idTicket ?>" />
+                            <input type="hidden" name="prioridad" value="<?php echo $row['prioridad']; ?>" />
+                            <input type="hidden" name="asignado" value="<?php echo $row['asignado']; ?>" />
                             <?php if (isset($_SESSION['tipo']) && ($_SESSION['tipo'] == 'admin' || $_SESSION['tipo'] == 'coordinador')): ?>
                                 <?php
                                 $asignadoId = $row['asignado'];

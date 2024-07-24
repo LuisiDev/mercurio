@@ -23,6 +23,27 @@ $userResult = $stmt->get_result();
 if (!$userResult) {
    die("Error al obtener resultados (" . $stmt->errno . ") " . $stmt->error);
 }
+
+function userType($type)
+{
+    switch ($type) {
+        case "admin":
+            echo 'Administrador';
+            break;
+        case "coordinador":
+            echo 'Coordinador';
+            break;
+        case "comercializacion":
+            echo 'Comercialización';
+            break;
+        case "acomercial":
+            echo 'Asistente de comercialización';
+            break;
+        case "tecnico":
+            echo 'Técnico';
+            break;
+    }
+}
 ?>
 
 <nav class="fixed top-0 z-50 w-full bg-blue-700 dark:bg-gray-800">
@@ -86,7 +107,7 @@ if (!$userResult) {
                            <?php echo htmlspecialchars($_SESSION['apellido']); ?>
                         </p>
                         <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                           <?php echo htmlspecialchars($_SESSION['tipo']); ?>
+                           <?php echo userType(htmlspecialchars($_SESSION['tipo'])); ?>
                         </p>
                      </div>
                      <ul class="py-1" role="none">
@@ -217,7 +238,7 @@ if (!$userResult) {
                </a>
             </li>
          <?php endif; ?>
-         <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "coordinador"): ?>
+         <!-- <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "coordinador"): ?>
             <li>
                <a href="bitacora"
                   class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
@@ -231,7 +252,7 @@ if (!$userResult) {
                   <span class="flex-1 ms-3 whitespace-nowrap">Bitacora de usuarios</span>
                </a>
             </li>
-         <?php endif; ?>
+         <?php endif; ?> -->
          <li>
             <a href="../configuration/logout"
                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">

@@ -298,7 +298,7 @@ function getStatus($status)
                     <?php endif; ?>
 
                     <div class="relative">
-                        <form action="../procesos/asignar.php" method="POST" class="max-w-sm mx-auto">
+                        <form action="../procesos/asignar" method="POST" class="max-w-sm mx-auto">
                             <input type="hidden" name="idTicket" value="<?php echo $idTicket; ?>">
                             <div class="mb-4">
                                 <label for="prioridad"

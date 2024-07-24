@@ -2,12 +2,10 @@
 session_start();
 $conn = new mysqli('localhost', 'root', 'root', 'mercurio');
 
-// Verificar la conexión
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Verificar si los campos user y password están presentes
 if (isset($_POST['user']) && isset($_POST['password'])) {
     $usuario = $_POST['user'];
     $contrasena = $_POST['password']; // o usar SHA1($_POST['password'])
@@ -22,20 +20,24 @@ if (isset($_POST['user']) && isset($_POST['password'])) {
         $hashedPassword = $fila['password'];
 
         if (password_verify($contrasena, $hashedPassword)) {
-            // Establecer las variables de sesión
+            if ($fila['userStatus'] == '1') {
+                echo "<script>alert('Este usuario ha sido eliminado.');</script>";
+                echo "<script>window.location.href = '../index.php';</script>";
+                exit;
+            }
+
             $_SESSION['user'] = $fila['user'];
             $_SESSION['tipo'] = $fila['tipo'];
             $_SESSION['nombre'] = $fila['nombre'];
             $_SESSION['apellido'] = $fila['apellido'];
             $_SESSION['imagen'] = $fila['imagen'];
             $_SESSION['email'] = $fila['email'];
-            
-            // Dentro de la verificación de contraseña exitosa en login.php
-            $_SESSION['userId'] = $fila['userId']; // Asegúrate de que 'id' sea la columna correcta en tu base de datos
+            $_SESSION['userStatus'] = $fila['userStatus'];
 
-            // Redirigir según el tipo de usuario
+            $_SESSION['userId'] = $fila['userId'];
+
             if ($fila['tipo'] == 'admin') {
-                echo "<script>window.location.href = '../web/usuarios.php';</script>";
+                echo "<script>window.location.href = '../web/dashboard.php';</script>";
             } else {
                 echo "<script>window.location.href = '../web/tickets.php';</script>";
             }

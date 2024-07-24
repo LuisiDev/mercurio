@@ -81,7 +81,7 @@ function getAsignado($asignado)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../output.css">
-    <title>Mercurio | Dashboard</title>
+    <title>Mercurio | Detalles</title>
 </head>
 
 <body>
@@ -267,7 +267,7 @@ function getAsignado($asignado)
                     </div>
                     <span class="text-lg font-bold text-gray-800">Evidencias</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
-                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaRealizacion']) && empty($row['evidenciaTerminado'])): ?>
+                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaHaciendo']) && empty($row['evidenciaHecho'])): ?>
                             <p>No se han adjuntado evidencias</p>
                         <?php else: ?>
                             <div class="grid grid-cols-4 gap-4 text-center">
@@ -283,22 +283,28 @@ function getAsignado($asignado)
                                 <div>
                                     <?php if (!empty($row['evidenciaAbierto'])): ?>
                                         <p><span class="font-medium text-gray-700">Evidencia de inicio:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
-                                            alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaRealizacion'])): ?>
+                                    <?php if (!empty($row['evidenciaHaciendo'])): ?>
                                         <p><span class="font-medium text-gray-700">Evidencia de realización:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaRealizacion']); ?>"
-                                            alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHaciendo']); ?>"
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaTerminado'])): ?>
+                                    <?php if (!empty($row['evidenciaHecho'])): ?>
                                         <p><span class="font-medium text-gray-700">Evidencia de terminado:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaTerminado']); ?>"
-                                            alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHecho']); ?>"
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -308,7 +314,10 @@ function getAsignado($asignado)
                         <span class="text-lg font-bold text-gray-800">Información del formulario de finalización</span>
                         <div class="mb-6 text-base text-gray-500 dark:text-gray-400">
                             <?php if (!empty($row['token'])): ?>
-                                <p>No se a contestado el formulario de finalización</p>
+                                <p>No se a contestado el formulario de finalización, por favor, contestar el formulario.
+                                    Link:</p>
+                                <a href="../cliente/visualizacion.php?token=<?= htmlspecialchars($row['token']); ?>"
+                                    class="text-blue-600 hover:text-blue-800">Contestar formulario</a>
                             <?php else: ?>
                                 <?php
                                 $idTicket = $row['idTicket'];

@@ -15,14 +15,14 @@ if (isset($_POST["send"])) {
 
     $mail->CharSet = 'UTF-8';
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';
+    $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
     $mail->SMTPAuth = true;
-    $mail->Username = 'developergrupoc@gmail.com';
-    $mail->Password = 'bcbpwauefyhbzumh';
-    $mail->SMTPSecure = 'ssl';
-    $mail->Port = 465;
+    $mail->Username = 'AKIA3HJXVSKBDCQSUVUK';
+    $mail->Password = 'BBJq0wi3aCh0zuMhCuO2jlNTWaejJ8Mw8h7gBg8XMyRv';
+    $mail->SMTPSecure = 'tls';
+    $mail->Port = 587;
 
-    $mail->setFrom('developergrupoc@gmail.com');
+    $mail->setFrom('mercurio@atlantida.mx');
 
     $email = $_POST["email"];
     $token = generateToken();
