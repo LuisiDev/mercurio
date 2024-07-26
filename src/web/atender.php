@@ -54,6 +54,7 @@ function getStatus($status)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../output.css">
+    <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
     <title>Mercurio | Dashboard</title>
 </head>
 
@@ -156,7 +157,8 @@ function getStatus($status)
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['domicilio'])) { ?>
-                            <p><span class="font-medium text-gray-700">Domicilio: </span><?php echo $row['domicilio']; ?>
+                            <p><span class="font-medium text-gray-700">Domicilio:
+                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600" href="' . $row['domicilio'] . '">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['ciudad']) && !empty($row['domestado'])) { ?>

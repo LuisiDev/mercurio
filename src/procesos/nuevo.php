@@ -67,10 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->affected_rows > 0) {
         $idTicket = $stmt->insert_id;
+        $_SESSION['ticket_created'] = true;
         echo "<script>alert('¡Ticket creado correctamente!');</script>";
         echo "<script>window.location.href = '../web/tickets.php';</script>";
 
-        // Envio de correo al cliente
         $mail = new PHPMailer(true);
 
         try {

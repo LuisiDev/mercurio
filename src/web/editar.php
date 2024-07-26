@@ -26,8 +26,9 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../output.css">
-    <title>Mercurio | Dashboard</title>
+    <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Mercurio | Dashboard</title>
 </head>
 
 <body>

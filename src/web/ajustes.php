@@ -1,22 +1,26 @@
 <?php
 include '../components/sidebar.php';
 
-if (isset($_GET['id'])) {
-    $userId = $_GET['id'];
-
-    $query = "SELECT * FROM users WHERE userId = '$userId'";
-    $result = mysqli_query($conn, $query);
-
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_array($result);
-    } else {
-        echo "<script>alert('No se encontró al usuario.')</script>";
-        // echo "<script>window.location.href = 'dashboard.php';</script>";
-    }
-} else {
-    echo "<script>alert('No se encontró el ID del usuario.')</script>";
-    // echo "<script>window.location.href = 'dashboard.php';</script>";
+if (isset($_SESSION['userId'])) {
+    $id = $_SESSION['userId'];
+    $sql = "SELECT * FROM users WHERE userId = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
 }
+
+function userStatus($status)
+{
+    if ($status == 0) {
+        return 'Activo';
+    } else {
+        return 'Inactivo';
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +30,7 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../output.css">
+    <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
     <title>Mercurio | Dashboard</title>
 </head>
 
@@ -39,26 +44,40 @@ if (isset($_GET['id'])) {
                 <div class="grid lg:grid-cols-2 sm:grid-cols-1 gap-y-6 gap-x-6">
 
                     <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
+                                Información del perfil</h3>
+                        </div>
                         <div class="grid grid-rows-3 grid-flow-col gap-4">
                             <div class="row-span-3">
-                                <img class="h-auto max-w-lg border boder-gray-400" src="..." alt="Imagen de perfil">
+                                <?php if ($row['imagen']): ?>
+                                    <img src="../../assets/imgUsers/<?php echo $row['imagen']; ?>" alt="Foto de perfil"
+                                        class="w-24 h-24 rounded-lg">
+                                <?php else: ?>
+                                    <img src="../../assets/imgUsers/default.png" alt="Foto de perfil"
+                                        class="md:w-44 md:h-44 sm:w-24 sm:h-24 rounded-lg">
+                                <?php endif; ?>
                             </div>
                             <div class="col-span-3">
-                                <span
-                                    class="text-base font-medium text-gray-900"><?php htmlspecialchars($fila['nombre']); ?></span>
+                                <p class="text-base font-medium text-gray-900">Usuario: <span
+                                        class="font-normal"><?php echo $row['user']; ?></span></p>
                             </div>
                             <div class="col-span-2">
-                                <span class="text-base text-gray-500">Tipo</span>
+                                <p class="text-base font-medium text-gray-900">Nombre: <span
+                                        class="font-normal"><?php echo $row['nombre'] . ' ' . $row['apellido']; ?></span>
+                                </p>
                             </div>
                             <div class="col-span-1">
-                                <span class="text-base text-gray-500">Empresa</span>
+                                <p class="text-base font-medium text-gray-900">Tipo: <span
+                                        class="font-normal"><?php echo userType($row['tipo']); ?></span></p>
                             </div>
                         </div>
                     </div>
 
                     <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                         <div class="mb-6">
-                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Información de
+                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
+                                Información de
                                 documentos</h3>
                         </div>
                         <div>
@@ -121,14 +140,16 @@ if (isset($_GET['id'])) {
 
                     <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                         <div class="mb-6">
-                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Autenticación
+                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
+                                Autenticación
                                 de dos pasos</h3>
                         </div>
                     </div>
 
                     <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                         <div class="mb-6">
-                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Información
+                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
+                                Información
                                 general</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-x-16">
@@ -137,63 +158,65 @@ if (isset($_GET['id'])) {
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre(s)</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="<?php echo $row['nombre']; ?>" disabled readonly required>
                             </div>
                             <div class="mb-5">
                                 <label for="numCliente"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apellidos</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="<?php echo $row['apellido']; ?>" disabled readonly required>
                             </div>
                             <div class="mb-5">
                                 <label for="numCliente"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="<?php echo userStatus($row['userStatus']); ?>" disabled readonly
+                                    required>
                             </div>
                             <div class="mb-5">
                                 <label for="numCliente"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ciudad</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="No especificado" disabled readonly required>
                             </div>
                             <div class="mb-5">
                                 <label for="numCliente"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Domicilio</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="No especificado" disabled readonly required>
                             </div>
                             <div class="mb-5">
                                 <label for="numCliente"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Organización</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="No especificado" disabled readonly required>
                             </div>
                             <div class="mb-5">
                                 <label for="numCliente"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Departamento</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="No especificado" disabled readonly required>
                             </div>
                             <div class="mb-5">
                                 <label for="numCliente"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
                                 <input type="text" id="numCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Número de cliente" required>
+                                    placeholder="<?php echo userType($row['tipo']); ?>" disabled readonly required>
                             </div>
                         </div>
                     </div>
 
                     <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                         <div class="mb-6">
-                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Información de
+                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
+                                Información de
                                 contraseña</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-x-16">
@@ -223,12 +246,42 @@ if (isset($_GET['id'])) {
                         </div>
                     </div>
 
+                    <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
+                                Personalizar color de sidebar</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-x-16">
+                            <div class="mb-5">
+                                <label for="numCliente"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color
+                                    primario</label>
+                                <input type="color" id="numCliente"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required>
+                            </div>
+                            <div class="mb-5">
+                                <label for="numCliente"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Color
+                                    secundario</label>
+                                <input type="color" id="numCliente"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required>
+                            </div>
+                        </div>
+                        <script>
+                        const color = document.querySelector('input[type="color"]');
+                        color.addEventListener('input', function() {
+                            document.documentElement.style.setProperty('--color-primary', color.value);
+                        });
+                        </script>
+
+                    </div>
+
                 </div>
 
             </div>
-
         </div>
-    </div>
     </div>
 
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
