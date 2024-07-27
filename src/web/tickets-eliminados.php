@@ -9,12 +9,12 @@ include '../components/sidebar.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../output.css">
-    <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>Mercurio | Gestión de tickets</title>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-700">
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
     <?php
@@ -76,7 +76,7 @@ include '../components/sidebar.php';
 
                 <div class="p-8">
                     <div
-                        class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
+                        class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
                         <div>
                             <span class="text-sm text-gray-500 dark:text-gray-400">Mostrar</span>
                             <button type="button" id="dropdownShowButton" data-dropdown-toggle="dropdownShow"
@@ -123,7 +123,7 @@ include '../components/sidebar.php';
                                 </svg>
                             </div>
                             <input type="text" id="table-search-tickets"
-                                class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:boder-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Buscar ticket">
                         </div>
                     </div>
@@ -143,7 +143,7 @@ include '../components/sidebar.php';
                 <div class="relative overflow-x-auto sm:rounded-lg">
 
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     No. de ticket
@@ -264,7 +264,7 @@ include '../components/sidebar.php';
                             $i = 0;
                             while ($fila = $resultado->fetch_assoc()): ?>
                                 <?php include '../components/modal-baja-ticket.php'; ?>
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <tr class="bg-white border-b dark:bg-gray-700 dark:border-gray-800">
                                     <th scope="row"
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <?php echo htmlspecialchars($fila['idTicket']); ?>

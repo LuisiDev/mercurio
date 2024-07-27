@@ -57,11 +57,11 @@ function getStatus($status)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../output.css">
-    <link rel="icon" href="../assets/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <title>Mercurio | Dashboard</title>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-700">
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
     <div class="p-4 sm:ml-64">

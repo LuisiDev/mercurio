@@ -79,7 +79,7 @@ function userType($type)
 }
 ?>
 
-<nav class="fixed top-0 z-50 w-full bg-blue-700 dark:bg-gray-800">
+<nav class="fixed top-0 z-50 w-full bg-blue-700 dark:bg-gray-900">
    <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
          <div class="flex items-center justify-start rtl:justify-end">
@@ -106,7 +106,7 @@ function userType($type)
                      class="relative inline-flex items-center text-sm rounded-lg focus:bg-blue-800 focus:ring-4 focus:ring-blue-500 dark:focus:ring-gray-600"
                      aria-expanded="false" data-dropdown-toggle="dropdown-notifications">
                      <span class="sr-only">Abrir menú de notificaciones</span>
-                     <svg class="w-8 h-8 text-white dark:text-gray-800" aria-hidden="true"
+                     <svg class="w-8 h-8 text-white dark:text-gray-500" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                         <path
                            d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z" />
@@ -122,7 +122,6 @@ function userType($type)
                         class="flex text-sm rounded-lg focus:bg-blue-800 focus:ring-4 focus:ring-blue-500 dark:focus:ring-gray-600"
                         aria-expanded="false" data-dropdown-toggle="dropdown-user">
                         <span class="sr-only">Abrir menú de usuario</span>
-                        <!-- En caso de que el usuario tenga imagen, en caso de que no tenga, mostrar default.png: -->
                         <?php if ($_SESSION['imagen']): ?>
                            <img src="../../assets/imgUsers/<?php echo htmlspecialchars($_SESSION['imagen']); ?>"
                               class="w-8 h-8 rounded-lg" alt="Imagen de usuario">
@@ -132,7 +131,7 @@ function userType($type)
                      </button>
                   </div>
                   <div
-                     class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                     class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-800 dark:divide-gray-600"
                      id="dropdown-user">
                      <div class="px-4 py-3" role="none">
                         <p class="text-sm text-gray-900 dark:text-white" role="none">
@@ -153,6 +152,11 @@ function userType($type)
                            <a href="ajustes"
                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                               role="menuitem">Ajustes</a>
+                        </li>
+                        <li>
+                           <a type="button" id="dark-mode-toggle"
+                              class="block px-4 py-2 cursor-pointer text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                              role="menuitem">Modo oscuro</a>
                         </li>
                         <li>
                            <a href="../configuration/logout"
@@ -308,7 +312,7 @@ function userType($type)
    <div
       class="block px-4 py-2 font-medium text-center text-gray-700 rounded-t-lg bg-gray-50 dark:bg-gray-800 dark:text-white">
       Notificaciones</div>
-   <div class="divide-y divide-gray-100 dark:divide-gray-700">
+   <div class="divide-y divide-gray-100 dark:divide-gray-500">
       <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
          <div class="flex-shrink-0">
             <img class="rounded-full w-11 h-11" src="..." alt="Imagen de usuario">
@@ -342,6 +346,27 @@ function userType($type)
       </div>
    </a>
 </div>
+
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+      const toggleButton = document.getElementById('dark-mode-toggle');
+      const htmlElement = document.documentElement;
+
+      if (localStorage.getItem('dark-mode') === 'true') {
+         htmlElement.classList.add('dark');
+      }
+
+      toggleButton.addEventListener('click', () => {
+         if (htmlElement.classList.contains('dark')) {
+            htmlElement.classList.remove('dark');
+            localStorage.setItem('dark-mode', 'false');
+         } else {
+            htmlElement.classList.add('dark');
+            localStorage.setItem('dark-mode', 'true');
+         }
+      });
+   });
+</script>
 
 <!-- Notificaction url: https://flowbite.com/docs/components/toast/#push-notification -->
 
