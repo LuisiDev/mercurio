@@ -251,7 +251,7 @@ include '../components/modal-revision.php';
                                     </svg>
                                 </button>
                                 <div id="tooltip-animation" role="tooltip"
-                                    class="absolute z-10 invisible inline-block px-3 py-2 w-4/6 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                    class="absolute z-10 invisible inline-block px-3 py-2 w-4/12 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                                     <p class="mb-2">Puedes ingresar un domicilio o una URL de ubicación para facilitar el
                                         encuentro, como se encuentra en la imagen representativa.</p>
                                     <img src="../../assets/img/Tooltip1.gif" alt="Imagen de ayuda">
