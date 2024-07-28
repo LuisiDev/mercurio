@@ -77,6 +77,12 @@ function userType($type)
          break;
    }
 }
+
+$notificationSql = "SELECT * FROM notificaciones WHERE userId = ? ORDER BY created_at DESC";
+$notificationStmt = $conn->prepare($notificationSql);
+$notificationStmt->bind_param('i', $userId);
+$notificationStmt->execute();
+$notificationResult = $notificationStmt->get_result();
 ?>
 
 <nav class="fixed top-0 z-50 w-full bg-blue-700 dark:bg-gray-900">

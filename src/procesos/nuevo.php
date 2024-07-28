@@ -70,9 +70,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['ticket_created'] = true;
         echo "<script>alert('¡Ticket creado correctamente!');</script>";
         echo "<script>window.location.href = '../web/tickets.php';</script>";
-
+    
         $mail = new PHPMailer(true);
-
+    
         try {
             $mail->CharSet = 'UTF-8';
             $mail->isSMTP();
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Password = 'BBJq0wi3aCh0zuMhCuO2jlNTWaejJ8Mw8h7gBg8XMyRv';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
-
+    
             $mail->setFrom('mercurio@atlantida.mx');
             $mail->addAddress($correo);
             $mail->isHTML(true);
@@ -146,9 +146,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "<script>alert('¡No se pudo crear el ticket!');</script>";
     }
-
+    
     $stmt->close();
     $conn->close();
+    
 } else {
     echo "<script>alert('¡No se pudo crear el ticket!');</script>";
     echo "<script>window.location.href = '../web/tickets.php';</script>";

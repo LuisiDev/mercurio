@@ -34,7 +34,7 @@ function userStatus($status)
     <title>Mercurio | Dashboard</title>
 </head>
 
-<body>
+<body class="bg-gray-50 dark:bg-gray-700">
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
     <div class="p-4 sm:ml-64">
@@ -59,16 +59,16 @@ function userStatus($status)
                                 <?php endif; ?>
                             </div>
                             <div class="col-span-3">
-                                <p class="text-base font-medium text-gray-900">Usuario: <span
+                                <p class="text-base font-medium text-gray-900 dark:text-white">Usuario: <span
                                         class="font-normal"><?php echo $row['user']; ?></span></p>
                             </div>
                             <div class="col-span-2">
-                                <p class="text-base font-medium text-gray-900">Nombre: <span
+                                <p class="text-base font-medium text-gray-900 dark:text-white">Nombre: <span
                                         class="font-normal"><?php echo $row['nombre'] . ' ' . $row['apellido']; ?></span>
                                 </p>
                             </div>
                             <div class="col-span-1">
-                                <p class="text-base font-medium text-gray-900">Tipo: <span
+                                <p class="text-base font-medium text-gray-900 dark:text-white">Tipo: <span
                                         class="font-normal"><?php echo userType($row['tipo']); ?></span></p>
                             </div>
                         </div>
