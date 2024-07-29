@@ -308,22 +308,22 @@ include '../components/sidebar.php';
                                     </th>
                                     <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <div class="flex items-center">
-                                            <?php echo htmlspecialchars($fila['asunto']); ?>
+                                            <?php echo htmlspecialchars($fila['asunto'] ?? 'No proporcionado'); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                            <?php echo htmlspecialchars($fila['numCliente']); ?>
+                                            <?php echo htmlspecialchars($fila['numCliente'] ?? 'No proporcionado'); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                            <?php echo htmlspecialchars($fila['fhticket']); ?>
+                                            <?php echo htmlspecialchars($fila['fhticket'] ?? 'No proporcionado'); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                            <?php echo htmlspecialchars($fila['servicio']); ?>
+                                            <?php echo htmlspecialchars($fila['servicio'] ?? 'No proporcionado'); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
@@ -333,7 +333,7 @@ include '../components/sidebar.php';
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                            <?php getPrioridad($fila['prioridad']); ?>
+                                            <?php getPrioridad($fila['prioridad'] ?? 'No proporcionado'); ?>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
@@ -392,7 +392,7 @@ include '../components/sidebar.php';
                                                 </svg>
                                                 Editar</button>
                                         <?php endif; ?>
-                                        <?php if ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' AND $tipo != 'tecnico'): ?>
+                                        <?php if ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' and $tipo != 'tecnico'): ?>
                                             <button type="button" data-modal-target="popup-confirmation"
                                                 data-modal-toggle="popup-confirmation"
                                                 data-id="<?php echo $fila['idTicket']; ?>"
@@ -422,18 +422,29 @@ include '../components/sidebar.php';
                     de <span
                         class="font-semibold text-gray-900 dark:text-white"><?php echo $totalRegistros; ?></span></span>
                 <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                    <?php if ($paginaActual > 1): ?>
+                    <?php
+                    $rango = 6; // Número de páginas a mostrar
+                    $inicio = max($paginaActual - floor($rango / 2), 1);
+                    $fin = min($inicio + $rango - 1, $totalPaginas);
+
+                    if ($fin - $inicio + 1 < $rango) {
+                        $inicio = max($fin - $rango + 1, 1);
+                    }
+
+                    if ($paginaActual > 1): ?>
                         <li>
                             <a href="gestion?page=<?php echo $paginaActual - 1; ?>"
                                 class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Anterior</a>
                         </li>
                     <?php endif; ?>
-                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+
+                    <?php for ($i = $inicio; $i <= $fin; $i++): ?>
                         <li>
                             <a href="gestion?page=<?php echo $i; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white <?php if ($i == $paginaActual)
                                    echo 'bg-blue-50 text-blue-500'; ?>"><?php echo $i; ?></a>
                         </li>
                     <?php endfor; ?>
+
                     <?php if ($paginaActual < $totalPaginas): ?>
                         <li>
                             <a href="gestion?page=<?php echo $paginaActual + 1; ?>"
@@ -442,6 +453,7 @@ include '../components/sidebar.php';
                     <?php endif; ?>
                 </ul>
             </nav>
+
         </div>
     </div>
 
