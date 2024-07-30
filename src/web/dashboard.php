@@ -26,6 +26,9 @@ while ($row = $result->fetch_assoc()) {
 $totalTodos = $conn->query("SELECT COUNT(*) AS total FROM tbticket")->fetch_assoc()['total'];
 $totalCreados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1'")->fetch_assoc()['total'];
 $totalEliminados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '0'")->fetch_assoc()['total'];
+$totalCreadosSinAsignar = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1' AND asignado IS NULL")->fetch_assoc()['total'];
+// Total de tickets creados asignaos al técnico logueado
+$totalAsignado = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1' AND asignado = $userId")->fetch_assoc()['total'];
 
 // Total de Tickets
 $datosDiarios = [];
@@ -78,6 +81,22 @@ for ($i = 6; $i >= 0; $i--) {
 $datosEliminados = implode(',', $datosEliminados);
 $categoriasEliminados = implode("','", $categoriasEliminados);
 
+// Total de tickets creados sin asignar
+$datosCreadosSinAsignar = [];
+for ($i = 6; $i >= 0; $i--) {
+    $fecha = date('Y-m-d', strtotime("-$i days"));
+    $result = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE DATE(fhticket) = '$fecha' AND estado = '1' AND asignado = NULL");
+    $datosCreadosSinAsignar[] = $result->fetch_assoc()['total'];
+}
+
+$categoriasCreadosSinAsignar = [];
+for ($i = 6; $i >= 0; $i--) {
+    $fecha = date('d M', strtotime("-$i days"));
+    $categoriasCreadosSinAsignar[] = $fecha;
+}
+
+$datosCreadosSinAsignar = implode(',', $datosCreadosSinAsignar);
+$categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
 ?>
 
 <!DOCTYPE html>
@@ -328,6 +347,163 @@ $categoriasEliminados = implode("','", $categoriasEliminados);
                     </script>
                 <?php endforeach; ?>
 
+                <?php if ($tipo == 'tecnico'): ?>
+                    <div class="sm:max-w-sm lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+
+                        <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center">
+                                <div
+                                    class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center me-3">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                                        <?php echo $totalAsignado; ?>
+                                    </h5>
+                                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
+                                        asignados</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" onclick="window.location.href = 'gestion'"
+                                    class="inset-y-0 right-0 px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                                    </svg>
+                                    Ir
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">
+                                            No. de ticket
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            No. de cliente
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Servicio
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $stmt = $conn->prepare("SELECT idTicket, numCliente, servicio FROM tbticket WHERE estado = '1' AND asignado = ? ORDER BY fhticket DESC LIMIT 10");
+                                    $stmt->bind_param('i', $userId);
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+
+                                    while ($row = $result->fetch_assoc()):
+                                        ?>
+                                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                                            <td class="px-6 py-3">
+                                                <a href="atender?id=<?php echo $row['idTicket']; ?>">
+                                                    <?php echo $row['idTicket']; ?>
+                                                </a>
+                                            </td>
+                                            <td class="px-6 py-3">
+                                                <?php echo $row['numCliente']; ?>
+                                            </td>
+                                            <td class="px-6 py-3">
+                                                <?php echo $row['servicio']; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($tipo !== 'tecnico'): ?>
+                    <div class="sm:max-w-sm lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+
+                        <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center">
+                                <div
+                                    class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center me-3">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path
+                                            d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                                        <?php echo $totalCreadosSinAsignar; ?>
+                                    </h5>
+                                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets sin
+                                        asignar
+                                    </p>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" onclick="window.location.href = 'gestion'"
+                                    class="inset-y-0 right-0 px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                                    </svg>
+                                    Ver
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">
+                                            No. de ticket
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            No. de cliente
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Servicio
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $stmt = $conn->prepare("SELECT idTicket, numCliente, servicio FROM tbticket WHERE estado = '1' AND asignado IS NULL ORDER BY fhticket DESC LIMIT 10");
+                                    $stmt->execute();
+                                    $result = $stmt->get_result();
+
+                                    while ($row = $result->fetch_assoc()):
+                                        ?>
+                                        <tr class="border-b border-gray-200 dark:border-gray-700">
+                                            <td class="px-6 py-3">
+                                                <a href="asignar?id=<?php echo $row['idTicket']; ?>">
+                                                    <?php echo $row['idTicket']; ?>
+                                                </a>
+                                            </td>
+                                            <td class="px-6 py-3">
+                                                <?php echo $row['numCliente']; ?>
+                                            </td>
+                                            <td class="px-6 py-3">
+                                                <?php echo $row['servicio']; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
             </div>
 
             <?php if ($tipo !== 'tecnico'): ?>
@@ -350,8 +526,7 @@ $categoriasEliminados = implode("','", $categoriasEliminados);
                                     <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
                                         <?php echo $totalTodos; ?>
                                     </h5>
-                                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
-                                        generados</p>
+                                    <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets</p>
                                 </div>
                             </div>
                             <div>
@@ -452,7 +627,7 @@ $categoriasEliminados = implode("','", $categoriasEliminados);
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M12 6v13m0-13 4 4m-4-4-4 4" />
                                     </svg>
-                                     <script>
+                                    <script>
                                         var total = <?php echo $totalTodos; ?>;
                                         var completados = <?php echo $totalCreados; ?>;
                                         var porcentaje = (completados * 100) / total;
@@ -812,6 +987,76 @@ $categoriasEliminados = implode("','", $categoriasEliminados);
 
                         var chartTicketsEliminados = new ApexCharts(document.querySelector("#tickets-eliminados-chart"), optionsTicketsEliminados);
                         chartTicketsEliminados.render();
+
+                        //Gráfica de tickets creados sin asignar
+                        const optionsTicketsCreadosSinAsignar = {
+                            chart: {
+                                height: "100%",
+                                type: "area",
+                                fontFamily: "Inter, sans-serif",
+                                dropShadow: {
+                                    enabled: false,
+                                },
+                                toolbar: {
+                                    show: false,
+                                },
+                            },
+                            tooltip: {
+                                enabled: true,
+                                x: {
+                                    show: false,
+                                },
+                            },
+                            fill: {
+                                type: "gradient",
+                                gradient: {
+                                    opacityFrom: 0.55,
+                                    opacityTo: 0,
+                                    shade: "#1C64F2",
+                                    gradientToColors: ["#1C64F2"],
+                                },
+                            },
+                            dataLabels: {
+                                enabled: false,
+                            },
+                            stroke: {
+                                width: 6,
+                            },
+                            grid: {
+                                show: false,
+                                StrokeDashArray: 4,
+                                padding: {
+                                    left: 2,
+                                    right: 2,
+                                    top: 0
+                                },
+                            },
+                            series: [
+                                {
+                                    name: "Tickets creados sin asignar",
+                                    data: [<?php echo $datosCreadosSinAsignar; ?>],
+                                    color: "#1A56DB",
+                                },
+                            ],
+                            xaxis: {
+                                categories: ['<?php echo $categoriasCreadosSinAsignar; ?>'],
+                                labels: {
+                                    show: true,
+                                },
+                                axisBorder: {
+                                    show: false,
+                                },
+                                axisTicks: {
+                                    show: false,
+                                },
+                            },
+                            yaxis: {
+                                show: true,
+                            },
+                        };
+
+                        var chartTicketsCreadosSinAsignar = new ApexCharts(document.querySelector("#tickets-creados-sin-asignar-chart"), optionsTicketsCreadosSinAsignar);
+                        chartTicketsCreadosSinAsignar.render();
                     </script>
 
                 </div>

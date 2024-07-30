@@ -97,156 +97,156 @@ function getStatus($status)
                 <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
 
                     <div class="text-xl mb-6">
-                        <strong class="semi-bold text-gray-900 md:text-xl dark:text-gray-400">Información del ticket
+                        <strong class="semi-bold text-gray-900 md:text-xl dark:text-gray-100">Información del ticket
                             #<?php echo $row['idTicket'] ?> - <?php echo $row['asunto'] ?></strong>
                     </div>
                     <span class="text-lg font-bold text-gray-800">Información del cliente</span>
-                    <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
-                        <p><span class="font-medium text-gray-700">Número del cliente:
+                    <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                        <p><span class="font-medium text-gray-500 dark:text-gray-200">Número del cliente:
                             </span><?php echo $row['numCliente']; ?></p>
 
                         <?php if (!empty($row['dispositivo'])) { ?>
-                            <p><span class="font-medium text-gray-700">Dispositivo:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Dispositivo:
                                 </span><?php echo $row['dispositivo']; ?></p>
                         <?php } ?>
 
                         <?php if (!empty($row['imeiCliente'])) { ?>
-                            <p><span class="font-medium text-gray-700">IMEI: </span><?php echo $row['imeiCliente']; ?></p>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">IMEI: </span><?php echo $row['imeiCliente']; ?></p>
                         <?php } ?>
 
                         <?php if (!empty($row['fhRevision'])) { ?>
-                            <p><span class="font-medium text-gray-700">Fecha de revisión:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha de revisión:
                                 </span><?php echo $row['fhRevision'] ?></p>
                         <?php } ?>
 
                         <?php if (!empty($row['nomContacto'])) { ?>
-                            <p><span class="font-medium text-gray-700">Nombre del contacto:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Nombre del contacto:
                                 </span><?php echo $row['nomContacto'] ?></p>
                         <?php } ?>
 
                         <?php if (!empty($row['numContacto'])) { ?>
-                            <p><span class="font-medium text-gray-700">Número del contacto:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Número del contacto:
                                 </span><?php echo $row['numContacto'] ?></p>
                         <?php } ?>
                     </div>
                     <?php if (!empty($row['placasContacto']) && !empty($row['marcaContacto'])) { ?>
                         <span class="text-lg font-bold text-gray-800">Información del vehiculo</span>
-                        <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
+                        <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                             <?php if (!empty($row['placasContacto'])) { ?>
-                                <p><span class="font-medium text-gray-700">Placas: </span><?php echo $row['placasContacto']; ?>
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas: </span><?php echo $row['placasContacto']; ?>
                                 </p>
                             <?php } ?>
                             <?php if (!empty($row['marcaContacto'])) { ?>
-                                <p><span class="font-medium text-gray-700">Marca/modelo:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Marca/modelo:
                                     </span><?php echo $row['marcaContacto']; ?></p>
                             <?php } ?>
                         </div>
                     <?php } ?>
-                    <span class="text-lg font-bold text-gray-800">Información del ticket</span>
-                    <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
-                        <p><span class="font-medium text-gray-700">Fecha del ticket:
+                    <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del ticket</span>
+                    <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha del ticket:
                             </span><?php echo $row['fhticket']; ?></p>
-                        <p><span class="font-medium text-gray-700">Asunto: </span><?php echo $row['asunto']; ?></p>
+                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Asunto: </span><?php echo $row['asunto']; ?></p>
                         <?php if (!empty($row['descripcion'])) { ?>
-                            <p><span class="font-medium text-gray-700">Problema: </span><?php echo $row['descripcion']; ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Problema: </span><?php echo $row['descripcion']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['servicio'])) { ?>
-                            <p><span class="font-medium text-gray-700">Servicio: </span><?php echo $row['servicio']; ?></p>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Servicio: </span><?php echo $row['servicio']; ?></p>
                         <?php } ?>
                         <?php if (!empty($row['estado'])) { ?>
-                            <p><span class="font-medium text-gray-700">Estado: </span><?php getStatus($row['estado']); ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Estado: </span><?php getStatus($row['estado']); ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['domicilio'])) { ?>
-                            <p><span class="font-medium text-gray-700">Domicilio:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Domicilio:
                                 </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600" href="' . $row['domicilio'] . '">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['ciudad']) && !empty($row['domestado'])) { ?>
-                            <p><span class="font-medium text-gray-700">Ciudad y Estado:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Ciudad y Estado:
                                 </span><?php echo $row['ciudad']; ?>, <?php echo $row['domestado']; ?></p>
                         <?php } ?>
                         <?php if (!empty($row['codpostal'])) { ?>
-                            <p><span class="font-medium text-gray-700">Código Postal:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Código Postal:
                                 </span><?php echo $row['codpostal']; ?></p>
                         <?php } ?>
                         <?php if (!empty($row['evidencia'])) { ?>
-                            <p><span class="font-medium text-gray-700">Evidencia: </span><?php echo $row['evidencia']; ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia: </span><?php echo $row['evidencia']; ?>
                             </p>
                         <?php } ?>
                     </div>
-                    <span class="text-lg font-bold text-gray-800">Actividad del ticket</span>
-                    <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
-                        <p><span class="font-medium text-gray-700">Creado por: </span><?php echo $row['nombre']; ?></p>
+                    <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Actividad del ticket</span>
+                    <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Creado por: </span><?php echo $row['nombre']; ?></p>
                         <?php if (!empty($row['eliminadopor'])) { ?>
-                            <p><span class="font-medium text-gray-700">Eliminado por:
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Eliminado por:
                                 </span><?php echo $row['eliminadopor']; ?></p>
                         <?php } ?>
-                        <p><span class="font-medium text-gray-700">Fecha y hora de Creado:
+                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Creado:
                             </span><?php echo $row['fhticket']; ?></p>
                         <?php
                         switch ($row['estado']) {
                             case '2':
                                 ?>
-                                <p><span class="font-medium text-gray-700">Fecha y hora de Iniciando:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Iniciando:
                                     </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700">Comentarios de Iniciando:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Iniciando:
                                     </span><?php echo $row['txt_contestacion']; ?></p>
                                 <?php
                                 break;
                             case '3':
                                 ?>
-                                <p><span class="font-medium text-gray-700">Fecha y hora de Haciendo:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Haciendo:
                                     </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700">Comentarios de Haciendo:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Haciendo:
                                     </span><?php echo $row['txt_contestacion']; ?></p>
                                 <?php
                                 break;
                             case '4':
                                 ?>
-                                <p><span class="font-medium text-gray-700">Fecha y hora de Hecho:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Hecho:
                                     </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700">Comentarios de Hecho:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Hecho:
                                     </span><?php echo $row['txt_contestacion']; ?></p>
                                 <?php
                                 break;
                             case '5':
                                 ?>
-                                <p><span class="font-medium text-gray-700">Fecha y hora de Programado:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Programado:
                                     </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700">Comentarios de Programado:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Programado:
                                     </span><?php echo $row['txt_contestacion']; ?></p>
                                 <?php
                                 break;
                             case '6':
                                 ?>
-                                <p><span class="font-medium text-gray-700">Fecha y hora de Congelado:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
                                     </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700">Comentarios de Congelado:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Congelado:
                                     </span><?php echo $row['txt_contestacion']; ?></p>
                                 <?php
                                 break;
                             case '7':
                                 ?>
-                                <p><span class="font-medium text-gray-700">Fecha y hora de Eliminado:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
                                     </span><?php echo $row['fh_eliminacion']; ?></p>
-                                <p><span class="font-medium text-gray-700">Motivo de eliminación:
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Motivo de eliminación:
                                     </span><?php echo $row['motivo_eliminacion']; ?></p>
                                 <?php
                                 break;
                         }
                         ?>
                     </div>
-                    <span class="text-lg font-bold text-gray-800">Evidencias</span>
-                    <div class="mb-4 text-base text-gray-500 dark:text-gray-400">
+                    <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Evidencias</span>
+                    <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaRealizacion']) && empty($row['evidenciaTerminado'])): ?>
-                            <p>No se han adjuntado evidencias</p>
+                            <p class="dark:text-gray-200">No se han adjuntado evidencias</p>
                         <?php else: ?>
                             <div class="grid grid-cols-4 gap-4 text-center">
                                 <div>
                                     <?php if (!empty($row['evidencia'])): ?>
-                                        <p><span class="font-medium text-gray-700">Evidencia inicial:</span></p>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia inicial:</span></p>
                                         <div class="flex justify-center">
                                             <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidencia']); ?>"
                                                 alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
@@ -255,21 +255,21 @@ function getStatus($status)
                                 </div>
                                 <div>
                                     <?php if (!empty($row['evidenciaAbierto'])): ?>
-                                        <p><span class="font-medium text-gray-700">Evidencia de inicio:</span></p>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de inicio:</span></p>
                                         <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
                                             alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
                                     <?php endif; ?>
                                 </div>
                                 <div>
                                     <?php if (!empty($row['evidenciaRealizacion'])): ?>
-                                        <p><span class="font-medium text-gray-700">Evidencia de realización:</span></p>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de realización:</span></p>
                                         <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaRealizacion']); ?>"
                                             alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
                                     <?php endif; ?>
                                 </div>
                                 <div>
                                     <?php if (!empty($row['evidenciaTerminado'])): ?>
-                                        <p><span class="font-medium text-gray-700">Evidencia de terminado:</span></p>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de terminado:</span></p>
                                         <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaTerminado']); ?>"
                                             alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
                                     <?php endif; ?>
@@ -278,8 +278,8 @@ function getStatus($status)
                         <?php endif; ?>
                     </div>
                     <?php if ($row['estado'] == 4): ?>
-                        <span class="text-lg font-bold text-gray-800">Información del formulario de finalización</span>
-                        <div class="mb-6 text-base text-gray-500 dark:text-gray-400">
+                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de finalización</span>
+                        <div class="mb-6 text-base text-gray-500 dark:text-gray-300">
                             <?php if (!empty($row['token'])): ?>
                                 <p>No se a contestado el formulario de finalización</p>
                             <?php else: ?>

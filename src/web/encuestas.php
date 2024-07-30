@@ -95,7 +95,7 @@ include '../components/sidebar.php';
                             </div>
                             <input type="text" id="table-search-tickets"
                                 class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Buscar ticket">
+                                placeholder="Buscar encuesta">
                         </div>
                     </div>
                 </div>
@@ -105,12 +105,12 @@ include '../components/sidebar.php';
                 $tipo = $_SESSION['tipo'];
 
                 if ($tipo == 'tecnico') {
-                    $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '4') AND asignado = ?");
+                    $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' AND asignado = ?");
                     $row = $stmt->bind_param("i", $userId);
                     $stmt->execute();
                     $row = $stmt->get_result()->fetch_row();
                 } else {
-                    $stmt = $conn->query("SELECT COUNT(*) FROM tbticket WHERE estado = '0' || estado = '4'");
+                    $stmt = $conn->query("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '4') AND token != ''");
                     $row = $stmt->fetch_row();
                 }
 
@@ -121,13 +121,13 @@ include '../components/sidebar.php';
                 $offset = ($paginaActual - 1) * $registrosPorPagina;
 
                 if ($tipo == 'tecnico') {
-                    $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '4') AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                    $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("i", $userId);
                     $stmt->execute();
                     $resultado = $stmt->get_result();
                 } else {
-                    $sql = "SELECT * FROM tbticket WHERE estado = '0' || estado = '4' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                    $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
                     $resultado = $conn->query($sql);
                 }
 

@@ -386,7 +386,7 @@ include '../components/modal-revision.php';
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="../procesos/proceso_ticket.js"></script>
+    <!-- <script src="../procesos/proceso_ticket.js"></script> -->
     <!-- <script src="../../assets/js/script.js"></script> -->
     <script src="../../assets/js/redir.js"></script>
     <script src="../../assets/js/nuevo.js"></script>

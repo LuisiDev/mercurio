@@ -176,8 +176,8 @@ include '../components/sidebar.php';
 
                 <div class="relative overflow-x-auto sm:rounded-lg">
 
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-400">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     No. de ticket
@@ -299,7 +299,7 @@ include '../components/sidebar.php';
                             $i = 0;
                             while ($fila = $resultado->fetch_assoc()): ?>
                                 <?php include '../components/modal-baja-ticket.php'; ?>
-                                <tr class="bg-white border-b dark:bg-gray-700 dark:border-gray-800">
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                     <th scope="row"
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <div class="flex items-center">
@@ -342,7 +342,7 @@ include '../components/sidebar.php';
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <?php if ($fila['estado'] == '4' || $fila['estado'] == '7'): ?>
+                                        <?php if ($fila['estado'] == '4' || $fila['estado'] == '7' || $tipo == 'comercializacion'): ?>
                                             <button type="button"
                                                 onclick="window.location.href = 'detalles?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -355,7 +355,7 @@ include '../components/sidebar.php';
                                                 Detalles
                                             </button>
                                         <?php endif; ?>
-                                        <?php if ($fila['estado'] == '1' && $fila['asignado'] == null): ?>
+                                        <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'comercializacion'): ?>
                                             <button type="button"
                                                 onclick="window.location.href = 'asignar?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
@@ -368,7 +368,7 @@ include '../components/sidebar.php';
                                                 Asignar
                                             </button>
                                         <?php endif; ?>
-                                        <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '5' || $fila['estado'] == '6') && isset($fila['asignado']) && !empty($fila['asignado'])): ?>
+                                        <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '5' || $fila['estado'] == '6') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
                                             <button type="button"
                                                 onclick="window.location.href = 'atender?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2">
@@ -380,7 +380,7 @@ include '../components/sidebar.php';
                                                 </svg>
                                                 Atender</button>
                                         <?php endif; ?>
-                                        <?php if ($fila['estado'] == '1' && $fila['asignado'] == null): ?>
+                                        <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'coordinador'): ?>
                                             <button type="button"
                                                 onclick="window.location.href = 'editar?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600 mb-2">
@@ -392,7 +392,11 @@ include '../components/sidebar.php';
                                                 </svg>
                                                 Editar</button>
                                         <?php endif; ?>
-                                        <?php if ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' and $tipo != 'tecnico'): ?>
+                                        <?php if (
+                                            ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7') &&
+                                            $tipo != 'comercializacion' &&
+                                            ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '4'))
+                                        ): ?>
                                             <button type="button" data-modal-target="popup-confirmation"
                                                 data-modal-toggle="popup-confirmation"
                                                 data-id="<?php echo $fila['idTicket']; ?>"

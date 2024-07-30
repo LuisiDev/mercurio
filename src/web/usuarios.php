@@ -74,7 +74,7 @@ include '../components/modal-baja-usuario.php';
                             </div>
                             <input type="text" id="table-search-tickets"
                                 class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Buscar ticket">
+                                placeholder="Buscar usuario">
                         </div>
                     </div>
                     <div class="flex space-x-2 justify-end">
@@ -108,7 +108,7 @@ include '../components/modal-baja-usuario.php';
                 <div class="relative overflow-x-auto sm:rounded-lg">
 
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-900 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     No. de usuario
@@ -221,32 +221,36 @@ include '../components/modal-baja-usuario.php';
                                                 </button>
                                             </div>
                                             <div>
-                                                <button type="button" data-modal-target="popup-user-edit"
-                                                    data-modal-toggle="popup-user-edit"
-                                                    data-id="<?php echo $fila['userId']; ?>"
-                                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600">
-                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        viewBox="0 0 22 22">
-                                                        <path fill-rule="evenodd"
-                                                            d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                    Editar</button>
+                                                <?php if ($tipo != 'coordinador'): ?>
+                                                    <button type="button" data-modal-target="popup-user-edit"
+                                                        data-modal-toggle="popup-user-edit"
+                                                        data-id="<?php echo $fila['userId']; ?>"
+                                                        class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600">
+                                                        <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                            viewBox="0 0 22 22">
+                                                            <path fill-rule="evenodd"
+                                                                d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                        Editar</button>
+                                                <?php endif; ?>
                                             </div>
                                             <div>
-                                                <button type="button" data-modal-target="popup-user-delete"
-                                                    data-modal-toggle="popup-user-delete"
-                                                    data-id="<?php echo $fila['userId']; ?>"
-                                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        viewBox="0 0 22 22">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                    Eliminar</button>
+                                                <?php if ($tipo != 'coordinador'): ?>
+                                                    <button type="button" data-modal-target="popup-user-delete"
+                                                        data-modal-toggle="popup-user-delete"
+                                                        data-id="<?php echo $fila['userId']; ?>"
+                                                        class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                                        <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                            viewBox="0 0 22 22">
+                                                            <path fill-rule="evenodd"
+                                                                d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                        Eliminar</button>
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </td>
