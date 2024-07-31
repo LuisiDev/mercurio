@@ -19,6 +19,28 @@ if (isset($_GET['id'])) {
     echo "<script>window.location.href = 'gestion.php';</script>";
 }
 
+function traducirFecha($fhticket)
+{
+    $dia = date('d', strtotime($fhticket));
+    $mes = date('m', strtotime($fhticket));
+    $hora = date('h:i', strtotime($fhticket));
+    $am_pm = strtoupper(date('a', strtotime($fhticket)));
+    $meses = array(
+        '01' => 'Ene',
+        '02' => 'Feb',
+        '03' => 'Mar',
+        '04' => 'Abr',
+        '05' => 'May',
+        '06' => 'Jun',
+        '07' => 'Jul',
+        '08' => 'Ago',
+        '09' => 'Sep',
+        '10' => 'Oct',
+        '11' => 'Nov',
+        '12' => 'Dic'
+    );
+    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fhticket));
+}
 function getStatus($status)
 {
     switch ($status) {
@@ -100,7 +122,7 @@ function getStatus($status)
                         <strong class="semi-bold text-gray-900 md:text-xl dark:text-gray-100">Información del ticket
                             #<?php echo $row['idTicket'] ?> - <?php echo $row['asunto'] ?></strong>
                     </div>
-                    <span class="text-lg font-bold text-gray-800">Información del cliente</span>
+                    <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del cliente</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-500 dark:text-gray-200">Número del cliente:
                             </span><?php echo $row['numCliente']; ?></p>
@@ -111,12 +133,13 @@ function getStatus($status)
                         <?php } ?>
 
                         <?php if (!empty($row['imeiCliente'])) { ?>
-                            <p><span class="font-medium text-gray-700 dark:text-gray-200">IMEI: </span><?php echo $row['imeiCliente']; ?></p>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">IMEI:
+                                </span><?php echo $row['imeiCliente']; ?></p>
                         <?php } ?>
 
                         <?php if (!empty($row['fhRevision'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha de revisión:
-                                </span><?php echo $row['fhRevision'] ?></p>
+                                </span><?php echo traducirFecha($row['fhRevision']); ?></p>
                         <?php } ?>
 
                         <?php if (!empty($row['nomContacto'])) { ?>
@@ -126,14 +149,18 @@ function getStatus($status)
 
                         <?php if (!empty($row['numContacto'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Número del contacto:
-                                </span><?php echo $row['numContacto'] ?></p>
+                                </span>
+                                <a href="tel:<?php echo $row['numContacto'] ?>"
+                                    class="text-blue-500 hover:underline hover:text-blue-600"><?php echo $row['numContacto'] ?></a>
+                            </p>
                         <?php } ?>
                     </div>
                     <?php if (!empty($row['placasContacto']) && !empty($row['marcaContacto'])) { ?>
-                        <span class="text-lg font-bold text-gray-800">Información del vehiculo</span>
+                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del vehiculo</span>
                         <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                             <?php if (!empty($row['placasContacto'])) { ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas: </span><?php echo $row['placasContacto']; ?>
+                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas:
+                                    </span><?php echo $row['placasContacto']; ?>
                                 </p>
                             <?php } ?>
                             <?php if (!empty($row['marcaContacto'])) { ?>
@@ -145,22 +172,26 @@ function getStatus($status)
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del ticket</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha del ticket:
-                            </span><?php echo $row['fhticket']; ?></p>
-                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Asunto: </span><?php echo $row['asunto']; ?></p>
+                            </span><?php echo traducirFecha($row['fhticket']); ?></p>
+                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Asunto:
+                            </span><?php echo $row['asunto']; ?></p>
                         <?php if (!empty($row['descripcion'])) { ?>
-                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Problema: </span><?php echo $row['descripcion']; ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Problema:
+                                </span><?php echo $row['descripcion']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['servicio'])) { ?>
-                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Servicio: </span><?php echo $row['servicio']; ?></p>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Servicio:
+                                </span><?php echo $row['servicio']; ?></p>
                         <?php } ?>
                         <?php if (!empty($row['estado'])) { ?>
-                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Estado: </span><?php getStatus($row['estado']); ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Estado:
+                                </span><?php getStatus($row['estado']); ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['domicilio'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Domicilio:
-                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600" href="' . $row['domicilio'] . '">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
+                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600" href="' . $row['domicilio'] . '" target="_blank">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['ciudad']) && !empty($row['domestado'])) { ?>
@@ -172,19 +203,21 @@ function getStatus($status)
                                 </span><?php echo $row['codpostal']; ?></p>
                         <?php } ?>
                         <?php if (!empty($row['evidencia'])) { ?>
-                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia: </span><?php echo $row['evidencia']; ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia:
+                                </span><?php echo $row['evidencia']; ?>
                             </p>
                         <?php } ?>
                     </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Actividad del ticket</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
-                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Creado por: </span><?php echo $row['nombre']; ?></p>
+                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Creado por:
+                            </span><?php echo $row['nombre']; ?></p>
                         <?php if (!empty($row['eliminadopor'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Eliminado por:
                                 </span><?php echo $row['eliminadopor']; ?></p>
                         <?php } ?>
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Creado:
-                            </span><?php echo $row['fhticket']; ?></p>
+                            </span><?php echo traducirFecha($row['fhticket']); ?></p>
                         <?php
                         switch ($row['estado']) {
                             case '2':
@@ -240,13 +273,14 @@ function getStatus($status)
                     </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Evidencias</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
-                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaRealizacion']) && empty($row['evidenciaTerminado'])): ?>
+                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaHaciendo']) && empty($row['evidenciaHecho'])): ?>
                             <p class="dark:text-gray-200">No se han adjuntado evidencias</p>
                         <?php else: ?>
-                            <div class="grid grid-cols-4 gap-4 text-center">
+                            <div class="flex justify-start space-x-6 text-center">
                                 <div>
                                     <?php if (!empty($row['evidencia'])): ?>
-                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia inicial:</span></p>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia inicial:</span>
+                                        </p>
                                         <div class="flex justify-center">
                                             <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidencia']); ?>"
                                                 alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
@@ -255,30 +289,40 @@ function getStatus($status)
                                 </div>
                                 <div>
                                     <?php if (!empty($row['evidenciaAbierto'])): ?>
-                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de inicio:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
-                                            alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
+                                                inicio:</span></p>
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaRealizacion'])): ?>
-                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de realización:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaRealizacion']); ?>"
-                                            alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                    <?php if (!empty($row['evidenciaHaciendo'])): ?>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
+                                                realización:</span></p>
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHaciendo']); ?>"
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaTerminado'])): ?>
-                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de terminado:</span></p>
-                                        <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaTerminado']); ?>"
-                                            alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                    <?php if (!empty($row['evidenciaHecho'])): ?>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
+                                                terminado:</span></p>
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHecho']); ?>"
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
                         <?php endif; ?>
                     </div>
                     <?php if ($row['estado'] == 4): ?>
-                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de finalización</span>
+                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de
+                            finalización</span>
                         <div class="mb-6 text-base text-gray-500 dark:text-gray-300">
                             <?php if (!empty($row['token'])): ?>
                                 <p>No se a contestado el formulario de finalización</p>
