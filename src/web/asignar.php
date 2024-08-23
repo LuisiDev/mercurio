@@ -283,7 +283,8 @@ function getStatus($status)
                                         </p>
                                         <div class="flex justify-center">
                                             <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidencia']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                                onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -293,7 +294,8 @@ function getStatus($status)
                                                 inicio:</span></p>
                                         <div class="flex justify-center">
                                             <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                                onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -303,7 +305,8 @@ function getStatus($status)
                                                 realización:</span></p>
                                         <div class="flex justify-center">
                                             <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHaciendo']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                                onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -313,7 +316,8 @@ function getStatus($status)
                                                 terminado:</span></p>
                                         <div class="flex justify-center">
                                             <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHecho']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg">
+                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                                onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -392,6 +396,34 @@ function getStatus($status)
 
     <script src="../../assets/js/redir.js"></script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script>
+        function showImageEvidence(element) {
+            var imageUrl = element.src;
+            var overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = '9999';
+
+            var image = document.createElement('img');
+            image.src = imageUrl;
+            image.style.maxWidth = '90%';
+            image.style.maxHeight = '90%';
+
+            overlay.appendChild(image);
+            document.body.appendChild(overlay);
+
+            overlay.addEventListener('click', function () {
+                document.body.removeChild(overlay);
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -6,9 +6,7 @@ include '../configuration/connection.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require '../../node_modules/phpmailer/src/Exception.php';
-require '../../node_modules/phpmailer/src/PHPMailer.php';
-require '../../node_modules/phpmailer/src/SMTP.php';
+require '../../vendor/autoload.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     date_default_timezone_set("America/Chihuahua");

@@ -240,10 +240,10 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
 
                         <div class="py-6" id="chart-<?php echo $tecnicoData['userId']; ?>"></div>
 
-                        <!-- <div
+                        <div
                             class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
                             <div class="flex justify-between items-center pt-5">
-                                <a href="#"
+                                <a href="reporte-tecnico?id=<?php echo $tecnicoData['userId']; ?>"
                                     class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
                                     Ver reporte completo
                                     <svg class="w-2.5 h-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -253,7 +253,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                     </svg>
                                 </a>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                     <script>
                         document.addEventListener('DOMContentLoaded', function () {
@@ -383,7 +383,8 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                         </div>
                         <div class="relative overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+                                <thead
+                                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">
                                             No. de ticket
@@ -463,7 +464,8 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                         </div>
                         <div class="relative overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+                                <thead
+                                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">
                                             No. de ticket
@@ -486,9 +488,15 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                         ?>
                                         <tr class="border-b border-gray-200 dark:border-gray-700">
                                             <td class="px-6 py-3">
-                                                <a href="asignar?id=<?php echo $row['idTicket']; ?>">
-                                                    <?php echo $row['idTicket']; ?>
-                                                </a>
+                                                <?php if ($tipo == 'admin' || $tipo == 'coordinador'): ?>
+                                                    <a href="asignar?id=<?php echo $row['idTicket']; ?>">
+                                                        <?php echo $row['idTicket']; ?>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <a href="detalles?id=<?php echo $row['idTicket']; ?>">
+                                                        <?php echo $row['idTicket']; ?>
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
                                             <td class="px-6 py-3">
                                                 <?php echo $row['numCliente']; ?>

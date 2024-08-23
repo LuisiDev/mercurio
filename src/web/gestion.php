@@ -486,14 +486,6 @@ include '../components/sidebar.php';
             window.location.href = 'tickets-eliminados';
         }
     </script>
-    <script>
-        document.getElementById('table-search-tickets').addEventListener('keyup', function (e) {
-            const value = e.target.value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(row => {
-                row.style.display = [...row.children].find(cell => cell.textContent.toLowerCase().includes(value)) ? '' : 'none';
-            });
-        });
-    </script>
 </body>
 
 </html>

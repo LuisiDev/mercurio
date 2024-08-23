@@ -9,5 +9,8 @@ module.exports = {
     require("flowbite/plugin")({
       charts: true,
     }),
+    require("flowbite/plugin")({
+      datatables: true,
+    }),
   ],
 };

@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('ssi', $prioridad, $asignado, $id);
     $stmt->execute();
-    
+
     if ($stmt->affected_rows > 0) {
         echo "<script>alert('Ticket asignado correctamente');</script>";
         echo "<script>window.location.href = '../web/gestion.php';</script>";

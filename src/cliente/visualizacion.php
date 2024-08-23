@@ -36,6 +36,10 @@ if (isset($_GET['token'])) {
 
 function traducirFecha($fhticket)
 {
+    if ($fhticket === null) {
+        return 'Fecha no disponible';
+    }
+
     $dia = date('d', strtotime($fhticket));
     $mes = date('m', strtotime($fhticket));
     $hora = date('h:i', strtotime($fhticket));

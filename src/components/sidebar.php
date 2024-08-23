@@ -310,7 +310,7 @@ function userType($type)
          </li>
       </ul>
    </div>
-   <div class="text-center mb-3 text-xs text-gray-500 dark:text-gray-400 mt-4">Versión 2.0.0</div>
+   <div class="text-center mb-3 text-xs text-gray-500 dark:text-gray-400 mt-4">Versión 2.0.1</div>
 </aside>
 
 <div id="dropdown-notifications"
