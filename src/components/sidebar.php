@@ -1,90 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['user'])) {
-   header("Location: ../index.php");
-   exit();
-}
-
-include '../configuration/connection.php';
-
-$tipo = $_SESSION['tipo'];
-$userId = $_SESSION['userId'];
-
-if ($tipo == 'tecnico') {
-   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE asignado = ? AND estado <> 0";
-   $stmt = $conn->prepare($sql);
-   $stmt->bind_param('i', $userId);
-   $stmt->execute();
-   $resultado = $stmt->get_result();
-   $fila = $resultado->fetch_assoc();
-   $totalTickets = $fila['total'];
-} else {
-   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE estado <> 0";
-   $resultado = $conn->query($sql);
-   $fila = $resultado->fetch_assoc();
-   $totalTickets = $fila['total'];
-}
-
-if ($tipo == 'tecnico') {
-   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' AND asignado = ?";
-   $stmt = $conn->prepare($sql);
-   $stmt->bind_param('i', $userId);
-   $stmt->execute();
-   $resultado = $stmt->get_result();
-   $fila = $resultado->fetch_assoc();
-   $totalEncuestas = $fila['total'];
-} else {
-   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE (estado = '0' || estado = '4') AND token != ''";
-   $resultado = $conn->query($sql);
-   $fila = $resultado->fetch_assoc();
-   $totalEncuestas = $fila['total'];
-}
-
-$sql = "SELECT userId, nombre, apellido, imagen, tipo FROM users";
-$stmt = $conn->prepare($sql);
-
-if (!$stmt) {
-   die("Error al preparar: (" . $stmt->errno . ") " . $stmt->error);
-}
-
-if (!$stmt->execute()) {
-   die("Error al ejecutar: (" . $stmt->errno . ") " . $stmt->error);
-}
-
-$userResult = $stmt->get_result();
-
-if (!$userResult) {
-   die("Error al obtener resultados (" . $stmt->errno . ") " . $stmt->error);
-}
-
-function userType($type)
-{
-   switch ($type) {
-      case "admin":
-         echo 'Administrador';
-         break;
-      case "coordinador":
-         echo 'Coordinador';
-         break;
-      case "comercializacion":
-         echo 'Comercialización';
-         break;
-      case "acomercial":
-         echo 'Asistente de comercialización';
-         break;
-      case "tecnico":
-         echo 'Técnico';
-         break;
-   }
-}
-
-// $notificationSql = "SELECT * FROM notificaciones WHERE userId = ? ORDER BY created_at DESC";
-// $notificationStmt = $conn->prepare($notificationSql);
-// $notificationStmt->bind_param('i', $userId);
-// $notificationStmt->execute();
-// $notificationResult = $notificationStmt->get_result();
-?>
-
 <nav class="fixed top-0 z-50 w-full bg-blue-700 dark:bg-gray-900">
    <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
@@ -100,7 +13,7 @@ function userType($type)
                   </path>
                </svg>
             </button>
-            <a href="#" class="flex ms-2 md:me-24">
+            <a href="../web/dashboard" class="flex ms-2 md:me-24">
                <img src="../../assets/img/logoATL_w.webp" class="h-8 me-3" alt="Mercurio Logo">
                <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"></span>
             </a>
@@ -195,7 +108,7 @@ function userType($type)
                <span class="ms-3">Dashboard</span>
             </a>
          </li>
-         <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "acomercial" || $_SESSION['tipo'] == "comercializacion"): ?>
+         <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "acomercial" || $_SESSION['tipo'] == "comercializacion" || $_SESSION['tipo'] == "coordinador"): ?>
             <li>
                <a href="nuevo"
                   class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
@@ -251,19 +164,58 @@ function userType($type)
             </a>
          </li>
          <li>
-            <a href="encuestas"
-               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
+            <button type="button" href="encuestas"
+               class="flex items-center w-full p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+               aria-controls="dropdown-encuestas" data-collapse-toggle="dropdown-encuestas"
+               data-dropdown-id="dropdown-encuestas">
                <svg
-                  class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                   aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                   <path fill-rule="evenodd"
-                     d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z"
+                     d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Zm2 0V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm-1 9a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2Zm2-5a1 1 0 0 1 1 1v6a1 1 0 1 1-2 0v-6a1 1 0 0 1 1-1Zm4 4a1 1 0 1 0-2 0v3a1 1 0 1 0 2 0v-3Z"
                      clip-rule="evenodd" />
                </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Encuestas pendientes</span>
-               <span
-                  class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300"><?php echo $totalEncuestas; ?></span>
-            </a>
+               <span class="flex-1 ml-3 text-left rtl:text-right whitespace-nowrap">Encuestas</span>
+               <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 10 6">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                     d="m1 1 4 4 4-4" />
+               </svg>
+            </button>
+            <ul id="dropdown-encuestas" class="hidden py-2 space-y-2">
+               <li class="group transition duration-300 transform hover:translate-x-2">
+                  <a href="encuestas-pendientes"
+                     class="flex items-center w-full p-2 ml-3 text-left text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                     <svg
+                        class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                           d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z"
+                           clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                           d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z"
+                           clip-rule="evenodd" />
+                     </svg>
+                     <span class="ml-2">Pendientes</span>
+                     <span
+                        class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300"><?php echo $totalEncuestas; ?></span>
+                  </a>
+               </li>
+               <li class="group transition duration-300 transform hover:translate-x-2">
+                  <a href="encuestas-contestadas"
+                     class="flex items-center w-full p-2 ml-3 text-left text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                     <svg
+                        class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
+                        <path fill-rule="evenodd"
+                           d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
+                           clip-rule="evenodd" />
+                     </svg>
+                     <span class="ml-2">Contestadas</span>
+                  </a>
+               </li>
+            </ul>
          </li>
          <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "coordinador"): ?>
             <li>
@@ -310,7 +262,7 @@ function userType($type)
          </li>
       </ul>
    </div>
-   <div class="text-center mb-3 text-xs text-gray-500 dark:text-gray-400 mt-4">Versión 2.0.1</div>
+   <div class="text-center mb-3 text-xs text-gray-500 dark:text-gray-400 mt-4">Versión 2.0.3.3</div>
 </aside>
 
 <div id="dropdown-notifications"
@@ -322,7 +274,7 @@ function userType($type)
    <div class="divide-y divide-gray-100 dark:divide-gray-500">
       <a href="#" class="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">
          <div class="flex-shrink-0">
-            <img class="rounded-full w-11 h-11" src="..." alt="Imagen de usuario">
+            <img class="rounded-full w-11 h-11" src="../../assets/imgUsers/default.png" alt="Imagen de usuario">
             <div
                class="absolute flex items-center justify-center w-5 h-5 ms-6 -mt-5 bg-blue-600 border border-white rounded-full dark:border-gray-800">
                <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"

@@ -68,6 +68,7 @@ if (isset($_GET['id'])) {
             </div>
             <form action="../procesos/ticket-delete.php" method="POST" id="formEliminarTicket">
                 <input type="hidden" name="idTicket" id="idTicketHidden">
+                <input type="hidden" name="eliminadopor" value="<?php echo $_SESSION['nombre'] . ' ' . $_SESSION['apellido']; ?>">
                 <div class="grid gap-4 grid-cols-1">
                     <div class="p-4">
                         <label for="motivo_eliminacion"

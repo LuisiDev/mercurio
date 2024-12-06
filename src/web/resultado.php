@@ -1,5 +1,5 @@
 <?php
-include '../components/sidebar.php';
+include '../configuration/conn-session.php';
 
 if (isset($_GET['id'])) {
     $idTicket = $_GET['id'];
@@ -18,4 +18,3 @@ if (isset($_GET['id'])) {
     echo "<script>alert('No se encontró el ticket');</script>";
     echo "<script>window.location.href = 'gestion.php';</script>";
 }
-?>

@@ -8,7 +8,7 @@ if ($conn->connect_error) {
 
 if (isset($_POST['user']) && isset($_POST['password'])) {
     $usuario = $_POST['user'];
-    $contrasena = $_POST['password']; // o usar SHA1($_POST['password'])
+    $contrasena = $_POST['password']; // o usar SHA1($_POST['password']) (No recomendable, pero funcional para el uso únicamente de pruebas)
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE user = ?");
     $stmt->bind_param("s", $usuario);

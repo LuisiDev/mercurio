@@ -21,7 +21,7 @@ if (isset($_GET['token'])) {
         $stmt->fetch();
     } else {
         $_SESSION['error_message'] = 'Token inválido';
-        header('Location: ../error/no-valido');
+        header('Location: ./error/expirado');
         exit();
     }
 
@@ -30,14 +30,58 @@ if (isset($_GET['token'])) {
 
 } else {
     $_SESSION['error_message'] = 'Token no proporcionado';
-    header('Location: ../error/no-valido');
+    header('Location: ./error/no-valido');
     exit();
+}
+
+$current_status = $estado;
+
+$statuses = [
+    1 => 'bg-blue-700', // Creado
+    2 => 'bg-blue-700', // Iniciando
+    3 => 'bg-blue-700', // Realizando
+    4 => 'bg-blue-700', // Hecho
+    // 5 => 'bg-purple-500', // Programado
+    // 6 => 'bg-orange-500', // Congelado
+    // 7 => 'bg-black-500', // Cancelado
+];
+
+// Función para determinar la clase del estado
+function getStatusClass($status, $current_status, $asignado)
+{
+    global $statuses;
+    if ($status == 1 && $asignado != "") {
+        return 'bg-blue-700'; // Asignado
+    }
+    return $status <= $current_status ? $statuses[$status] : 'bg-gray-200';
+}
+
+// Función para obtener la descripción del estado
+function getStatusDescription($status, $asignado)
+{
+    switch ($status) {
+        case 1:
+            if ($asignado != "") {
+                return getAsignado($asignado) . " fue asignado para atender el problema. Esperando inicio de trabajo.";
+            }
+            return "Ticket creado. Esperando asignación del ticket.";
+        case 2:
+            return "Trabajo en inicio. El técnico asignado llegó a la unidad y se encuentra revisando la unidad de trabajo.";
+        case 3:
+            return "Trabajo en proceso. El técnico se encuentra realizando el trabajo.";
+        case 4:
+            return "El trabajo ha concluido, en espera del formulario de finalización.";
+        // case 5:
+        //     return "El ticket se encuentra modo lol.";
+        // default:
+        //     return "Estado desconocido.";
+    }
 }
 
 function traducirFecha($fhticket)
 {
     if ($fhticket === null) {
-        return 'Fecha no disponible';
+        return 'Actividad pendiente de realizar';
     }
 
     $dia = date('d', strtotime($fhticket));
@@ -59,6 +103,33 @@ function traducirFecha($fhticket)
         '12' => 'Dic'
     );
     return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fhticket));
+}
+
+function getStatus($status)
+{
+    switch ($status) {
+        case "1":
+            echo 'Creado';
+            break;
+        case "2":
+            echo 'Iniciado';
+            break;
+        case "3":
+            echo 'Realizando';
+            break;
+        case "4":
+            echo 'Hecho';
+            break;
+        case "5":
+            echo 'Programado';
+            break;
+        case "6":
+            echo 'Congelado';
+            break;
+        case "7":
+            echo 'Cancelado';
+            break;
+    }
 }
 
 function getAsignado($asignado)
@@ -97,21 +168,23 @@ function getAsignado($asignado)
     <title>Mercurio | Visualización de ticket</title>
 </head>
 
-<nav class="bg-blue-700 border-gray-200">
-    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse mx-auto">
-            <img src="../../assets/img/logoATL_w.webp" alt="Logo ATLANTIDA">
-        </a>
-    </div>
-</nav>
+<body class="bg-gray-100 overscroll-none">
 
-<body class="bg-gray-100">
+    <nav class="bg-blue-600 fixed w-full z-20 top-0 start-0">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse mx-auto">
+                <img class="w-40" src="../../assets/img/logoATL_w.webp" alt="Logo ATLANTIDA">
+            </a>
+        </div>
+    </nav>
+
     <div class="p-4">
         <div class="lg:pt-4">
-            <div class="w-full bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+            <div class="w-full bg-white border border-gray-200 rounded-lg shadow sm:p-8 mt-16">
                 <div class="p-5 mx-auto">
                     <div class="text-medium w-full mb-6">
-                        <h2 class="text-2xl font-bold mb-2">Visualización de ticket #<?php echo $idTicket; ?> -
+                        <h2 class="text-2xl font-bold mb-4 text-center md:text-left">Visualización de ticket
+                            #<?php echo $idTicket; ?> -
                             <?php echo $asunto; ?>
                         </h2>
                         <p class="text-gray-600">A continuación, se verá el estado del ticket por el que pasa,
@@ -120,177 +193,220 @@ function getAsignado($asignado)
                     </div>
                     <div class="mb-6">
                         <ol class="items-center sm:flex">
-                            <li class="relative mb-6 sm:mb-0">
-                                <div class="flex items-center">
-                                    <div
-                                        class="z-10 flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0">
-                                        <svg class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
-                                        </svg>
+                            <?php foreach ($statuses as $status => $colorClass): ?>
+                                <li class="relative mb-6 sm:mb-0" id="status<?= $status ?>">
+                                    <div class="flex items-center">
+                                        <div
+                                            class="z-10 flex items-center justify-center w-6 h-6 <?= getStatusClass($status, $current_status, $asignado) ?> rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0">
+                                            <svg class="w-2.5 h-2.5 text-white" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                <path
+                                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                                            </svg>
+                                        </div>
+                                        <div
+                                            class="hidden sm:flex w-full <?= getStatusClass($status, $current_status, $asignado) ?> h-0.5 dark:bg-gray-700">
+                                        </div>
                                     </div>
-                                    <div class="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
-                                </div>
-                                <div class="mt-3 sm:pe-8">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Generado</h3>
-                                    <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fhticket); ?></time>
-                                    <p class="text-base font-normal text-gray-500 dark:text-gray-400">Ticket
-                                        creado.
-                                        Esperando asignación del ticket.</p>
-                                </div>
-                            </li>
-                            <li class="relative mb-6 sm:mb-0">
-                                <div class="flex items-center">
-                                    <div
-                                        class="z-10 flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0">
-                                        <svg class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
+                                    <div class="mt-3 sm:pr-8">
+                                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                            <?php
+                                            if ($status == 1 && $asignado != "") {
+                                                echo 'Asignado';
+                                            } else if ($status == 1) {
+                                                echo 'Creado';
+                                            } else if ($status == 2) {
+                                                echo 'Inicio de trabajo';
+                                            } else if ($status == 3) {
+                                                echo 'Realizando trabajo';
+                                            } else if ($status == 4) {
+                                                echo 'Trabajo finalizado';
+                                            } else {
+                                                echo array_search($status, array_keys($statuses));
+                                            }
+                                            ?>
+                                        </h3>
+                                        <time
+                                            class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?= traducirFecha($fh_contestacion) ?></time>
+                                        <p class="text-base font-normal text-gray-500 dark:text-gray-400">
+                                            <?= getStatusDescription($status, $asignado) ?>
+                                        </p>
                                     </div>
-                                    <div class="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
-                                </div>
-                                <div class="mt-3 sm:pe-8">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Asignado</h3>
-                                    <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
-                                    <p class="text-base font-normal text-gray-500 dark:text-gray-400">Ticket
-                                        asignado.
-                                        Ticket asignado a <?php getAsignado($asignado); ?>, esperando inicio de trabajo.
-                                    </p>
-                                </div>
-                            </li>
-                            <li class="relative mb-6 sm:mb-0">
-                                <div class="flex items-center">
-                                    <div
-                                        class="z-10 flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0">
-                                        <svg class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M11.906 1.994a8.002 8.002 0 0 1 8.09 8.421 7.996 7.996 0 0 1-1.297 3.957.996.996 0 0 1-.133.204l-.108.129c-.178.243-.37.477-.573.699l-5.112 6.224a1 1 0 0 1-1.545 0L5.982 15.26l-.002-.002a18.146 18.146 0 0 1-.309-.38l-.133-.163a.999.999 0 0 1-.13-.202 7.995 7.995 0 0 1 6.498-12.518ZM15 9.997a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div class="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
-                                </div>
-                                <div class="mt-3 sm:pe-8">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Inicio de
-                                        trabajo
-                                    </h3>
-                                    <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
-                                    <p class="text-base font-normal text-gray-500 dark:text-gray-400">Trabajo en
-                                        inicio.
-                                        El técnico llego a la unidad y se encuentra revisando la unidad de
-                                        trabajo.</p>
-                                </div>
-                            </li>
-                            <li class="relative mb-6 sm:mb-0">
-                                <div class="flex items-center">
-                                    <div
-                                        class="z-10 flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0">
-                                        <svg class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M12.356 3.066a1 1 0 0 0-.712 0l-7 2.666A1 1 0 0 0 4 6.68a17.695 17.695 0 0 0 2.022 7.98 17.405 17.405 0 0 0 5.403 6.158 1 1 0 0 0 1.15 0 17.406 17.406 0 0 0 5.402-6.157A17.694 17.694 0 0 0 20 6.68a1 1 0 0 0-.644-.949l-7-2.666Z" />
-                                        </svg>
-                                    </div>
-                                    <div class="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
-                                </div>
-                                <div class="mt-3 sm:pe-8">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Realizando
-                                        trabajo
-                                    </h3>
-                                    <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
-                                    <p class="text-base font-normal text-gray-500 dark:text-gray-400">Trabajo en
-                                        proceso. El técnico se encuentra realizando el trabajo.</p>
-                                </div>
-                            </li>
-                            <li class="relative mb-6 sm:mb-0">
-                                <div class="flex items-center">
-                                    <div
-                                        class="z-10 flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0">
-                                        <svg class="w-2.5 h-2.5 text-blue-800 dark:text-blue-300" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M11.644 3.066a1 1 0 0 1 .712 0l7 2.666A1 1 0 0 1 20 6.68a17.694 17.694 0 0 1-2.023 7.98 17.406 17.406 0 0 1-5.402 6.158 1 1 0 0 1-1.15 0 17.405 17.405 0 0 1-5.403-6.157A17.695 17.695 0 0 1 4 6.68a1 1 0 0 1 .644-.949l7-2.666Zm4.014 7.187a1 1 0 0 0-1.316-1.506l-3.296 2.884-.839-.838a1 1 0 0 0-1.414 1.414l1.5 1.5a1 1 0 0 0 1.366.046l4-3.5Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div class="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
-                                </div>
-                                <div class="mt-3 sm:pe-8">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Trabajo
-                                        finalizado
-                                    </h3>
-                                    <time
-                                        class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"><?php echo traducirFecha($fh_contestacion); ?></time>
-                                    <p class="text-base font-normal text-gray-500 dark:text-gray-400">El trabajo
-                                        a
-                                        concluido, en espera del formulario de finalización.</p>
-                                </div>
-                            </li>
+                                </li>
+                            <?php endforeach; ?>
                         </ol>
                     </div>
                     <div class="text-medium w-full mb-6">
                         <h2 class="text-2xl font-bold mb-2">Evidencias</h2>
-                        <p class="mb-6 text-gray-600">Aún no se han tomado evidencias.</p>
-                        <div class="flex justify-center space-x-4">
-                            <div class="justify-items-center">
-                                <p class="font-semibold text-base mb-2">Evidencia al crear ticket</p>
-                                <img src="../../assets/imgTickets/<?php echo $evidencia; ?>"
-                                    alt="Evidencia al crear ticket" class="w-24 h-24 object-cover mb-4">
+                        <?php if ($evidencia == "" && $evidenciaAbierto == "" && $evidenciaHaciendo == "" && $evidenciaHecho == ""): ?>
+                            <p class="mb-6 text-gray-600">Aún no se han tomado evidencias.</p>
+                        <?php endif; ?>
+                        <div class="grid grid-cols-2 lg:grid-cols-4 justify-center justify-items-center">
+                            <div class="grid mr-3">
+                                <?php if ($evidencia == ""): ?>
+                                    <p class="font-medium text-base text-gray-500">Evidencia del problema</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/no-image.png" alt="Evidencia de inicio"
+                                            class="w-24 auto object-cover mt-4">
+                                    </div>
+                                    <p class="text-gray-600 text-xs text-center">Sin evidencia</p>
+                                <?php else: ?>
+                                    <p class="text-blue-600 font-semibold text-base">Evidencia del problema</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/<?php echo $evidencia; ?>"
+                                            alt="Evidencia al crear ticket" class="w-24 h-24 object-cover mt-4"
+                                            onclick="showImageEvidence(this)">
+                                    </div>
+                                <?php endif; ?>
                             </div>
-                            <div>
-                                <p class="font-semibold text-base mb-2">Evidencia de inicio</p>
-                                <img src="../../assets/imgTickets/<?php echo $evidenciaAbierto; ?>"
-                                    alt="Evidencia de inicio" class="w-24 h-24 object-cover mb-4">
+                            <div class="grid mr-3">
+                                <?php if ($evidenciaAbierto == ""): ?>
+                                    <p class="font-medium text-base text-gray-500">Evidencia de inicio</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/no-image.png" alt="Evidencia de inicio"
+                                            class="w-24 auto object-cover mt-4">
+                                    </div>
+                                    <p class="text-gray-600 text-xs text-center">Esperando evidencia</p>
+                                <?php else: ?>
+                                    <p class="text-blue-600 font-semibold text-base mb-2">Evidencia de inicio</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/<?php echo $evidenciaAbierto; ?>"
+                                            alt="Evidencia de inicio" class="w-24 h-24 object-cover mt-4"
+                                            onclick="showImageEvidence(this)">
+                                    </div>
+                                <?php endif; ?>
                             </div>
-                            <div>
-                                <p class="font-semibold text-base mb-2">Evidencia de realizando</p>
-                                <img src="../../assets/imgTickets/<?php echo $evidenciaHaciendo; ?>"
-                                    alt="Evidencia de realizando" class="w-24 h-24 object-cover mb-4">
+                            <div class="grid mr-3">
+                                <?php if ($evidenciaHaciendo == ""): ?>
+                                    <p class="font-medium text-base text-gray-500">Evidencia de realización</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/no-image.png" alt="Evidencia de inicio"
+                                            class="w-24 auto object-cover mt-4">
+                                    </div>
+                                    <p class="text-gray-600 text-xs text-center">Esperando evidencia</p>
+                                <?php else: ?>
+                                    <p class="text-blue-600 font-medium text-base">Evidencia de realización</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/<?php echo $evidenciaHaciendo; ?>"
+                                            alt="Evidencia de inicio" class="w-24 h-24 object-cover mt-4"
+                                            onclick="showImageEvidence(this)">
+                                    </div>
+                                <?php endif; ?>
                             </div>
-                            <div>
-                                <p class="font-semibold text-base mb-2">Evidencia de finalización</p>
-                                <img src="../../assets/imgTickets/<?php echo $evidenciaHecho; ?>"
-                                    alt="Evidencia de finalización" class="w-24 h-24 object-cover mb-4">
+                            <div class="grid">
+                                <?php if ($evidenciaHecho == ""): ?>
+                                    <p class="font-medium text-base text-gray-500">Evidencia de finalización</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/no-image.png" alt="Evidencia de inicio"
+                                            class="w-24 auto object-cover mt-4">
+                                    </div>
+                                    <p class="text-gray-600 text-xs text-center">Esperando evidencia</p>
+                                <?php else: ?>
+                                    <p class="text-blue-600 font-medium text-base">Evidencia de finalización</p>
+                                    <div class="flex justify-center items-center">
+                                        <img src="../../assets/imgTickets/<?php echo $evidenciaHecho; ?>"
+                                            alt="Evidencia de inicio" class="w-24 h-24 object-cover mt-4"
+                                            onclick="showImageEvidence(this)">
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
+                        <p class="text-gray-500 text-sm text-center mt-8">Haz clic en la imagen para visualizar la
+                            evidencia en tamaño completo.</p>
                     </div>
                     <div class="text-medium w-full mb-6">
                         <h2 class="text-2xl font-bold mb-2">Comentarios</h2>
-                        <p class="mb-6 text-gray-600">Comentarios realizados al ticket</p>
-                        <div>
-                            <p class="text-gray-600"><?php echo $txt_contestacion; ?></p>
+                        <?php if ($txt_contestacion == ""): ?>
+                            <p class="mb-6 text-gray-600">Aún no se han realizado comentarios.</p>
+                        <?php else: ?>
+                            <p class="mb-4 text-gray-900 font-medium mt-4">Comentarios del Técnico
+                                <?php echo getAsignado($asignado); ?>:
+                            </p>
+                            <div>
+                                <p class="text-blue-600"><?php echo $txt_contestacion; ?></p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="w-full mb-6">
+                        <h2 class="text-2xl font-bold mb-4">Información general</h2>
+                        <p class="mb-2 text-gray-900 font-medium">Servicio: <span
+                                class="font-normal text-blue-600"><?php echo $servicio; ?></span></p>
+                        <p class="mb-2 text-gray-900 font-medium">Servicio atendido por:
+                            <?php if ($asignado == ""): ?><span class="font-normal text-blue-600">Técnico sin
+                                    asignar</span><?php else: ?><span
+                                    class="font-normal text-blue-600"><?php getAsignado($asignado); ?></span><?php endif; ?>
+                        </p>
+                        <p class="mb-2 text-gray-900 font-medium">Asunto: <span
+                                class="font-normal text-blue-600"><?php echo $asunto; ?></span></p>
+                        <p class="mb-2 text-gray-900 font-medium">Estado del servicio: <span
+                                class="font-normal text-blue-600"><?php getStatus($current_status); ?></span></p>
+                        <p class="mb-2 text-gray-900 font-medium">Dispositivo: <?php if ($dispositivo == ""): ?><span
+                                    class="font-normal text-blue-600">Sin dispositivo</span><?php else: ?><span
+                                    class="font-normal text-blue-600"><?php echo $dispositivo; ?></span><?php endif; ?></p>
+                        <p class="mb-2 text-gray-900 font-medium">Nombre del cliente: <span
+                                class="font-normal text-blue-600"><?php echo $nomContacto; ?></span></p>
+                        <p class="mb-2 text-gray-900 font-medium">Número del cliente: <span
+                                class="font-normal text-blue-600"><?php echo $numCliente; ?></span></p>
+                        <p class="mb-2 text-gray-900 font-medium">Placas de la unidad:
+                            <?php if ($placasContacto == ""): ?><span class="font-normal text-blue-600">Sin
+                                    información</span><?php else: ?><span
+                                    class="font-normal text-blue-600"><?php echo $placasContacto; ?></span><?php endif; ?>
+                        </p>
+                        <p class="mb-2 text-gray-900 font-medium">Marca de la unidad:
+                            <?php if ($marcaContacto == ""): ?><span class="font-normal text-blue-600">Sin
+                                    información</span><?php else: ?><span
+                                    class="font-normal text-blue-600"><?php echo $marcaContacto; ?></span><?php endif; ?>
+                        </p>
+                        <p class="mb-2 text-gray-900 font-medium">Fecha de creación: <span
+                                class="font-normal text-blue-600"><?= traducirFecha($fhticket); ?></span></p>
+                    </div>
+                    <?php if ($current_status == "4"): ?>
+                        <div class="text-center">
+                            <h2 class="text-2xl font-bold mt-8">Formulario de finalización</h2>
+                            <p class="mb-6 text-gray-600">El trabajo del ticket a terminado. Por favor, contesta el
+                                formulario de finalización para la finalización completa.</p>
+                            <a href="formulario?token=<?php echo $token; ?>"
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Contestar
+                                formulario</a>
                         </div>
-                    </div>
-                    <div class="text-center">
-                        <h2 class="text-2xl font-bold mb-2">Formulario de finalización</h2>
-                        <p class="mb-6 text-gray-600">El trabajo del ticket a terminado. Por favor, contesta el
-                            formulario de finalización para la finalización completa.</p>
-                        <a href="formulario.php?token=<?php echo $token; ?>"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Contestar
-                            formulario</a>
-                    </div>
+                    <?php else: ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-blue-600">
-        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-            <span class="block text-sm text-white sm:text-center">© 2024 <a href="https://flowbite.com/"
-                    class="hover:underline">ATLÁNTIDA™</a>. All Rights Reserved.</span>
-        </div>
-    </footer>
+    <?php include('../components/footer.php'); ?>
 
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script>
+        function showImageEvidence(element) {
+            var imageUrl = element.src;
+            var overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = '9999';
+
+            var image = document.createElement('img');
+            image.src = imageUrl;
+            image.style.maxWidth = '90%';
+            image.style.maxHeight = '90%';
+
+            overlay.appendChild(image);
+            document.body.appendChild(overlay);
+
+            overlay.addEventListener('click', function () {
+                document.body.removeChild(overlay);
+            });
+        }
+    </script>
 </body>
 
 </html>

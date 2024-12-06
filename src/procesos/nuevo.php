@@ -68,9 +68,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['ticket_created'] = true;
         echo "<script>alert('¡Ticket creado correctamente!');</script>";
         echo "<script>window.location.href = '../web/tickets.php';</script>";
-    
+
         $mail = new PHPMailer(true);
-    
+
         try {
             $mail->CharSet = 'UTF-8';
             $mail->isSMTP();
@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Password = 'BBJq0wi3aCh0zuMhCuO2jlNTWaejJ8Mw8h7gBg8XMyRv';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
-    
+
             $mail->setFrom('mercurio@atlantida.mx');
             $mail->addAddress($correo);
             $mail->isHTML(true);
@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div style="background: #1175cf;">
             <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px;">
             <div style="background: #0078e3;">
-            <img src="https://grupocardinales.com/assets/img/gcLogo.png" style="display: block; margin: 0 auto; padding: 20px 0px 10px; width: 200px; height: auto" alt="Grupo Cardinales">
+            <img src="https://atlantida.mx/mercurio/assets/img/logoATL_w.webp" style="display: block; margin: 0 auto; padding: 20px 0px 10px; width: 200px; height: auto" alt="Grupo Cardinales">
             </div>
             <div style="background: #fff; padding: 0 30px 0 30px;">
             <br>
@@ -144,10 +144,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "<script>alert('¡No se pudo crear el ticket!');</script>";
     }
-    
+
     $stmt->close();
     $conn->close();
-    
+
 } else {
     echo "<script>alert('¡No se pudo crear el ticket!');</script>";
     echo "<script>window.location.href = '../web/tickets.php';</script>";

@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $idTicket = $_POST['idTicket'];
     $motivo = $_POST['motivo_eliminacion'];
     $fh_eliminacion = date('Y-m-d H:i:s');
-    $eliminadoPor = $_SESSION['user'];
+    $eliminadoPor = $_POST['eliminadopor'];
 
     $query = "UPDATE tbticket SET estado = 0, motivo_eliminacion = ?, fh_eliminacion = ?, eliminadopor = ? WHERE idTicket = ?";
     $stmt = $conn->prepare($query);

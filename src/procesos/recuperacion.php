@@ -16,8 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mail->isSMTP();
     $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
     $mail->SMTPAuth = true;
-    $mail->Username = 'AKIA3HJXVSKBDCQSUVUK';
-    $mail->Password = 'BBJq0wi3aCh0zuMhCuO2jlNTWaejJ8Mw8h7gBg8XMyRv';
+    $mail->Username = 'AKIA3HJXVSKBLWJPDZCZ';
+    $mail->Password = 'BI1QGHoakbEdXBO42Duf0N9VHABb6Y1Sw6yQUpiLzaS5';
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
 
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p>¡Hola estimado usuario <b>' . $email . '</b>! Hemos recibido una solicitud para restablecer tu contraseña. Cuentas con 50 minutos para realizar el cambio.</p>
             <p>Para restablecer tu contraseña, haz clic en el siguiente enlace:</p>
             <div style="text-align: center; margin: 15px 0 0 0;">
-            <a style="display: inline-block; text-decoration: none; background-color: #0078e3; color: #ffffff; padding: 10px 20px; font-weight: 700; border-radius: 5px;" target="_blank" href="http://localhost/mercurio/src/restablecer-contrasena?token=' . $token . '">Restablecer contraseña</a>
+            <a style="display: inline-block; text-decoration: none; background-color: #0078e3; color: #ffffff; padding: 10px 20px; font-weight: 700; border-radius: 5px;" target="_blank" href="https://atlantida.mx/mercurio/src/restablecer-contrasena?token=' . $token . '">Restablecer contraseña</a>
             </div>
             <br>
             <p style="text-align: center; color: #535353; font-size: 11px; padding: 15px 0 15px 0"> Si no solicitaste esta solicitud, por favor ignora este mensaje.</p>

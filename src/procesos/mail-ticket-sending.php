@@ -44,7 +44,7 @@ if (isset($_POST["send"])) {
         date_default_timezone_set('America/Chihuahua');
 
         $stmt = $mysqli->prepare("UPDATE tbticket SET token = ? WHERE id = ?");
-        $stmt->bind_param("si", $token, $id);
+        $stmt->bind_param("si", $token, $id); 
         $stmt->execute();
 
         $mail->addAddress($email);
