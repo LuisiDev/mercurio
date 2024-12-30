@@ -21,14 +21,13 @@ if ($tecnicoId > 0) {
     exit;
 }
 
-
 if ($tipo == 'tecnico') {
-    $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS sin_iniciar, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS iniciando, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS haciendo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS hechos, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS programados, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS congelados FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+    $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
     $stmt->bind_param('i', $userId);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS sin_iniciar, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS iniciando, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS haciendo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS hechos, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS programados, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS congelados FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+    $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
 }
 
 if (!$result) {
@@ -41,14 +40,14 @@ while ($row = $result->fetch_assoc()) {
 
 $totalTodos = $conn->query("SELECT COUNT(*) AS total FROM tbticket")->fetch_assoc()['total'];
 $totalCreados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1'")->fetch_assoc()['total'];
-$totalAsignado = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado IN ('1', '2', '3', '4', '5', '6') AND asignado = $tecnicoId")->fetch_assoc()['total'];
-$totalAtendido = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado IN ('2', '3', '4', '5', '6') AND asignado = $tecnicoId")->fetch_assoc()['total'];
+$totalAsignado = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado IN ('1', '2', '3', '4', '5', '6', '7', '8') AND asignado = $tecnicoId")->fetch_assoc()['total'];
+$totalAtendido = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado IN ('2', '3', '4', '5', '6',  '7', '8') AND asignado = $tecnicoId")->fetch_assoc()['total'];
 
 // Total de Tickets Eliminados
 $datosAsignado = [];
 for ($i = 6; $i >= 0; $i--) {
     $fecha = date('Y-m-d', strtotime("-$i days"));
-    $result = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE DATE(fhticket) = '$fecha' AND estado IN ('1', '2', '3', '4', '5', '6') AND asignado = $tecnicoId");
+    $result = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE DATE(fhticket) = '$fecha' AND estado IN ('2', '3', '4', '5', '6', '7', '8') AND asignado = $tecnicoId");
     $datosAsignado[] = $result->fetch_assoc()['total'];
 }
 
@@ -68,21 +67,27 @@ function getStatusHTML($status)
             echo '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Creado';
             break;
         case "2":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-orange-400 rounded-full"></div> Iniciado';
+            echo '<div class="h-2.5 w-2.5 mr-1 bg-orange-400 rounded-full"></div> Asignado';
             break;
         case "3":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Realizando';
+            echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Arribo';
             break;
         case "4":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-green-400 rounded-full"></div> Hecho';
+            echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Inicio';
             break;
         case "5":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-400 rounded-full"></div> Programado';
+            echo '<div class="h-2.5 w-2.5 mr-1 bg-green-400 rounded-full"></div> Realización';
             break;
         case "6":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-indigo-400 rounded-full"></div> Congelado';
+            echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-400 rounded-full"></div> Finalización';
             break;
         case "7":
+            echo '<div class="h-2.5 w-2.5 mr-1 bg-indigo-400 rounded-full"></div> Programado';
+            break;
+        case "8":
+            echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Congelado';
+            break;
+        case "9":
             echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Cancelado';
             break;
     }
@@ -584,7 +589,17 @@ function getAsignado($asignado)
                                     $row = $stmt->fetch_row();
                                 }
 
-                                $totalRegistros = $row[0];
+                                if ($tecnicoId > 0) {
+                                    $stmt = $conn->prepare('SELECT COUNT(*) FROM tbticket WHERE asignado = ? AND (estado = 6 OR (estado = 0 AND token IS NULL)) AND WEEK(fhticket) = WEEK(CURDATE())');
+                                    $stmt->bind_param('i', $tecnicoId);
+                                } else {
+                                    $stmt = $conn->prepare('SELECT COUNT(*) FROM tbticket WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) AND WEEK(fhticket) = WEEK(CURDATE())');
+                                }
+                                $stmt->execute();
+                                $stmt->bind_result($totalRegistros);
+                                $stmt->fetch();
+                                $stmt->close();
+
                                 $registrosPorPagina = 10;
                                 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                                 $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -775,7 +790,7 @@ function getAsignado($asignado)
                     </h2>
                     <h3 class="text-lg font-semibold text-gray-700 mb-8 md:mt-0">De la fecha
                         <?php echo date('d/m/Y', strtotime('monday this week')); ?> al
-                        <?php echo date('d/m/Y', strtotime('sunday this week')); ?>
+                        <?php echo date('d/m/Y', strtotime('saturday this week')); ?>
                     </h3>
 
                     <div
@@ -874,10 +889,27 @@ function getAsignado($asignado)
                                         d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z"
                                         clip-rule="evenodd" />
                                 </svg>
-
                                 Exportar
                             </button>
+
                         </div>
+
+                        <?php
+                        // Obtener la semana seleccionada o la semana actual
+                        $week = isset($_GET['week']) ? (int) $_GET['week'] : date('W');
+                        $year = date('Y');
+
+                        // Consulta optimizada para filtrar por semana
+                        $sqlTickets = "
+                            SELECT idTicket, asunto, numCliente, fhticket, servicio, asignado, prioridad, estado
+                            FROM tbticket
+                            WHERE WEEK(fhticket, 1) = ? AND YEAR(fhticket) = ?
+                        ";
+                        $stmtTickets = $conn->prepare($sqlTickets);
+                        $stmtTickets->bind_param('ii', $week, $year);
+                        $stmtTickets->execute();
+                        $resultTickets = $stmtTickets->get_result();
+                        ?>
 
                         <div id="modal-week" class="modal fixed inset-0 z-50 hidden bg-gray-900 overflow-y-auto"
                             style="margin-top: 0;">
@@ -904,7 +936,8 @@ function getAsignado($asignado)
                                         $semana = date('W');
                                         for ($i = 1; $i <= $semana; $i++): ?>
                                             <button type="button"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Semana
+                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                data-week="<?php echo $i; ?>">Semana
                                                 <?php echo $i; ?></button>
                                         <?php endfor; ?>
                                     </div>
@@ -919,6 +952,26 @@ function getAsignado($asignado)
                             dropdownWeekButton.addEventListener('click', () => {
                                 modalWeek.classList.toggle('hidden');
                             });
+
+                            document.querySelectorAll('[data-week]').forEach(button => {
+                                button.addEventListener('click', function () {
+                                    const week = this.getAttribute('data-week');
+                                    fetchTicketsByWeek(week);
+                                });
+                            });
+
+                            function fetchTicketsByWeek(week) {
+                                fetch(`reporte-tecnico.php?week=${week}`)
+                                    .then(response => {
+                                        if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                                        return response.text();
+                                    })
+                                    .then(data => {
+                                        document.querySelector('.relative.overflow-x-auto').innerHTML = data;
+                                        modalWeek.classList.add('hidden');
+                                    })
+                                    .catch(error => console.error('Error:', error));
+                            }
                         </script>
 
                         <!-- Tabla de tickets de la semana -->
@@ -1015,37 +1068,50 @@ function getAsignado($asignado)
                                     <?php
                                     $userId = $_SESSION['userId'];
                                     $tipo = $_SESSION['tipo'];
+
+                                    // Parámetros de la URL
                                     $tecnicoId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-
-                                    // Tickets de la semana
-                                    if ($tecnicoId > 0) {
-                                        $stmt = $conn->prepare('SELECT COUNT(*) FROM tbticket WHERE asignado = ? AND estado <> 0 AND WEEK(fhticket) = WEEK(CURDATE())');
-                                        $row = $stmt->bind_param('i', $tecnicoId);
-                                        $stmt->execute();
-                                        $row = $stmt->get_result()->fetch_row();
-                                    } else {
-                                        $stmt = $conn->query('SELECT COUNT(*) FROM tbticket WHERE estado <> 0 AND WEEK(fhticket) = WEEK(CURDATE())');
-                                        $row = $stmt->fetch_row();
-                                    }
-
-                                    $totalRegistros = $row[0];
+                                    $week = isset($_GET['week']) ? (int) $_GET['week'] : date('W'); // Semana seleccionada o actual
+                                    $year = date('Y'); // Año actual
+                                    
+                                    // Paginación
                                     $registrosPorPagina = 10;
-                                    $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                                     $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
                                     $offset = ($paginaActual - 1) * $registrosPorPagina;
 
-                                    // '<>' es lo mismo que '!='
+                                    // Consulta base para los tickets
+                                    $sql = "SELECT SQL_CALC_FOUND_ROWS * 
+                                            FROM tbticket 
+                                            WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) 
+                                            AND WEEK(fhticket, 1) = ? 
+                                            AND YEAR(fhticket) = ? ";
+
+                                    // Filtrar por técnico si se seleccionó uno
                                     if ($tecnicoId > 0) {
-                                        $sql = "SELECT * FROM tbticket WHERE asignado = ? AND estado <> 0 AND WEEK(fhticket) = WEEK(CURDATE()) ORDER BY fhticket DESC LIMIT ?, ?";
-                                        $stmt = $conn->prepare($sql);
-                                        $stmt->bind_param('iii', $tecnicoId, $offset, $registrosPorPagina);
-                                    } else {
-                                        $sql = "SELECT * FROM tbticket WHERE estado <> 0 AND WEEK(fhticket) = WEEK(CURDATE()) ORDER BY fhticket DESC LIMIT ?, ?";
-                                        $stmt = $conn->prepare($sql);
-                                        $stmt->bind_param('ii', $offset, $registrosPorPagina);
+                                        $sql .= "AND asignado = ? ";
                                     }
 
-                                    $i = 0;
+                                    // Orden y límite
+                                    $sql .= "ORDER BY fhticket DESC LIMIT ?, ?";
+                                    $stmt = $conn->prepare($sql);
+
+                                    // Vinculación de parámetros
+                                    if ($tecnicoId > 0) {
+                                        $stmt->bind_param('iiiii', $week, $year, $tecnicoId, $offset, $registrosPorPagina);
+                                    } else {
+                                        $stmt->bind_param('iiii', $week, $year, $offset, $registrosPorPagina);
+                                    }
+
+                                    // Ejecutar consulta
+                                    $stmt->execute();
+                                    $resultado = $stmt->get_result();
+
+                                    // Obtener total de registros para la paginación
+                                    $totalRegistrosQuery = $conn->query("SELECT FOUND_ROWS() AS total");
+                                    $totalRegistros = $totalRegistrosQuery->fetch_assoc()['total'];
+                                    $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
+
+                                    // Mostrar los resultados en la tabla
                                     while ($fila = $resultado->fetch_assoc()): ?>
                                         <?php include '../components/modal-baja-ticket.php'; ?>
                                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">

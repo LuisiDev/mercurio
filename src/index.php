@@ -4,6 +4,10 @@ session_start();
 if (!isset($_SESSION['session_id'])) {
     $_SESSION['session_id'] = uniqid();
 }
+
+if (isset($_SESSION['user'])) {
+    header('Location: web/sesion.php');
+}
 ?>
 
 <!DOCTYPE html>

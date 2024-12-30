@@ -11,13 +11,13 @@ if (isset($_GET['token'])) {
         die('Error de conexión: ' . $mysqli->connect_error);
     }
 
-    $stmt = $mysqli->prepare("SELECT idTicket, fhticket, nombre, numCliente, dispositivo, imeiCliente, numContacto, nomContacto, placasContacto, marcaContacto, asunto, descripcion, estado, domicilio, ciudad, domestado, codpostal, domdescripcion, servicio, asignado, evidencia, evidenciaAbierto, evidenciaHaciendo, evidenciaHecho, txt_contestacion, fh_contestacion, fh_programada FROM tbticket WHERE token = ?");
+    $stmt = $mysqli->prepare("SELECT idTicket, fhticket, nombre, numCliente, dispositivo, imeiCliente, numContacto, nomContacto, placasContacto, marcaContacto, asunto, descripcion, estado, domicilio, ciudad, domestado, codpostal, domdescripcion, servicio, asignado, evidencia, evidenciaArribo, evidenciaInicio, evidenciaRealizacion, evidenciaFinalizacion, txt_contestacion, fhContestacion, fhAsignado, fhArribo, fhInicio, fhRealizacion, fhFinalizacion, fhCongelado, fhCancelado, fhProgramada, fhEliminacion FROM tbticket WHERE token = ?");
     $stmt->bind_param("s", $token);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($idTicket, $fhticket, $nombre, $numCliente, $dispositivo, $imeiCliente, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $asignado, $evidencia, $evidenciaAbierto, $evidenciaHaciendo, $evidenciaHecho, $txt_contestacion, $fh_contestacion, $fh_programada);
+        $stmt->bind_result($idTicket, $fhticket, $nombre, $numCliente, $dispositivo, $imeiCliente, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $asignado, $evidencia, $evidenciaArribo, $evidenciaInicio, $evidenciaRealizacion, $evidenciaFinalizacion, $txt_contestacion, $fhContestacion, $fhAsignado, $fhArribo, $fhInicio, $fhRealizacion, $fhFinalizacion, $fhCongelado, $fhCancelado, $fhProgramada, $fhEliminacion);
         $stmt->fetch();
     } else {
         $_SESSION['error_message'] = 'Token inválido';

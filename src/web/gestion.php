@@ -70,21 +70,27 @@ include '../configuration/conn-session.php';
                 echo '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Creado';
                 break;
             case "2":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-orange-400 rounded-full"></div> Iniciado';
+                echo '<div class="h-2.5 w-2.5 mr-1 bg-orange-400 rounded-full"></div> Asignado';
                 break;
             case "3":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Realizando';
+                echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Arribo';
                 break;
             case "4":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-green-400 rounded-full"></div> Hecho';
+                echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Inicio';
                 break;
             case "5":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-400 rounded-full"></div> Programado';
+                echo '<div class="h-2.5 w-2.5 mr-1 bg-green-400 rounded-full"></div> Realización';
                 break;
             case "6":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-indigo-400 rounded-full"></div> Congelado';
+                echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-400 rounded-full"></div> Finalización';
                 break;
             case "7":
+                echo '<div class="h-2.5 w-2.5 mr-1 bg-indigo-400 rounded-full"></div> Programado';
+                break;
+            case "8":
+                echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Congelado';
+                break;
+            case "9":
                 echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Cancelado';
                 break;
         }
@@ -133,7 +139,6 @@ include '../configuration/conn-session.php';
         }
     }
     ?>
-    
     <div class="sm:ml-64">
         <div class="mt-14">
             <div class="grid grid-cols-1 gap-4 mb-4">
@@ -282,7 +287,7 @@ include '../configuration/conn-session.php';
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <?php if ($fila['estado'] == '4' || $fila['estado'] == '7' || $tipo == 'comercializacion'): ?>
+                                        <?php if ($fila['estado'] == '6' || $fila['estado'] == '9' || $tipo == 'comercializacion'): ?>
                                             <button type="button"
                                                 onclick="window.location.href = 'detalles?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -308,7 +313,7 @@ include '../configuration/conn-session.php';
                                                 Asignar
                                             </button>
                                         <?php endif; ?>
-                                        <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '5' || $fila['estado'] == '6') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
+                                        <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '7' || $fila['estado'] == '8') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
                                             <button type="button"
                                                 onclick="window.location.href = 'atender?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2">
@@ -333,9 +338,9 @@ include '../configuration/conn-session.php';
                                                 Editar</button>
                                         <?php endif; ?>
                                         <?php if (
-                                            ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7') &&
+                                            ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' || $fila['estado'] == '8' || $fila['estado'] == '9') &&
                                             $tipo != 'comercializacion' &&
-                                            ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '4'))
+                                            ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '6'))
                                         ): ?>
                                             <button type="button" data-modal-target="popup-confirmation"
                                                 data-modal-toggle="popup-confirmation"

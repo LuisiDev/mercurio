@@ -15,17 +15,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $contestacion = $_POST['contestacion'];
     $fhcontestacion = date('Y-m-d H:i:s');
 
-    $sqlGetEvidencias = "SELECT evidenciaAbierto, evidenciaHaciendo, evidenciaHecho FROM tbticket WHERE idTicket = ?";
+    $sqlGetEvidencias = "SELECT evidenciaArribo, evidenciaInicio, evidenciaRealizacion, evidenciaFinalizacion FROM tbticket WHERE idTicket = ?";
     $stmtGetEvidencias = $conn->prepare($sqlGetEvidencias);
     $stmtGetEvidencias->bind_param('i', $id);
     $stmtGetEvidencias->execute();
-    $stmtGetEvidencias->bind_result($rutaActualEvidenciaAbierto, $rutaActualEvidenciaHaciendo, $rutaActualEvidenciaHecho);
+    $stmtGetEvidencias->bind_result($rutaActualEvidenciaArribo, $rutaActualEvidenciaInicio, $rutaActualEvidenciaRealizacion, $rutaActualEvidenciaFinalizacion);
     $stmtGetEvidencias->fetch();
     $stmtGetEvidencias->close();
 
-    $rutaEvidenciaAbierto = $rutaActualEvidenciaAbierto;
-    $rutaEvidenciaHaciendo = $rutaActualEvidenciaHaciendo;
-    $rutaEvidenciaHecho = $rutaActualEvidenciaHecho;
+    $rutaEvidenciaArribo = $rutaActualEvidenciaArribo;
+    $rutaEvidenciaInicio = $rutaActualEvidenciaInicio;
+    $rutaEvidenciaRealizacion = $rutaActualEvidenciaRealizacion;
+    $rutaEvidenciaFinalizacion = $rutaActualEvidenciaFinalizacion;
 
     function subirEvidencia($campo, $destino)
     {
@@ -46,24 +47,27 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $carpetaDestino = "../../assets/imgTickets";
 
-    if (!empty($_FILES['evidenciaAbierto']['name'])) {
-        $rutaEvidenciaAbierto = subirEvidencia('evidenciaAbierto', $carpetaDestino);
+    if (!empty($_FILES['evidenciaArribo']['name'])) {
+        $rutaEvidenciaArribo = subirEvidencia('evidenciaArribo', $carpetaDestino);
     }
-    if (!empty($_FILES['evidenciaHaciendo']['name'])) {
-        $rutaEvidenciaHaciendo = subirEvidencia('evidenciaHaciendo', $carpetaDestino);
+    if (!empty($_FILES['evidenciaInicio']['name'])) {
+        $rutaEvidenciaInicio = subirEvidencia('evidenciaInicio', $carpetaDestino);
     }
-    if (!empty($_FILES['evidenciaHecho']['name'])) {
-        $rutaEvidenciaHecho = subirEvidencia('evidenciaHecho', $carpetaDestino);
+    if (!empty($_FILES['evidenciaRealizacion']['name'])) {
+        $rutaEvidenciaRealizacion = subirEvidencia('evidenciaRealizacion', $carpetaDestino);
+    }
+    if (!empty($_FILES['evidenciaFinalizacion']['name'])) {
+        $rutaEvidenciaFinalizacion = subirEvidencia('evidenciaFinalizacion', $carpetaDestino);
     }
 
-    $sql = "UPDATE tbticket SET prioridad = ?, asignado = ?, estado = ?, txt_contestacion = ?, fh_contestacion = ?, evidenciaAbierto = ?, evidenciaHaciendo = ?, evidenciaHecho = ? WHERE idTicket = ?";
+    $sql = "UPDATE tbticket SET prioridad = ?, asignado = ?, estado = ?, txt_contestacion = ?, fhContestacion = ?, evidenciaArribo = ?, evidenciaInicio = ?, evidenciaRealizacion = ?, evidenciaFinalizacion = ? WHERE idTicket = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('ssssssssi', $prioridad, $asignado, $estado, $contestacion, $fhcontestacion, $rutaEvidenciaAbierto, $rutaEvidenciaHaciendo, $rutaEvidenciaHecho, $id);
+    $stmt->bind_param('sssssssssi', $prioridad, $asignado, $estado, $contestacion, $fhcontestacion, $rutaEvidenciaArribo, $rutaEvidenciaInicio, $rutaEvidenciaRealizacion, $rutaEvidenciaFinalizacion, $id);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
-        if ($estado == "4") {
-            $sqlCorreo = "SELECT correo, nomContacto, asunto, servicio, fh_contestacion, txt_contestacion, numCliente, dispositivo FROM tbticket WHERE idTicket = ?";
+        if ($estado == "6") {
+            $sqlCorreo = "SELECT correo, nomContacto, asunto, servicio, fhContestacion, txt_contestacion, numCliente, dispositivo FROM tbticket WHERE idTicket = ?";
             $stmtCorreo = $conn->prepare($sqlCorreo);
             $stmtCorreo->bind_param('i', $id);
             $stmtCorreo->execute();

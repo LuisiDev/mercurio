@@ -7,12 +7,12 @@ $tipo = $_SESSION['tipo'];
 $tecnicosData = [];
 
 if ($tipo == 'tecnico') {
-    $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS sin_iniciar, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS iniciando, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS haciendo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS hechos, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS programados, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS congelados FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+    $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
     $stmt->bind_param('i', $userId);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS sin_iniciar, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS iniciando, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS haciendo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS hechos, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS programados, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS congelados FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+    $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
 }
 
 if (!$result) {
@@ -28,7 +28,7 @@ $totalCreados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estad
 $totalEliminados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '0'")->fetch_assoc()['total'];
 $totalCreadosSinAsignar = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1' AND asignado IS NULL")->fetch_assoc()['total'];
 // Total de tickets creados asignaos al técnico logueado
-$totalAsignado = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1' AND asignado = $userId")->fetch_assoc()['total'];
+$totalAsignado = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '2'")->fetch_assoc()['total'];
 
 // Total de Tickets
 $datosDiarios = [];
@@ -68,7 +68,7 @@ $categoriasCreados = implode("','", $categoriasCreados);
 $datosEliminados = [];
 for ($i = 6; $i >= 0; $i--) {
     $fecha = date('Y-m-d', strtotime("-$i days"));
-    $result = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE DATE(fh_eliminacion) = '$fecha' AND estado = '0'");
+    $result = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE DATE(fhEliminacion) = '$fecha' AND estado = '0'");
     $datosEliminados[] = $result->fetch_assoc()['total'];
 }
 
@@ -137,11 +137,11 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
     </div>
 
     <?php include '../components/sidebar.php'; ?>
-    
+
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
     <div class="p-4 lg:mb-4 sm:ml-64">
-        <div class="p-4 mt-14">
+        <div class="p-4">
             <div class="flex justify-between">
                 <div class="">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Bienvenido,
@@ -162,6 +162,116 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                     </h3>
                 </div> -->
             </div>
+
+            <div class="grid justify-items-center grid-cols-1 mb-4">
+                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+
+                    <div class="flex items-center border-b border-gray-200 dark:border-gray-700">
+                        <div>
+                            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
+                                Reporte semanal de tickets completados
+                            </h5>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                Semana número <?php echo date('W'); ?>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!--Gráfica de-->
+
+                </div>
+            </div>
+
+            <div class="grid justify-items-center sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+
+                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div>
+                            <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                                <?php echo $totalCreadosSinAsignar; ?>
+                            </h5>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets asignados
+                            </p>
+                        </div>
+                    </div>
+                    <div>
+                        <div
+                            class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-700 flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-50 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="">
+                            <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                                <?php echo $totalAsignado; ?>
+                            </h5>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
+                                asignados</p>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-lg bg-blue-600 dark:bg-gray-700 flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-100 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="">
+                            <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                                <?php echo $totalAsignado; ?>
+                            </h5>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
+                                asignados</p>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                    <div class="flex items-center">
+                        <div class="">
+                            <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                                <?php echo $totalAsignado; ?>
+                            </h5>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
+                                asignados</p>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path
+                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
             <div class="grid justify-items-center sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
                 <?php foreach ($tecnicosData as $tecnicoData): ?>
@@ -180,50 +290,73 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                     class="bg-gray-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-500 text-gray-600 dark:text-gray-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['sin_iniciar'] ?>
+                                        <?php echo $tecnicoData['asignado'] ?>
                                     </dt>
-                                    <dd class="text-gray-600 dark:text-gray-300 text-sm font-medium">Sin iniciar</dd>
+                                    <dd class="text-gray-600 dark:text-gray-300 text-sm font-medium">Asignado</dd>
                                 </dl>
                                 <dl
                                     class="bg-orange-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-orange-200 dark:bg-gray-500 text-orange-600 dark:text-orange-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['iniciando'] ?>
+                                        <?php echo $tecnicoData['arribo'] ?>
                                     </dt>
-                                    <dd class="text-orange-600 dark:text-orange-300 text-sm font-medium">Iniciando</dd>
+                                    <dd class="text-orange-600 dark:text-orange-300 text-sm font-medium">Arribo</dd>
                                 </dl>
                                 <dl
                                     class="bg-blue-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-blue-200 dark:bg-gray-500 text-blue-600 dark:text-blue-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['haciendo'] ?>
+                                        <?php echo $tecnicoData['inicio'] ?>
                                     </dt>
-                                    <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Realizando</dd>
+                                    <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Inicio</dd>
                                 </dl>
                                 <dl
                                     class="bg-green-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-green-200 dark:bg-gray-500 text-green-600 dark:text-green-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['hechos'] ?>
+                                        <?php echo $tecnicoData['realizacion'] ?>
                                     </dt>
-                                    <dd class="text-green-600 dark:text-green-300 text-sm font-medium">Hechos</dd>
+                                    <dd class="text-green-600 dark:text-green-300 text-sm font-medium">Realizando</dd>
                                 </dl>
                                 <dl
                                     class="bg-yellow-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-yellow-200 dark:bg-gray-500 text-yellow-600 dark:text-yellow-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['programados'] ?>
+                                        <?php echo $tecnicoData['finalizacion'] ?>
                                     </dt>
-                                    <dd class="text-yellow-600 dark:text-yellow-300 text-sm font-medium">Programados
-                                    </dd>
+                                    <dd class="text-yellow-600 dark:text-yellow-300 text-sm font-medium">Finalizado</dd>
+                                </dl>
+                                <dl
+                                    class="bg-teal-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                                    <dt
+                                        class="w-8 h-8 rounded-full bg-teal-200 dark:bg-teal-500 text-teal-600 dark:text-teal-300 text-sm font-medium flex items-center justify-center mb-1">
+                                        <?php echo $tecnicoData['programado'] ?>
+                                    </dt>
+                                    <dd class="text-teal-600 dark:text-teal-300 text-sm font-medium">Programado</dd>
                                 </dl>
                                 <dl
                                     class="bg-indigo-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-indigo-200 dark:bg-gray-500 text-indigo-600 dark:text-indigo-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['congelados'] ?>
+                                        <?php echo $tecnicoData['congelado'] ?>
                                     </dt>
-                                    <dd class="text-indigo-600 dark:text-indigo-300 text-sm font-medium">Congelados</dd>
+                                    <dd class="text-indigo-600 dark:text-indigo-300 text-sm font-medium">Congelado</dd>
+                                </dl>
+                                <dl
+                                    class="bg-amber-100 dark:bg-amber-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                                    <dt
+                                        class="w-8 h-8 rounded-full bg-amber-200 dark:bg-amber-500 text-amber-600 dark:text-amber-300 text-sm font-medium flex items-center justify-center mb-1">
+                                        <?php echo $tecnicoData['cancelado'] ?>
+                                    </dt>
+                                    <dd class="text-amber-600 dark:text-amber-300 text-sm font-medium">Cancelado</dd>
+                                </dl>
+                                <dl
+                                    class="bg-red-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                                    <dt
+                                        class="w-8 h-8 rounded-full bg-red-200 dark:bg-gray-500 text-red-600 dark:text-red-300 text-sm font-medium flex items-center justify-center mb-1">
+                                        <?php echo $tecnicoData['eliminado'] ?>
+                                    </dt>
+                                    <dd class="text-red-600 dark:text-red-300 text-sm font-medium">Archivado</dd>
                                 </dl>
                             </div>
                             <button data-collapse-toggle="more-details-<?php echo $tecnicoData['userId']; ?>" type="button"
@@ -247,8 +380,8 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                                 stroke-width="2" d="M12 6v13m0-13 4 4m-4-4-4 4" />
                                         </svg>
                                         <script>
-                                            var total = <?php echo $tecnicoData['sin_iniciar'] + $tecnicoData['iniciando'] + $tecnicoData['haciendo'] + $tecnicoData['hechos'] + $tecnicoData['programados'] + $tecnicoData['congelados']; ?>;
-                                            var completados = <?php echo $tecnicoData['hechos']; ?>;
+                                            var total = <?php echo $tecnicoData['asignado'] + $tecnicoData['arribo'] + $tecnicoData['inicio'] + $tecnicoData['realizacion'] + $tecnicoData['programado'] + $tecnicoData['congelado']; ?>;
+                                            var completados = <?php echo $tecnicoData['finalizacion']; ?>;
                                             var porcentaje = (completados * 100) / total;
                                             document.write(porcentaje.toFixed(2) + '%');
                                         </script>
@@ -331,15 +464,18 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                     },
                                 },
                                 series: [
-                                    <?php echo $tecnicoData['sin_iniciar']; ?>,
-                                    <?php echo $tecnicoData['iniciando']; ?>,
-                                    <?php echo $tecnicoData['haciendo']; ?>,
-                                    <?php echo $tecnicoData['hechos']; ?>,
-                                    <?php echo $tecnicoData['programados']; ?>,
-                                    <?php echo $tecnicoData['congelados']; ?>
+                                    <?php echo $tecnicoData['asignado']; ?>,
+                                    <?php echo $tecnicoData['arribo']; ?>,
+                                    <?php echo $tecnicoData['inicio']; ?>,
+                                    <?php echo $tecnicoData['realizacion']; ?>,
+                                    <?php echo $tecnicoData['finalizacion']; ?>,
+                                    <?php echo $tecnicoData['programado']; ?>,
+                                    <?php echo $tecnicoData['congelado']; ?>,
+                                    <?php echo $tecnicoData['cancelado']; ?>,
+                                    <?php echo $tecnicoData['eliminado']; ?>
                                 ],
-                                labels: ['Sin iniciar', 'Iniciando', 'Realizando', 'Hechos', 'Programados', 'Congelados'],
-                                colors: ['#4b5563', '#d03801', '#3174f3', '#057a55', '#9f580a', '#5850ec'],
+                                labels: ['Asignado', 'Arribo', 'Inicio', 'Realización', 'Finalizado', 'Programado', 'Congelado', 'Cancelado', 'Archivado'],
+                                colors: ['#4b5563', '#d03801', '#3174f3', '#057a55', '#9f580a', '#5850ec', '#319795', '#f59e0b', '#e11d48'],
                                 dataLabels: {
                                     enabled: false,
                                 },

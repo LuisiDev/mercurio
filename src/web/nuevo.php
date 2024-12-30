@@ -1,12 +1,16 @@
 <?php
 include '../configuration/conn-session.php';
-?>
+include '../components/modal-revision.php';
 
-<?php
-$sql = "SELECT MAX(idTicket) as id FROM tbticket";
-$result = $conn->query($sql);
-$row = $result->fetch_assoc();
-$next_id = $row['id'] + 1;
+//Función para obtener el siguiente número de ticket
+function obtenerNumeroTicket($conn)
+{
+    $sql = "SELECT MAX(idTicket) AS id FROM tbticket";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+    $numero = $row['id'] + 1;
+    return $numero;
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +23,7 @@ $next_id = $row['id'] + 1;
     <link rel="icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
-    <title>Mercurio | Dashboard</title>
+    <title>Mercurio | Nuevo ticket</title>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -406,18 +410,27 @@ $next_id = $row['id'] + 1;
                             </div>
                         </div>
 
-                        <div class="font-semibold text-blue-600 flex mt-8">
-                            <svg class="w-6 h-6 text-blue-700 dark:text-white me-1" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                            <p>Número de ticket por crear: <span
-                                    class="underline text-blue-800 font-bold"><?php echo $next_id; ?></span></p>
+                        <?php
+                        $numero = obtenerNumeroTicket($conn);
+                        ?>
+
+                        <div class="flex mt-5">
+                            <span>
+                                <svg class="w-6 h-6 text-blue-800 dark:text-gray-300" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </span>
+                            <p class="ms-2 font-semibold text-blue-700 dark:text-white">
+                                Número del ticket por crear:
+                            </p>
+                            <span class="ms-2 font-semibold underline text-blue-700 dark:text-gray-300">
+                                <?php echo $numero; ?>
+                            </span>
                         </div>
 
-                        <div class="mt-5">
+                        <div class="mt-10">
                             <button type="button" onclick="reload()"
                                 class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Limpiar
                                 registro</button>
@@ -432,9 +445,9 @@ $next_id = $row['id'] + 1;
         </div>
     </div>
 
-    <script src="../../assets/js/materialize.js"></>
-            <script async src="../../assets/js/showLocation.js"></script>
-    <script async src="../../assets/js/location.js"></script>
+    <script src="../../assets/js/materialize.js"></script>
+    <script async src="../../assets/js/showLocation.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD763rO-taCPN02UD8LZW6rzpMzyqmTans"></script>
     <script src="../../assets/js/jquery.js"></script>
     <!-- <script src="../procesos/proceso_ticket.js"></script> -->
     <!-- <script src="../../assets/js/script.js"></script> -->
@@ -442,19 +455,6 @@ $next_id = $row['id'] + 1;
     <script src="../../assets/js/nuevo.js"></script>
     <script src="../../node_modules/flowbite/dist/datepicker.js"></script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
-
-    <script>
-                                                         function initMap() {
-                                                             // Tu código de inicialización de Google Maps aquí
-                                                         }
-
-        // Esperar a que el script de Google Maps se cargue antes de inicializar el mapa
-                                                         window.addEventListener('load', function () {
-            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
-                                                             initMap();
-            }
-        });
-    </script>
 </body>
 
 </html>

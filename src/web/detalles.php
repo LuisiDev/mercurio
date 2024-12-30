@@ -52,21 +52,27 @@ function getStatus($status)
             echo 'Creado';
             break;
         case "2":
-            echo 'Iniciado';
+            echo 'Asignado';
             break;
         case "3":
-            echo 'Realizando';
+            echo 'Arribo';
             break;
         case "4":
-            echo 'Hecho';
+            echo 'Inicio';
             break;
         case "5":
-            echo 'Programado';
+            echo 'Realización';
             break;
         case "6":
-            echo 'Congelado';
+            echo 'Finalización';
             break;
         case "7":
+            echo 'Programado';
+            break;
+        case "8":
+            echo 'Programado';
+            break;
+        case "9":
             echo 'Cancelado';
             break;
     }
@@ -107,7 +113,7 @@ function getAsignado($asignado)
     <link rel="icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
-    <title>Mercurio | Detalles</title>
+    <title>Detalles | Mercurio</title>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -242,7 +248,7 @@ function getAsignado($asignado)
                         <?php } ?>
                         <?php if (!empty($row['domicilio'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Domicilio:
-                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600" href="' . $row['domicilio'] . '" target="_blank">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
+                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600 break-all" href="' . $row['domicilio'] . '" target="_blank">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['ciudad']) && !empty($row['domestado'])) { ?>
@@ -273,63 +279,44 @@ function getAsignado($asignado)
                         <?php } ?>
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Creado:
                             </span><?php echo traducirFecha($row['fhticket']); ?></p>
-
-                        <?php
-                        switch ($row['estado']) {
-                            case '0':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
-                                    </span><?php echo traducirFecha($row['fh_eliminacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Motivo de eliminación:
-                                    </span><?php echo $row['motivo_eliminacion']; ?></p>
-                                <?php
-                                break;
-                            case '2':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Iniciando:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Iniciando:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '3':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Haciendo:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Haciendo:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '4':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Hecho:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Hecho:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '5':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Programado:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Programado:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '6':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Congelado:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                        }
-                        ?>
+                        <?php if (!empty($row['fhAsignado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Asignación:
+                                </span><?php echo traducirFecha($row['fhAsignado']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhAsignado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Arribo:
+                                </span><?php echo traducirFecha($row['fhArribo']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhInicio'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Inicio:
+                                </span><?php echo traducirFecha($row['fhInicio']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhRealizacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Realización:
+                                </span><?php echo traducirFecha($row['fhRealizacion']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhFinalizacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Finalización:
+                                </span><?php echo traducirFecha($row['fhFinalizacion']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhProgramada'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Programado:
+                                </span><?php echo traducirFecha($row['fhProgramada']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhCongelado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
+                                </span><?php echo traducirFecha($row['fh']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhEliminacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
+                                </span><?php echo traducirFecha($row['fhEliminacion']); ?></p>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Motivo de Eliminación:
+                                </span><?php echo $row['motivo_eliminacion']; ?></p>
+                        <?php } ?>
                     </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Evidencias</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
-                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaHaciendo']) && empty($row['evidenciaHecho'])): ?>
+                        <?php if (empty($row['evidencia']) && empty($row['evidenciaArribo']) && empty($row['evidenciaInicio']) && empty($row['evidenciaRealizacion']) && empty($row['evidenciaFinalizacion'])): ?>
                             <p>No se han adjuntado evidencias</p>
                         <?php else: ?>
                             <div class="flex justify-start space-x-6 text-center">
@@ -345,34 +332,45 @@ function getAsignado($asignado)
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaAbierto'])): ?>
+                                    <?php if (!empty($row['evidenciaArribo'])): ?>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
+                                                arribo:</span></p>
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaArribo']); ?>"
+                                                alt="Evidencia arribo" class="w-24 h-24 object-cover rounded-lg"
+                                                onclick="showImageEvidence(this)">
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div>
+                                    <?php if (!empty($row['evidenciaInicio'])): ?>
                                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
                                                 inicio:</span></p>
                                         <div class="flex justify-center">
-                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaInicio']); ?>"
+                                                alt="Evidencia inicio" class="w-24 h-24 object-cover rounded-lg"
                                                 onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaHaciendo'])): ?>
+                                    <?php if (!empty($row['evidenciaRealizacion'])): ?>
                                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
                                                 realización:</span></p>
                                         <div class="flex justify-center">
-                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHaciendo']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaRealizacion']); ?>"
+                                                alt="Evidencia realización" class="w-24 h-24 object-cover rounded-lg"
                                                 onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaHecho'])): ?>
+                                    <?php if (!empty($row['evidenciaFinalizacion'])): ?>
                                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
-                                                terminado:</span></p>
+                                                finalización:</span></p>
                                         <div class="flex justify-center">
-                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHecho']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaFinalizacion']); ?>"
+                                                alt="Evidencia finalización" class="w-24 h-24 object-cover rounded-lg"
                                                 onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
@@ -380,7 +378,7 @@ function getAsignado($asignado)
                             </div>
                         <?php endif; ?>
                     </div>
-                    <?php if ($row['estado'] == 0 || $row['estado'] == 4): ?>
+                    <?php if ($row['estado'] == 0 || $row['estado'] == 6): ?>
                         <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de
                             finalización</span>
                         <div class="mb-6 text-base text-gray-500 dark:text-gray-300">

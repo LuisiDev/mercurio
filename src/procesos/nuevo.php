@@ -76,8 +76,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'AKIA3HJXVSKBDCQSUVUK';
-            $mail->Password = 'BBJq0wi3aCh0zuMhCuO2jlNTWaejJ8Mw8h7gBg8XMyRv';
+            $mail->Username = 'AKIA3HJXVSKBLWJPDZCZ';
+            $mail->Password = 'BI1QGHoakbEdXBO42Duf0N9VHABb6Y1Sw6yQUpiLzaS5';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 

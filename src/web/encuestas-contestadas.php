@@ -1,5 +1,8 @@
 <?php
 include '../configuration/conn-session.php';
+
+//código SQL para volver todos los datos de la tabla estado_encuesta, pasar del dato 4 y reemplazarlo por un 8
+//UPDATE estado_encuesta SET estado = 8 WHERE estado = 4
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +15,7 @@ include '../configuration/conn-session.php';
     <link rel="icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
-    <title>Mercurio | Dashboard</title>
+    <title>Encuestas contestadas | Mercurio</title>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -130,14 +133,17 @@ include '../configuration/conn-session.php';
                 $userId = $_SESSION['userId'];
                 $tipo = $_SESSION['tipo'];
 
-                if ($tipo == 'tecnico') {
-                    $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' AND asignado = ?");
-                    $row = $stmt->bind_param("i", $userId);
-                    $stmt->execute();
-                    $row = $stmt->get_result()->fetch_row();
-                } else {
-                    $stmt = $conn->query("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '4') AND token != ''");
-                    $row = $stmt->fetch_row();
+                switch ($tipo) {
+                    case 'tecnico':
+                        $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '6') AND token = '' AND asignado = ?");
+                        $stmt->bind_param("i", $userId);
+                        $stmt->execute();
+                        $row = $stmt->get_result()->fetch_row();
+                        break;
+                    default:
+                        $stmt = $conn->query("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '6') AND token = ''");
+                        $row = $stmt->fetch_row();
+                        break;
                 }
 
                 $totalRegistros = $row[0];
@@ -146,22 +152,25 @@ include '../configuration/conn-session.php';
                 $paginaActual = isset($_GET['page']) ? $_GET['page'] : 1;
                 $offset = ($paginaActual - 1) * $registrosPorPagina;
 
-                if ($tipo == 'tecnico') {
-                    $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->bind_param("i", $userId);
-                    $stmt->execute();
-                    $resultado = $stmt->get_result();
-                } else {
-                    $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
-                    $resultado = $conn->query($sql);
+                switch ($tipo) {
+                    case 'tecnico':
+                        $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '6') AND token = '' AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bind_param("i", $userId);
+                        $stmt->execute();
+                        $resultado = $stmt->get_result();
+                        break;
+                    default:
+                        $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '6') AND token = '' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                        $resultado = $conn->query($sql);
+                        break;
                 }
 
                 $i = 0;
                 while ($fila = $resultado->fetch_assoc()): ?>
                     <div
                         class="ticket-card max-w-full p-6 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                        <a href="detalles?id=<?php echo $fila['idTicket']; ?>">
+                        <a href="resultado-de-encuesta?id=<?php echo $fila['idTicket']; ?>">
                             <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
                                 <?php echo $fila['asunto']; ?>
                             </h5>
@@ -193,20 +202,26 @@ include '../configuration/conn-session.php';
                                 class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Creado</span>
                         <?php elseif ($fila['estado'] == 2): ?>
                             <span
-                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Iniciando</span>
+                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Asignado</span>
                         <?php elseif ($fila['estado'] == 3): ?>
                             <span
-                                class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Realizando</span>
+                                class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Arribo</span>
                         <?php elseif ($fila['estado'] == 4): ?>
                             <span
-                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Hecho</span>
+                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Inicio</span>
                         <?php elseif ($fila['estado'] == 5): ?>
                             <span
-                                class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Programado</span>
+                                class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Realización</span>
                         <?php elseif ($fila['estado'] == 6): ?>
                             <span
-                                class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Congelado</span>
+                                class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Finalización</span>
                         <?php elseif ($fila['estado'] == 7): ?>
+                            <span
+                                class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Programado</span>
+                        <?php elseif ($fila['estado'] == 8): ?>
+                            <span
+                                class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Congelado</span>
+                        <?php elseif ($fila['estado'] == 9): ?>
                             <span
                                 class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Cancelado</span>
                         <?php endif; ?>
@@ -446,21 +461,21 @@ include '../configuration/conn-session.php';
 
                         if ($paginaActual > 1): ?>
                             <li>
-                                <a href="encuestas?page=<?php echo $paginaActual - 1; ?>"
+                                <a href="encuestas-contestadas?page=<?php echo $paginaActual - 1; ?>"
                                     class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Anterior</a>
                             </li>
                         <?php endif; ?>
 
                         <?php for ($i = $inicio; $i <= $fin; $i++): ?>
                             <li>
-                                <a href="encuestas?page=<?php echo $i; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white <?php if ($i == $paginaActual)
+                                <a href="encuestas-contestadas?page=<?php echo $i; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white <?php if ($i == $paginaActual)
                                        echo 'bg-blue-50 text-blue-500'; ?>"><?php echo $i; ?></a>
                             </li>
                         <?php endfor; ?>
 
                         <?php if ($paginaActual < $totalPaginas): ?>
                             <li>
-                                <a href="encuestas?page=<?php echo $paginaActual + 1; ?>"
+                                <a href="encuestas-contestadas?page=<?php echo $paginaActual + 1; ?>"
                                     class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-700 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Siguiente</a>
                             </li>
                         <?php endif; ?>

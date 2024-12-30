@@ -78,8 +78,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'AKIA3HJXVSKBDCQSUVUK';
-            $mail->Password = 'BBJq0wi3aCh0zuMhCuO2jlNTWaejJ8Mw8h7gBg8XMyRv';
+            $mail->Username = 'AKIA3HJXVSKBLWJPDZCZ';
+            $mail->Password = 'BI1QGHoakbEdXBO42Duf0N9VHABb6Y1Sw6yQUpiLzaS5';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div style="background: #1175cf;">
             <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px;">
             <div style="background: #0078e3;">
-            <img src="https://grupocardinales.com/assets/img/gcLogo.png" style="display: block; margin: 0 auto; padding: 20px 0px 10px; width: 200px; height: auto" alt="Grupo Cardinales">
+            <img src="https://atlantida.mx/mercurio/assets/img/logoATL_w.webp" style="display: block; margin: 0 auto; padding: 20px 0px 10px; width: 200px; height: auto" alt="Grupo Cardinales">
             </div>
             <div style="background: #fff; padding: 0 30px 0 30px;">
             <br>

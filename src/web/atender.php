@@ -49,23 +49,53 @@ function getStatus($status)
             echo 'Creado';
             break;
         case "2":
-            echo 'Iniciado';
+            echo 'Asignado';
             break;
         case "3":
-            echo 'Realizando';
+            echo 'Arribo';
             break;
         case "4":
-            echo 'Hecho';
+            echo 'Inicio';
             break;
         case "5":
-            echo 'Programado';
+            echo 'Realización';
             break;
         case "6":
-            echo 'Congelado';
+            echo 'Finalización';
             break;
         case "7":
+            echo 'Programado';
+            break;
+        case "8":
+            echo 'Programado';
+            break;
+        case "9":
             echo 'Cancelado';
             break;
+    }
+}
+
+function getAsignado($asignado)
+{
+    global $conn;
+
+    if ($asignado == "") {
+        echo 'Sin asignar';
+    } else {
+        $query = "SELECT nombre, apellido FROM users WHERE userId = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $asignado);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            echo $row['nombre'] . ' ' . $row['apellido'];
+        } else {
+            echo 'Técnico no encontrado';
+        }
+
+        $stmt->close();
     }
 }
 ?>
@@ -80,7 +110,7 @@ function getStatus($status)
     <link rel="icon" href="../../assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
-    <title>Mercurio | Atender</title>
+    <title>Atender | Mercurio</title>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -141,7 +171,6 @@ function getStatus($status)
                     </ol>
                 </nav>
                 <div class="max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
-
                     <div class="text-xl mb-6">
                         <strong class="semi-bold text-gray-900 md:text-xl dark:text-gray-100">Información del ticket
                             #<?php echo $row['idTicket'] ?> - <?php echo $row['asunto'] ?></strong>
@@ -216,7 +245,7 @@ function getStatus($status)
                         <?php } ?>
                         <?php if (!empty($row['domicilio'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Domicilio:
-                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600" href="' . $row['domicilio'] . '" target="_blank">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
+                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600 break-all" href="' . $row['domicilio'] . '" target="_blank">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['ciudad']) && !empty($row['domestado'])) { ?>
@@ -237,68 +266,54 @@ function getStatus($status)
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Creado por:
                             </span><?php echo $row['nombre']; ?></p>
+                        <?php if (!empty($row['asignado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Atendido por:
+                                </span><?php getAsignado($row['asignado']); ?></p>
+                        <?php } ?>
                         <?php if (!empty($row['eliminadopor'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Eliminado por:
                                 </span><?php echo $row['eliminadopor']; ?></p>
                         <?php } ?>
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Creado:
                             </span><?php echo traducirFecha($row['fhticket']); ?></p>
-                        <?php
-                        switch ($row['estado']) {
-                            case '2':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Iniciando:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Iniciando:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '3':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Haciendo:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Haciendo:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '4':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Hecho:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Hecho:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '5':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Programado:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Programado:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '6':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
-                                    </span><?php echo traducirFecha($row['fh_contestacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Congelado:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '7':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
-                                    </span><?php echo traducirFecha($row['fh_eliminacion']); ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Motivo de eliminación:
-                                    </span><?php echo $row['motivo_eliminacion']; ?></p>
-                                <?php
-                                break;
-                        }
-                        ?>
+                        <?php if (!empty($row['fhAsignado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Asignación:
+                                </span><?php echo traducirFecha($row['fhAsignado']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhAsignado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Arribo:
+                                </span><?php echo traducirFecha($row['fhArribo']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhInicio'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Inicio:
+                                </span><?php echo traducirFecha($row['fhInicio']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhRealizacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Realización:
+                                </span><?php echo traducirFecha($row['fhRealizacion']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhFinalizacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Finalización:
+                                </span><?php echo traducirFecha($row['fhFinalizacion']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhProgramada'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Programado:
+                                </span><?php echo traducirFecha($row['fhProgramada']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhCongelado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
+                                </span><?php echo traducirFecha($row['fh']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhEliminacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
+                                </span><?php echo traducirFecha($row['fhEliminacion']); ?></p>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Motivo de Eliminación:
+                                </span><?php echo $row['motivo_eliminacion']; ?></p>
+                        <?php } ?>
                     </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Evidencias</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
-                        <?php if (empty($row['evidencia']) && empty($row['evidenciaAbierto']) && empty($row['evidenciaHaciendo']) && empty($row['evidenciaHecho'])): ?>
+                        <?php if (empty($row['evidencia']) && empty($row['evidenciaArribo']) && empty($row['evidenciaInicio']) && empty($row['evidenciaRealizacion']) && empty($row['evidenciaFinalizacion'])): ?>
                             <p>No se han adjuntado evidencias</p>
                         <?php else: ?>
                             <div class="flex justify-start space-x-6 text-center">
@@ -314,34 +329,45 @@ function getStatus($status)
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaAbierto'])): ?>
+                                    <?php if (!empty($row['evidenciaArribo'])): ?>
+                                        <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
+                                                arribo:</span></p>
+                                        <div class="flex justify-center">
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaArribo']); ?>"
+                                                alt="Evidencia arribo" class="w-24 h-24 object-cover rounded-lg"
+                                                onclick="showImageEvidence(this)">
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div>
+                                    <?php if (!empty($row['evidenciaInicio'])): ?>
                                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
                                                 inicio:</span></p>
                                         <div class="flex justify-center">
-                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaAbierto']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaInicio']); ?>"
+                                                alt="Evidencia inicio" class="w-24 h-24 object-cover rounded-lg"
                                                 onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaHaciendo'])): ?>
+                                    <?php if (!empty($row['evidenciaRealizacion'])): ?>
                                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
                                                 realización:</span></p>
                                         <div class="flex justify-center">
-                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHaciendo']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaRealizacion']); ?>"
+                                                alt="Evidencia realización" class="w-24 h-24 object-cover rounded-lg"
                                                 onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
                                 </div>
                                 <div>
-                                    <?php if (!empty($row['evidenciaHecho'])): ?>
+                                    <?php if (!empty($row['evidenciaFinalizacion'])): ?>
                                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia de
-                                                terminado:</span></p>
+                                                finalización:</span></p>
                                         <div class="flex justify-center">
-                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaHecho']); ?>"
-                                                alt="Evidencia inicial" class="w-24 h-24 object-cover rounded-lg"
+                                            <img src="../../assets/imgTickets/<?php echo htmlspecialchars($row['evidenciaFinalizacion']); ?>"
+                                                alt="Evidencia finalización" class="w-24 h-24 object-cover rounded-lg"
                                                 onclick="showImageEvidence(this)">
                                         </div>
                                     <?php endif; ?>
@@ -349,22 +375,28 @@ function getStatus($status)
                             </div>
                         <?php endif; ?>
                     </div>
-                    <?php if ($row['estado'] == 4): ?>
+                    <?php if ($row['estado'] == 0 || $row['estado'] == 6): ?>
                         <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de
                             finalización</span>
-                        <div class="mb-6 text-base text-gray-500 dark:text-gray-400">
+                        <div class="mb-6 text-base text-gray-500 dark:text-gray-300">
                             <?php if (!empty($row['token'])): ?>
-                                <p>No se a contestado el formulario de finalización</p>
+                                <p>No se a contestado el formulario de finalización, por favor, contestar el formulario.
+                                    Link:</p>
+                                <a href="../cliente/visualizacion?token=<?= htmlspecialchars($row['token']); ?>"
+                                    class="text-blue-600 hover:text-blue-800">Contestar formulario</a>
                             <?php else: ?>
                                 <?php
                                 $idTicket = $row['idTicket'];
-                                $queryForm = "SELECT id FROM formsatisfaccion WHERE id = '$idTicket'";
-                                $resultForm = mysqli_query($conn, $queryForm);
-                                if ($resultForm && mysqli_num_rows($resultForm) > 0) {
-                                    $formData = mysqli_fetch_array($resultForm);
-                                    $formId = $formData['id'];
+                                $queryForm = "SELECT idForm FROM formsatisfaccion WHERE idTicket = ?";
+                                $stmt = $conn->prepare($queryForm);
+                                $stmt->bind_param("i", $idTicket);
+                                $stmt->execute();
+                                $resultForm = $stmt->get_result();
+                                if ($resultForm && $resultForm->num_rows > 0) {
+                                    $formData = $resultForm->fetch_assoc();
+                                    $formId = $formData['idForm'];
                                     ?>
-                                    <p>Contestado completamente. <a href="resultado?id=<?= $formId; ?>"
+                                    <p>Contestado completamente. <a href="resultado?id=<?= htmlspecialchars($formId); ?>"
                                             class="text-blue-600 hover:text-blue-800">Ver
                                             resultados</a>.</p>
                                 <?php } ?>
@@ -431,25 +463,34 @@ function getStatus($status)
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
                                 <select name="estado" id="estado"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="2" <?php if ($row['estado'] == 2) {
-                                        echo 'selected';
-                                    } ?>>Iniciando
-                                    </option>
                                     <option value="3" <?php if ($row['estado'] == 3) {
                                         echo 'selected';
-                                    } ?>>Realizando</option>
+                                    } ?>>Arribo a domicilio
+                                    </option>
                                     <option value="4" <?php if ($row['estado'] == 4) {
                                         echo 'selected';
-                                    } ?>>Hecho</option>
+                                    } ?>>Inicio - Antecedentes antes de manipulación
+                                    </option>
                                     <option value="5" <?php if ($row['estado'] == 5) {
                                         echo 'selected';
-                                    } ?>>Programado</option>
+                                    } ?>>Realización - Antecedentes de manipulación
+                                    </option>
                                     <option value="6" <?php if ($row['estado'] == 6) {
                                         echo 'selected';
-                                    } ?>>Congelado</option>
+                                    } ?>>Finalización - Antecedentes de cierre
+                                    </option>
                                     <option value="7" <?php if ($row['estado'] == 7) {
                                         echo 'selected';
-                                    } ?>>Cancelado</option>
+                                    } ?>>Programado
+                                    </option>
+                                    <option value="8" <?php if ($row['estado'] == 8) {
+                                        echo 'selected';
+                                    } ?>>Congelado
+                                    </option>
+                                    <option value="9" <?php if ($row['estado'] == 9) {
+                                        echo 'selected';
+                                    } ?>>Cancelado
+                                    </option>
                                 </select>
                             </div>
                             <div class="mb-4">
@@ -460,39 +501,52 @@ function getStatus($status)
                                     class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Escribir motivos de cambio..."></textarea>
                             </div>
+
+                            <div class="hidden" id="evidenciaArribo">
+                                <label for="evidenciaArribo"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
+                                    de arribo</label>
+                                <input type="file" id="evidenciaArribo" name="evidenciaArribo"
+                                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    aria-describedby="evidencia-arribo">
+                                <div id="evidencia-arribo" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                                    Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
+                            </div>
                             <div class="hidden" id="evidenciaInicio">
-                                <label for="evidenciaAbierto"
+                                <label for="evidenciaInicio"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
                                     de inicio</label>
-                                <input type="file" id="evidenciaAbierto" name="evidenciaAbierto"
+                                <input type="file" id="evidenciaInicio" name="evidenciaInicio"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                     onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
                                     aria-describedby="evidencia-inicio">
                                 <div id="evidencia-inicio" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
                             </div>
-                            <div class="hidden" id="evidenciaRealizo">
-                                <label for="evidenciaHaciendo"
+                            <div class="hidden" id="evidenciaRealizacion">
+                                <label for="evidenciaRealizacion"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
                                     de realización</label>
-                                <input type="file" id="evidenciaHaciendo" name="evidenciaHaciendo"
+                                <input type="file" id="evidenciaRealizacion" name="evidenciaRealizacion"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                     onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
-                                    aria-describedby="evidencia-haciendo">
-                                <div id="evidencia-haciendo" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                                    aria-describedby="evidencia-realizacion">
+                                <div id="evidencia-realizacion" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
                             </div>
-                            <div class="hidden" id="evidenciaTerminado">
-                                <label for="evidenciaHecho"
+                            <div class="hidden" id="evidenciaFinalizacion">
+                                <label for="evidenciaFinalizacion"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
-                                    de hecho</label>
-                                <input type="file" id="evidenciaHecho" name="evidenciaHecho"
+                                    de finalización</label>
+                                <input type="file" id="evidenciaFinalizacion" name="evidenciaFinalizacion"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                                     onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
-                                    aria-describedby="evidencia-hecho">
-                                <div id="evidencia-hecho" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                                    aria-describedby="evidencia-finalizacion">
+                                <div id="evidencia-finalizacion" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
                             </div>
+
                             <div class="flex justify-center my-3">
                                 <button type="button" id="btnMostrar"
                                     class="hidden me-2 mb-2 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

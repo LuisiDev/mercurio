@@ -82,7 +82,7 @@ function getStatus($status)
     <link rel="stylesheet" href="../output.css">
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
-    <title>Mercurio | Dashboard</title>
+    <title>Mercurio | Asignar ticket</title>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -217,7 +217,7 @@ function getStatus($status)
                         <?php } ?>
                         <?php if (!empty($row['domicilio'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Domicilio:
-                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600" href="' . $row['domicilio'] . '" target="_blank">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
+                                </span><?php echo (strpos($row['domicilio'], 'http') === 0) ? '<a class="text-blue-500 hover:underline hover:text-blue-600 break-all" href="' . $row['domicilio'] . '" target="_blank">' . $row['domicilio'] . '</a>' : $row['domicilio']; ?>
                             </p>
                         <?php } ?>
                         <?php if (!empty($row['ciudad']) && !empty($row['domestado'])) { ?>

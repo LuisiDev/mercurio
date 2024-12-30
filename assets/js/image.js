@@ -1,24 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
   var estadoSelect = document.getElementById("estado");
+  var evidenciaArriboDiv = document.getElementById("evidenciaArribo");
   var evidenciaInicioDiv = document.getElementById("evidenciaInicio");
-  var evidenciaRealizoDiv = document.getElementById("evidenciaRealizo");
-  var evidenciaTerminadoDiv = document.getElementById("evidenciaTerminado");
+  var evidenciaRealizacionDiv = document.getElementById("evidenciaRealizacion");
+  var evidenciaFinalizacionDiv = document.getElementById("evidenciaFinalizacion");
   var inputsEvidencia = document.querySelectorAll('input[type="file"]');
   var outputImage = document.getElementById("output");
 
   function toggleEvidencia() {
+    evidenciaArriboDiv.style.display = "none";
     evidenciaInicioDiv.style.display = "none";
-    evidenciaRealizoDiv.style.display = "none";
-    evidenciaTerminadoDiv.style.display = "none";
+    evidenciaRealizacionDiv.style.display = "none";
+    evidenciaFinalizacionDiv.style.display = "none";
 
     resetFileInputsAndHideImage();
 
-    if (estadoSelect.value === "2") {
-      evidenciaInicioDiv.style.display = "block";
-    } else if (estadoSelect.value === "3") {
-      evidenciaRealizoDiv.style.display = "block";
+    if (estadoSelect.value === "3") {
+      evidenciaArriboDiv.style.display = "block";
     } else if (estadoSelect.value === "4") {
-      evidenciaTerminadoDiv.style.display = "block";
+      evidenciaInicioDiv.style.display = "block";
+    } else if (estadoSelect.value === "5") {
+      evidenciaRealizacionDiv.style.display = "block";
+    } else if (estadoSelect.value === "6") {
+      evidenciaFinalizacionDiv.style.display = "block";
     }
   }
 
@@ -291,12 +295,14 @@ function saveImage() {
 
   // Determinar qué tipo de evidencia está activa
   let tipoEvidencia;
-  if (document.getElementById("evidenciaAbierto").files.length > 0) {
-    tipoEvidencia = "evidenciaAbierto";
-  } else if (document.getElementById("evidenciaHaciendo").files.length > 0) {
-    tipoEvidencia = "evidenciaHaciendo";
-  } else if (document.getElementById("evidenciaHecho").files.length > 0) {
-    tipoEvidencia = "evidenciaHecho";
+  if (document.getElementById("evidenciaArribo").files.length > 0) {
+    tipoEvidencia = "evidenciaArribo";
+  } else if (document.getElementById("evidenciaInicio").files.length > 0) {
+    tipoEvidencia = "evidenciaInicio";
+  } else if (document.getElementById("evidenciaRealizacion").files.length > 0) {
+    tipoEvidencia = "evidenciaRealizacion";
+  } else if (document.getElementById("evidenciaFinalizacion").files.length > 0) {
+    tipoEvidencia = "evidenciaFinalizacion";
   } else {
     console.error("No se encontró evidencia activa.");
     return;

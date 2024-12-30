@@ -81,6 +81,12 @@ if (isset($_GET['id'])) {
                                 <option value="Instalación" <?php if ($row['servicio'] == 'Instalación') {
                                     echo 'selected';
                                 } ?>>Instalación</option>
+                                <option value="Desinstalación" <?php if ($row['servicio'] == 'Desinstalación') {
+                                    echo 'selected';
+                                } ?>>Desinstalación</option>
+                                <option value="Recuperación" <?php if ($row['servicio'] == 'Recuperación') {
+                                    echo 'selected';
+                                } ?>>Recuperación</option>
                                 <option value="Revisión" <?php if ($row['servicio'] == 'Revisión') {
                                     echo 'selected';
                                 } ?>>Revisión</option>
@@ -286,7 +292,7 @@ if (isset($_GET['id'])) {
                             <div id="btnLabel" class="mt-1 text-sm text-gray-500 dark:text-gray-300">Puedes localizar la
                                 ubicación a través de Maps al presionar el botón</div>
                         </div>
-                        <div class="mb-5">
+                        <div class="mb-5 flex justify-center items-center">
                             <div id="locationList" class="block max-w-md font-normal text-gray-700 dark:text-gray-400">
                             </div>
                         </div>
