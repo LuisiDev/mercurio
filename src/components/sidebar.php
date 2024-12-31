@@ -397,17 +397,17 @@
          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="avatarButton">
             <li>
-               <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Mis
+               <a href="gestion" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Mis
                   asignaciones</a>
             </li>
             <li>
-               <a href="#"
+               <a href="ajustes"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Ajustes</a>
             </li>
             <li>
-               <button type="button" id="dark-mode-toggle"
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Modo
-                  oscuro</button>
+               <a type="button" data-animation="polygon"
+                  class="theme-toggle block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Modo
+                  oscuro</a>
             </li>
          </ul>
          <div class="py-1">
@@ -463,9 +463,30 @@
    </a>
 </div>
 
+<script src="js/animation.js"></script>
+<script src="js/light-dark.js" type="module"></script>
 <script>
    document.addEventListener('DOMContentLoaded', () => {
       const toggleButton = document.getElementById('dark-mode-toggle');
+      const htmlElement = document.documentElement;
+
+      if (localStorage.getItem('dark-mode') === 'true') {
+         htmlElement.classList.add('dark');
+      }
+
+      toggleButton.addEventListener('click', () => {
+         if (htmlElement.classList.contains('dark')) {
+            htmlElement.classList.remove('dark');
+            localStorage.setItem('dark-mode', 'false');
+         } else {
+            htmlElement.classList.add('dark');
+            localStorage.setItem('dark-mode', 'true');
+         }
+      });
+   });
+
+   document.addEventListener('DOMContentLoaded', () => {
+      const toggleButton = document.getElementById('dark-mode-toggle-2');
       const htmlElement = document.documentElement;
 
       if (localStorage.getItem('dark-mode') === 'true') {

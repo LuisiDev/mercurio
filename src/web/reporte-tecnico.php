@@ -663,7 +663,7 @@ function getAsignado($asignado)
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
-                                            <?php if ($fila['estado'] == '4' || $fila['estado'] == '7' || $tipo == 'comercializacion'): ?>
+                                            <?php if ($fila['estado'] == '6' || $fila['estado'] == '9' || $tipo == 'comercializacion'): ?>
                                                 <button type="button"
                                                     onclick="window.location.href = 'detalles?id=<?php echo $fila['idTicket']; ?>'"
                                                     class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -691,7 +691,7 @@ function getAsignado($asignado)
                                                     Asignar
                                                 </button>
                                             <?php endif; ?>
-                                            <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '5' || $fila['estado'] == '6') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
+                                            <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '7' || $fila['estado'] == '8') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
                                                 <button type="button"
                                                     onclick="window.location.href = 'atender?id=<?php echo $fila['idTicket']; ?>'"
                                                     class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2">
@@ -718,7 +718,7 @@ function getAsignado($asignado)
                                                     Editar</button>
                                             <?php endif; ?>
                                             <?php if (
-                                                ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7') &&
+                                                ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' || $fila['estado'] == '8' || $fila['estado'] == '9') &&
                                                 $tipo != 'comercializacion' &&
                                                 ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '4'))
                                             ): ?>
@@ -930,6 +930,11 @@ function getAsignado($asignado)
                                     </div>
                                 </div>
                                 <div class="modal-body p-4 space-y-4 text-sm text-gray-700 dark:text-gray-200 w-96">
+                                    <div>
+                                        <span>
+
+                                        </span>
+                                    </div>
                                     <div class="contents">
                                         <!-- Todas las semanas del año -->
                                         <?php
@@ -1080,11 +1085,11 @@ function getAsignado($asignado)
                                     $offset = ($paginaActual - 1) * $registrosPorPagina;
 
                                     // Consulta base para los tickets
-                                    $sql = "SELECT SQL_CALC_FOUND_ROWS * 
-                                            FROM tbticket 
-                                            WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) 
-                                            AND WEEK(fhticket, 1) = ? 
-                                            AND YEAR(fhticket) = ? ";
+                                    $sql = "SELECT SQL_CALC_FOUND_ROWS idTicket, fhticket, nombre, numTrabajador, numCliente, dispositivo, prioridad, estado, asignado 
+            FROM tbticket 
+            WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) 
+            AND WEEK(fhticket, 1) = ? 
+            AND YEAR(fhticket) = ? ";
 
                                     // Filtrar por técnico si se seleccionó uno
                                     if ($tecnicoId > 0) {
