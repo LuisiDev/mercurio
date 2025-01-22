@@ -3,16 +3,17 @@ include '../configuration/conn-session.php';
 
 $userId = $_SESSION['userId'];
 $tipo = $_SESSION['tipo'];
+$nombre = $_SESSION['nombre'];
 
 $tecnicosData = [];
 
 if ($tipo == 'tecnico') {
-    $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+    $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, u.imagen, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
     $stmt->bind_param('i', $userId);
     $stmt->execute();
     $result = $stmt->get_result();
 } else {
-    $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+    $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, u.imagen, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
 }
 
 if (!$result) {
@@ -27,8 +28,12 @@ $totalTodos = $conn->query("SELECT COUNT(*) AS total FROM tbticket")->fetch_asso
 $totalCreados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1'")->fetch_assoc()['total'];
 $totalEliminados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '0'")->fetch_assoc()['total'];
 $totalCreadosSinAsignar = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1' AND asignado IS NULL")->fetch_assoc()['total'];
-// Total de tickets creados asignaos al técnico logueado
 $totalAsignado = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '2'")->fetch_assoc()['total'];
+$totalCreadosUsuario = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '0' || estado = '1' || estado = '2' || estado = '3' || estado = '4' || estado = '5' || estado = '6' || estado = '7' || estado = '8' || estado = '9' AND nombre = '$nombre'")->fetch_assoc()['total'];
+$totalAtendidosUsuario = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '6' || estado = '0' AND token IS NULL AND nombre = '$nombre'")->fetch_assoc()['total'];
+$totalCorreos = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE correo != ''")->fetch_assoc()['total'];
+$totalCreadosCorreo = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE (estado ='0' OR estado = '1' OR estado = '2' OR estado = '3' OR estado = '4' OR estado = '5' OR estado = '6' OR estado = '7' OR estado = '8' OR estado = '9') AND correo != '' AND nombre = '$nombre'")->fetch_assoc()['total'];
+$totalFinalizados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '6' || estado = '0' AND token IS NULL")->fetch_assoc()['total'];
 
 // Total de Tickets
 $datosDiarios = [];
@@ -110,7 +115,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
-    <title>Mercurio | Dashboard</title>
+    <title>Inicio | Mercurio</title>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -140,13 +145,59 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="p-4 lg:mb-4 sm:ml-64">
-        <div class="p-4">
+    <div id="informational-banner" tabindex="-1"
+        class="sticky z-30 sm:ml-64 top-16 sm:top-0 start-0 flex flex-col justify-between shadow-sm w-auto p-4 border-b border-gray-200 md:flex-row bg-white dark:bg-gray-800 dark:border-gray-700">
+        <div class="mb-4 md:mb-0 md:me-4">
+            <h2 class="mb-1 text-base font-semibold text-gray-900 dark:text-white">Nuevo año, nuevo Mercurio.</h2>
+            <p class="flex items-center text-sm font-normal text-gray-500 dark:text-gray-400">
+                Hemos actulizado Mercurio con nuevas funciones y mejoras. Seguiremos trabajando para mejorar la
+                experiencia del cliente y colaboradores. Puedes conocer las nuevas funciones en la documentación.
+            </p>
+        </div>
+        <div class="flex items-center flex-shrink-0">
+            <a href="#"
+                class="inline-flex items-center justify-center px-3 py-2 me-3 text-xs font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"><svg
+                    class="w-3 h-3 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                    viewBox="0 0 20 18">
+                    <path
+                        d="M9 1.334C7.06.594 1.646-.84.293.653a1.158 1.158 0 0 0-.293.77v13.973c0 .193.046.383.134.55.088.167.214.306.366.403a.932.932 0 0 0 .5.147c.176 0 .348-.05.5-.147 1.059-.32 6.265.851 7.5 1.65V1.334ZM19.707.653C18.353-.84 12.94.593 11 1.333V18c1.234-.799 6.436-1.968 7.5-1.65a.931.931 0 0 0 .5.147.931.931 0 0 0 .5-.148c.152-.096.279-.235.366-.403.088-.167.134-.357.134-.55V1.423a1.158 1.158 0 0 0-.293-.77Z" />
+                </svg> Documentación</a>
+            <a href="#"
+                class="inline-flex items-center justify-center px-3 py-2 me-2 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                Ver lo nuevo <svg class="w-3 h-3 ms-2 rtl:rotate-180" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9" />
+                </svg></a>
+            <button data-dismiss-target="#informational-banner" type="button" id="dismiss-informational-banner"
+                class="flex-shrink-0 inline-flex justify-center w-7 h-7 items-center text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+                <span class="sr-only">Close banner</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const dismissBanner = document.getElementById('dismiss-informational-banner');
+        dismissBanner.addEventListener('click', () => {
+            localStorage.setItem('informational-banner-dismissed', 'true');
+        });
+
+        const isBannerDismissed = localStorage.getItem('informational-banner-dismissed');
+        if (isBannerDismissed) {
+            document.getElementById('informational-banner').remove();
+        }
+    </script>
+
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-3">
             <div class="flex justify-between">
-                <div class="">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Bienvenido,
-                        <?php echo $_SESSION['nombre'] . ' ' . $_SESSION['apellido']; ?>
-                    </h2>
+                <div>
+                    <h2 class="text-2xl font-normal text-gray-900 dark:text-white mb-4">Inicio</h2>
                 </div>
                 <!-- <div class="inline-flex items-center">
                     <h3 class="text-lg font-normal text-gray-500 dark:text-gray-400">
@@ -163,34 +214,107 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                 </div> -->
             </div>
 
-            <div class="grid justify-items-center grid-cols-1 mb-4">
-                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
-
-                    <div class="flex items-center border-b border-gray-200 dark:border-gray-700">
-                        <div>
-                            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">
-                                Reporte semanal de tickets completados
-                            </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                Semana número <?php echo date('W'); ?>
-                            </p>
+            <div class="grid justify-items-center grid-cols-1 gap-4 mb-4">
+                <div class="w-full sm:grid lg:flex lg:justify-between px-4 py-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                    <div class="text-center justify-center lg:flex lg:text-left lg:items-center">
+                        <div class="my-5 lg:my-0 grid grid-cols-1 lg:flex justify-items-center lg:justify-between">
+                            <div class="mb-2 lg:mb-0 lg:me-3">
+                                <?php if ($_SESSION['imagen']): ?>
+                                    <img class="w-12 rounded-full"
+                                        src="../../assets/imgUsers/<?php echo $_SESSION['imagen']; ?>"
+                                        alt="Imagen de usuario">
+                                <?php else: ?>
+                                    <img class="w-12 rounded-full" src="../../assets/imgUsers/default.png"
+                                        alt="Imagen de usuario">
+                                <?php endif; ?>
+                            </div>
+                            <div>
+                                <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
+                                    <?php echo $_SESSION['nombre'] . ' ' . $_SESSION['apellido']; ?>
+                                </h5>
+                                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                    <?php echo $_SESSION['tipo']; ?>
+                                </p>
+                            </div>
                         </div>
                     </div>
+                    <div class="sm:block lg:flex sm:space-x-0 space-y-4 lg:space-y-0 lg:space-x-4">
+                        <div
+                            class="flex justify-between border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-4">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-800 flex items-center justify-center me-3">
+                                <svg class="w-6 h-6 text-gray-50 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
 
-                    <!--Gráfica de-->
+                            </div>
+                            <div class="text-end lg:text-start">
+                                <p class="text-base font-medium text-gray-900 dark:text-white">
+                                    Total creados
+                                </p>
+                                <p class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                    <?php echo $totalCreadosUsuario; ?> tickets
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex justify-between border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-4">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-800 flex items-center justify-center me-3">
+                                <svg class="w-6 h-6 text-gray-50 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
 
+                            </div>
+                            <div class="text-end lg:text-start"> 
+                                <p class="text-base font-medium text-gray-900 dark:text-white">
+                                    Total atendidos
+                                </p>
+                                <p class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                    <?php echo $totalAtendidosUsuario; ?> tickets
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex justify-between border border-gray-300 dark:bg-gray-700 dark:border-gray-600 rounded-lg p-4">
+                            <div
+                                class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-800 flex items-center justify-center me-3">
+                                <svg class="w-6 h-6 text-gray-50 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                                        d="m3.5 5.5 7.893 6.036a1 1 0 0 0 1.214 0L20.5 5.5M4 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z" />
+                                </svg>
+                            </div>
+                            <div class="text-end lg:text-start">
+                                <p class="text-base font-medium text-gray-900 dark:text-white">
+                                    Correos enviados
+                                </p>
+                                <p class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                    <?php echo $totalCreadosCorreo; ?> correos
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="grid justify-items-center sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
-                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                     <div class="flex items-center">
                         <div>
                             <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
-                                <?php echo $totalCreadosSinAsignar; ?>
+                                <?php echo $totalTodos; ?>
                             </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets asignados
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
                             </p>
                         </div>
                     </div>
@@ -198,73 +322,80 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                         <div
                             class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-700 flex items-center justify-center me-3">
                             <svg class="w-6 h-6 text-gray-50 dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
-                                <path
-                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M18.5 12A2.5 2.5 0 0 1 21 9.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v2.5a2.5 2.5 0 0 1 0 5V17a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-2.5a2.5 2.5 0 0 1-2.5-2.5Z" />
                             </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                     <div class="flex items-center">
-                        <div class="">
+                        <div>
                             <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
-                                <?php echo $totalAsignado; ?>
+                                <?php echo $totalFinalizados; ?>
                             </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
-                                asignados</p>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets finalizados
+                            </p>
                         </div>
+                    </div>
+                    <div>
                         <div
-                            class="w-12 h-12 rounded-lg bg-blue-600 dark:bg-gray-700 flex items-center justify-center me-3">
-                            <svg class="w-6 h-6 text-gray-100 dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                            class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-700 flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-50 dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M15 5v2m0 10v2M9 5h10a2 2 0 0 1 2 2v3a2 2 0 1 0 0 4v3m-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 1 0 0-4V7a2 2 0 0 1 2-2M3 3l18 18" />
                             </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                     <div class="flex items-center">
-                        <div class="">
+                        <div>
                             <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
-                                <?php echo $totalAsignado; ?>
+                                <?php echo $totalEliminados; ?>
                             </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
-                                asignados</p>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets eliminados
+                            </p>
                         </div>
+                    </div>
+                    <div>
                         <div
-                            class="w-12 h-12 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center me-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                viewBox="0 0 24 24">
-                                <path
-                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                            class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-700 flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-50 dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
                             </svg>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-between px-4 py-4 mb-4 bg-white rounded-lg shadow">
+                <div class="w-full flex justify-between px-4 py-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                     <div class="flex items-center">
-                        <div class="">
+                        <div>
                             <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
-                                <?php echo $totalAsignado; ?>
+                                <?php echo $totalCorreos; ?>
                             </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
-                                asignados</p>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de correos enviados
+                            </p>
                         </div>
+                    </div>
+                    <div>
                         <div
-                            class="w-12 h-12 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center me-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="w-12 h-12 rounded-lg bg-blue-700 dark:bg-gray-700 flex items-center justify-center me-3">
+                            <svg class="w-6 h-6 text-gray-50 dark:text-white" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
-                                <path
-                                    d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                                    d="m3.5 5.5 7.893 6.036a1 1 0 0 0 1.214 0L20.5 5.5M4 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z" />
                             </svg>
                         </div>
                     </div>
@@ -275,9 +406,17 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
             <div class="grid justify-items-center sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
                 <?php foreach ($tecnicosData as $tecnicoData): ?>
-                    <div class="max-w-sm w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                    <div class="w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
                         <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex justify-center items-center">
+                                <?php if ($tecnicoData['imagen']): ?>
+                                    <img class="w-12 h-12 rounded-full me-2"
+                                        src="../../assets/imgUsers/<?php echo $tecnicoData['imagen']; ?>"
+                                        alt="Imagen de usuario">
+                                <?php else: ?>
+                                    <img class="w-12 h-12 rounded-full me-2" src="../../assets/imgUsers/default.png"
+                                        alt="Imagen de usuario">
+                                <?php endif; ?>
                                 <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white pe-1">Técn.
                                     <?php echo $tecnicoData['nombre'] . ' ' . $tecnicoData['apellido']; ?>
                                 </h5>
@@ -598,11 +737,10 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                             <div class="flex items-center">
                                 <div
                                     class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center me-3">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path
-                                            d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3.5m5.5 7v.01M19 19a2.003 2.003 0 0 0 .914-3.782a1.98 1.98 0 0 0-2.414.483" />
                                     </svg>
                                 </div>
                                 <div>
@@ -651,7 +789,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                     while ($row = $result->fetch_assoc()):
                                         ?>
                                         <tr class="border-b border-gray-200 dark:border-gray-700">
-                                            <td class="px-6 py-3">
+                                            <td class="px-6 py-3 text-blue-600">
                                                 <?php if ($tipo == 'admin' || $tipo == 'coordinador'): ?>
                                                     <a href="asignar?id=<?php echo $row['idTicket']; ?>">
                                                         <?php echo $row['idTicket']; ?>
@@ -681,7 +819,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
             <?php if ($tipo !== 'tecnico'): ?>
                 <div class="grid justify-items-center gap-4 mb-4">
 
-                    <div class="sm:max-w-sm lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                    <div class="lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
 
                         <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-center">
@@ -769,7 +907,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
 
                     </div>
 
-                    <div class="sm:max-w-sm lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                    <div class="lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
 
                         <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-center">
@@ -858,7 +996,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
 
                     </div>
 
-                    <div class="sm:max-w-sm lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
+                    <div class="lg:max-w-full w-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
 
                         <div class="flex justify-between pb-4 mb-4 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-center">

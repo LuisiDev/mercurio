@@ -181,20 +181,20 @@ function getStatus($status)
                             </p>
                         <?php } ?>
                     </div>
-                    <?php if (!empty($row['placasContacto']) && !empty($row['marcaContacto'])) { ?>
+                    <?php if (!empty($row['placasContacto']) || !empty($row['marcaContacto'])) { ?>
                         <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del vehiculo</span>
-                        <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
-                            <?php if (!empty($row['placasContacto'])) { ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas:
-                                    </span><?php echo $row['placasContacto']; ?>
-                                </p>
-                            <?php } ?>
-                            <?php if (!empty($row['marcaContacto'])) { ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Marca/modelo:
-                                    </span><?php echo $row['marcaContacto']; ?></p>
-                            <?php } ?>
-                        </div>
                     <?php } ?>
+                    <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                        <?php if (!empty($row['placasContacto'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas:
+                                </span><?php echo $row['placasContacto']; ?>
+                            </p>
+                        <?php } ?>
+                        <?php if (!empty($row['marcaContacto'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Marca/modelo:
+                                </span><?php echo $row['marcaContacto']; ?></p>
+                        <?php } ?>
+                    </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del ticket</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha del ticket:

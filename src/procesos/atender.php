@@ -40,6 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 if (move_uploaded_file($archivoTmp, $rutaDestino)) {
                     return $nombreArchivo;
                 }
+            } else {
+                echo "<script>alert('La imagen {$campo} es mayor a 3MB o el formato no es permitido.');</script>";
+                echo "<script>window.history.back();</script>";
+                exit();
             }
         }
         return null;
@@ -167,6 +171,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 }
             }
         }
+
+        // Sonido mp3 de exito
+        echo "<script type='text/javascript'>document.getElementById('audio').play();</script>";
+        echo "<audio id='audio' src='../../assets/sounds/success.mp3' autoplay></audio>";
 
         echo "<script>alert('Ticket atendido exitosamente.');</script>";
         echo "<script>window.location.href = '../web/gestion.php';</script>";

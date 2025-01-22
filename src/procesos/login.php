@@ -10,7 +10,7 @@ if (isset($_POST['user']) && isset($_POST['password'])) {
     $usuario = $_POST['user'];
     $contrasena = $_POST['password']; // o usar SHA1($_POST['password']) (No recomendable, pero funcional para el uso únicamente de pruebas)
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE user = ?");
+    $stmt = $conn->prepare("SELECT * FROM users WHERE BINARY user = ?");
     $stmt->bind_param("s", $usuario);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -37,9 +37,9 @@ if (isset($_POST['user']) && isset($_POST['password'])) {
             $_SESSION['userId'] = $fila['userId'];
 
             if ($fila['tipo'] == 'admin') {
-                echo "<script>window.location.href = '../web/dashboard.php';</script>";
+                echo "<script>window.location.href = '../web/dashboard';</script>";
             } else {
-                echo "<script>window.location.href = '../web/tickets.php';</script>";
+                echo "<script>window.location.href = '../web/tickets';</script>";
             }
             exit;
         } else {

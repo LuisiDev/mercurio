@@ -152,7 +152,7 @@ include '../components/modal-baja-usuario.php';
                                     Email
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Imagen de usuario
+                                    Correos enviados
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     <div class="flex items-center">
@@ -208,19 +208,7 @@ include '../components/modal-baja-usuario.php';
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <?php echo htmlspecialchars($fila['userId']) ?>
                                     </th>
-                                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        <?php echo htmlspecialchars($fila['user']) ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php echo htmlspecialchars($fila['nombre']) ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php echo htmlspecialchars($fila['apellido']) ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php echo htmlspecialchars($fila['email']) ?>
-                                    </td>
-                                    <td class="px-6 py-4">
+                                    <td class="flex px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         <?php if ($fila['imagen'] == ''): ?>
                                             <div class="flex items-center justify-center">
                                                 <img src="../../assets/imgUsers/default.png" alt="Imagen de usuario"
@@ -233,9 +221,22 @@ include '../components/modal-baja-usuario.php';
                                                     class="w-8 h-8 rounded-full">
                                             </div>
                                         <?php endif; ?>
+                                        <?php echo htmlspecialchars($fila['user']) ?>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <?php echo htmlspecialchars($fila['tipo']) ?>
+                                        <?php echo htmlspecialchars($fila['nombre']) ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php echo htmlspecialchars($fila['apellido']) ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php echo htmlspecialchars($fila['email']) ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php echo htmlspecialchars($fila['correosEnviados']) ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php echo userRole($fila['tipo']); ?>
                                     </td>
                                     <td class="px-6 py-4">
                                         <?php echo htmlspecialchars($fila['fhCreacion']) ?>

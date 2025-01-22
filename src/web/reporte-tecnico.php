@@ -150,6 +150,19 @@ function getAsignado($asignado)
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
     <title>Reporte técnico | Mercurio</title>
+    <link rel="stylesheet" href="../../node_modules/simple-datatables/dist/style.css">
+    <script type="module">
+        import { DataTable } from "../../node_modules/simple-datatables/dist/module.js";
+        window.dt = new DataTable("#search-table", {
+            searchable: true,
+            sortable: true,
+        });
+
+        window.dt = new DataTable("#semanas-table", {
+            searchable: true,
+            sortable: true,
+        });
+    </script>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -485,7 +498,7 @@ function getAsignado($asignado)
 
                     <!-- Tabla de tickets asignados -->
                     <div class="relative overflow-x-auto sm:rounded-lg">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="search-table">
                             <thead
                                 class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-400">
                                 <tr>
@@ -981,7 +994,7 @@ function getAsignado($asignado)
 
                         <!-- Tabla de tickets de la semana -->
                         <div class="relative overflow-x-auto sm:rounded-lg">
-                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="semanas-table">
                                 <thead
                                     class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-400">
                                     <tr>
@@ -1086,10 +1099,10 @@ function getAsignado($asignado)
 
                                     // Consulta base para los tickets
                                     $sql = "SELECT SQL_CALC_FOUND_ROWS idTicket, fhticket, nombre, numTrabajador, numCliente, dispositivo, prioridad, estado, asignado 
-            FROM tbticket 
-            WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) 
-            AND WEEK(fhticket, 1) = ? 
-            AND YEAR(fhticket) = ? ";
+                                    FROM tbticket 
+                                    WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) 
+                                    AND WEEK(fhticket, 1) = ? 
+                                    AND YEAR(fhticket) = ? ";
 
                                     // Filtrar por técnico si se seleccionó uno
                                     if ($tecnicoId > 0) {

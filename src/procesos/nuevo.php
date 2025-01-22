@@ -14,13 +14,14 @@ function generateToken()
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    date_default_timezone_set("America/Chihuahua");
+    date_default_timezone_set("America/Mexico_City");
     $fhticket = date('Y-m-d H:i:s');
     $nombre = $_SESSION['nombre'];
     $numTrabajador = $_SESSION['user'];
     $numCliente = $_POST['numCliente'];
     $dispositivo = $_POST['dispositivo'];
     $imeiCliente = $_POST['imeiCliente'];
+    $iccidSIM = $_POST['iccidSIM'];
     $fhRevision = isset($_POST['fhRevision']) ? $_POST['fhRevision'] : null;
     $numContacto = $_POST['numContacto'];
     $nomContacto = $_POST['nomContacto'];
@@ -58,9 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $rutaArchivo = null;
     }
 
-    $sql = "INSERT INTO tbticket (fhticket, nombre, numTrabajador, numCliente, dispositivo, imeiCliente, fhRevision, numContacto, nomContacto, placasContacto, marcaContacto, prioridad, asunto, descripcion, estado, domicilio, ciudad, domestado, codpostal, domdescripcion, servicio, correo, evidencia, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO tbticket (fhticket, nombre, numTrabajador, numCliente, dispositivo, imeiCliente, iccidSIM, fhRevision, numContacto, nomContacto, placasContacto, marcaContacto, prioridad, asunto, descripcion, estado, domicilio, ciudad, domestado, codpostal, domdescripcion, servicio, correo, evidencia, token) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssssssssssssssssss", $fhticket, $nombre, $numTrabajador, $numCliente, $dispositivo, $imeiCliente, $fhRevision, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $prioridad, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $correo, $archivo, $token);
+    $stmt->bind_param("sssssssssssssssssssssssss", $fhticket, $nombre, $numTrabajador, $numCliente, $dispositivo, $imeiCliente, $iccidSIM, $fhRevision, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $prioridad, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $correo, $archivo, $token);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {

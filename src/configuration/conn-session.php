@@ -9,6 +9,7 @@ include '../configuration/connection.php';
 
 $tipo = $_SESSION['tipo'];
 $userId = $_SESSION['userId'];
+$nombre = $_SESSION['nombre'];
 
 if ($tipo == 'tecnico') {
    $sql = "SELECT COUNT(*) as total FROM tbticket WHERE asignado = ? AND estado <> 0";

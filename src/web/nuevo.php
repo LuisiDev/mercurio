@@ -57,7 +57,10 @@ function obtenerNumeroTicket($conn)
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
     <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+        <div class="p-4 sm:mt-14">
+            <!-- <div>
+                <h2 class="text-2xl font-normal text-gray-900 dark:text-white mb-4">Creación de nuevo ticket</h2>
+            </div> -->
             <div class="grid grid-cols-1 gap-4 mb-4">
                 <div class="max-w-full w-full h-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
 
@@ -130,6 +133,23 @@ function obtenerNumeroTicket($conn)
                                 <input type="text" id="imeiCliente" name="imeiCliente"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="ESN de Dispositivo">
+                            </div>
+                        </div>
+                        <div class="mb-5">
+                            <label for="iccidSIM"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ICCID</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6Zm4.996 2a1 1 0 0 0 0 2h.01a1 1 0 1 0 0-2h-.01ZM11 8a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-6Zm-4.004 3a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2h-.01ZM11 11a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-6Zm-4.004 3a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2h-.01ZM11 14a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-6Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="iccidSIM" name="iccidSIM"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="ICCID de SIM">
                             </div>
                         </div>
                         <input type="hidden" id="fhRevision">
@@ -359,7 +379,7 @@ function obtenerNumeroTicket($conn)
                                 lugar</label>
                             <textarea id="domdescripcion" name="domdescripcion" rows="4"
                                 class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Descripción del ticket..."></textarea>
+                                placeholder="Descripción del lugar..."></textarea>
                         </div>
                         <div class="mb-5">
                             <label for="evidencia"

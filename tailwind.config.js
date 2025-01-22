@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{html,js,php}", "./node_modules/flowbite/**/*.js"],
   darkMode: "class", // or 'media' or 'class
   theme: {
+    // fontFamily: {
+    //   'sans': ["Inter", "sans-serif"],
+    // },
     extend: {
       animation: {
         "fade-in": "fade-in 12s ease-in",

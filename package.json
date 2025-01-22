@@ -6,6 +6,6 @@
   "dependencies": {
     "apexcharts": "^3.49.0",
     "flowbite": "^2.3.0",
-    "simple-datatables": "^9.0.4"
+    "simple-datatables": "^9.2.1"
   }
 }

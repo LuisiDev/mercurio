@@ -1,101 +1,55 @@
-<nav class="fixed top-0 z-50 w-full bg-blue-700 dark:bg-gray-900 sm:hidden">
+<?php
+function userRole($tipo)
+{
+   switch ($tipo) {
+      case 'admin':
+         return 'Administrador';
+      case 'cliente':
+         return 'Cliente';
+      case 'acomercial':
+         return 'Asesor comercial';
+      case 'comercializacion':
+         return 'Comercialización';
+      case 'tecnico':
+         return 'Técnico';
+      case 'coordinador':
+         return 'Coordinador';
+      default:
+         return 'Sin tipo de usuario';
+   }
+}
+?>
+
+<nav
+   class="backdrop-blur-[10px] backdrop-saturate-[200%] bg-[rgba(255,255,255,0.2)] border rounded-none border-solid border-[rgba(216,216,216,0.13)] -webkit-backdrop-filter: blur(10px) saturate(200%) fixed top-0 z-40 w-full dark:backdrop-blur-[10px] dark:backdrop-saturate-[200%] dark:bg-[rgba(0,0,0,0.2)] dark:border-solid dark:border-[rgba(0, 0, 0, 0.13)] sm:hidden">
    <div class="px-3 py-3 lg:px-5 lg:pl-3">
       <div class="flex items-center justify-between">
          <div class="flex items-center justify-start rtl:justify-end">
             <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
                type="button"
-               class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+               class="inline-flex items-center p-2 text-sm text-gray-500 hover:shadow-lg hover:shadow-blue-500/50 rounded-lg sm:hidden focus:outline-none focus:ring-2 focus:ring-blue-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                <span class="sr-only">Abrir sidebar</span>
-               <svg class="w-6 h-6" aria-hidden="true" fill="#FFF" viewBox="0 0 20 20"
+               <svg class="w-6 h-6 text-blue-700" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg">
                   <path clip-rule="evenodd" fill-rule="evenodd"
                      d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z">
                   </path>
                </svg>
             </button>
-            <a href="../web/dashboard" class="flex ms-2 md:me-24">
-               <img src="../../assets/img/logoATL_w.webp" class="h-8 me-3" alt="Mercurio Logo">
+            <a href="../web/dashboard" class="flex justify-center items-center w-full">
+               <img src="../../assets/img/logoMercurio-sb.png" class="h-14 ms-6" alt="Mercurio Logo">
                <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white"></span>
             </a>
-         </div>
-         <div class="flex items-center">
-            <div class="flex items-center ms-3">
-               <div class="mr-3">
-                  <button type="button"
-                     class="relative inline-flex items-center text-sm rounded-lg focus:bg-blue-800 focus:ring-4 focus:ring-blue-500 dark:focus:ring-gray-600"
-                     aria-expanded="false" data-dropdown-toggle="dropdown-notifications">
-                     <span class="sr-only">Abrir menú de notificaciones</span>
-                     <svg class="w-8 h-8 text-white dark:text-gray-500" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                           d="M17.133 12.632v-1.8a5.406 5.406 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V3.1a1 1 0 0 0-2 0v2.364a.955.955 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C6.867 15.018 5 15.614 5 16.807 5 17.4 5 18 5.538 18h12.924C19 18 19 17.4 19 16.807c0-1.193-1.867-1.789-1.867-4.175ZM8.823 19a3.453 3.453 0 0 0 6.354 0H8.823Z" />
-                     </svg>
-                     <div
-                        class="absolute inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full -top-1.5 -end-1.5 dark:border-gray-900">
-                        9+</div>
-                  </button>
-               </div>
-               <?php if ($userRow = $userResult->fetch_assoc()): ?>
-                  <div>
-                     <button type="button"
-                        class="flex text-sm rounded-lg focus:bg-blue-800 focus:ring-4 focus:ring-blue-500 dark:focus:ring-gray-600"
-                        aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                        <span class="sr-only">Abrir menú de usuario</span>
-                        <?php if ($_SESSION['imagen']): ?>
-                           <img src="../../assets/imgUsers/<?php echo htmlspecialchars($_SESSION['imagen']); ?>"
-                              class="w-8 h-8 rounded-lg" alt="Imagen de usuario">
-                        <?php else: ?>
-                           <img src="../../assets/imgUsers/default.png" class="w-8 h-8 rounded-lg" alt="Imagen de usuario">
-                        <?php endif; ?>
-                     </button>
-                  </div>
-                  <div
-                     class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-800 dark:divide-gray-600"
-                     id="dropdown-user">
-                     <div class="px-4 py-3" role="none">
-                        <p class="text-sm text-gray-900 dark:text-white" role="none">
-                           <?php echo htmlspecialchars($_SESSION['nombre']); ?>
-                           <?php echo htmlspecialchars($_SESSION['apellido']); ?>
-                        </p>
-                        <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                           <?php echo userType(htmlspecialchars($_SESSION['tipo'])); ?>
-                        </p>
-                     </div>
-                     <ul class="py-1" role="none">
-                        <li>
-                           <a href="gestion"
-                              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                              role="menuitem">Mis asignaciones</a>
-                        </li>
-                        <li>
-                           <a href="ajustes"
-                              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                              role="menuitem">Ajustes</a>
-                        </li>
-                        <li>
-                           <a type="button" id="dark-mode-toggle"
-                              class="block px-4 py-2 cursor-pointer text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                              role="menuitem">Modo oscuro</a>
-                        </li>
-                        <li>
-                           <a href="../configuration/logout"
-                              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                              role="menuitem">Cerrar sesión</a>
-                        </li>
-                     </ul>
-                  </div>
-               <?php endif; ?>
-            </div>
          </div>
       </div>
    </div>
 </nav>
 
 <aside id="logo-sidebar"
-   class="flex flex-col shadow-2xl fixed top-0 left-0 z-40 w-64 h-screen pt-4 transition-transform -translate-x-full bg-blue-600 border-r border-blue-500 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+   class="flex flex-col shadow-2xl fixed top-0 left-0 z-50 w-64 h-screen pt-4 transition-transform -translate-x-full bg-blue-600 border-r border-blue-500 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
    aria-label="Sidebar">
    <div class="h-full px-3 pb-4 overflow-y-auto bg-blue-600 dark:bg-gray-800">
-      <a href="https://flowbite.com/" class="flex items-center ps-2.5 mb-5">
+      <a href="dashboard" class="flex items-center ps-2.5 mb-5">
          <svg width="80" height="80" viewBox="0 0 1774 1455" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                d="M725.467 4.26672C728.134 16.6667 731.467 24.8 741.601 44.4C747.734 56.4 752.534 66.5333 752.134 66.9333C751.734 67.3333 746.134 63.4667 739.734 58.4C733.334 53.2 726.667 48.4 725.067 47.4667C721.334 45.6 712.401 45.6 708.001 47.6C704.667 49.0667 704.667 49.2 705.467 59.8667C707.067 80.1334 711.601 92.8001 724.001 112.533C726.534 116.533 728.401 120 728.134 120.267C728.001 120.533 723.467 118.933 718.267 116.8C709.201 113.067 708.801 112.933 706.667 115.333C704.534 117.6 704.534 118.8 706.401 131.6C710.801 160.533 720.401 182.8 744.001 218C752.667 230.8 761.734 245.733 764.267 251.067C777.067 278.533 777.334 304.933 764.934 338.667C755.201 365.067 742.001 390.933 724.934 417.333C720.134 424.667 714.534 434.8 712.401 440C706.801 453.6 703.467 458.8 683.334 486C624.801 564.933 602.667 612.267 590.801 683.467C584.401 721.6 577.467 739.333 563.601 753.333C553.867 763.2 545.467 767.867 528.801 772.8C492.401 783.6 480.934 785.2 422.001 787.867C271.334 794.667 268.134 794.933 253.334 800C247.467 802 242.267 804 241.734 804.533C240.134 806 245.601 819.333 249.467 823.467C256.401 830.8 276.267 839.2 294.401 842.667C300.667 843.733 321.201 845.2 342.001 846C417.467 848.8 445.467 853.2 499.334 870.667C537.867 883.2 592.267 897.2 625.334 903.2C659.201 909.2 676.001 910.667 714.667 910.667C747.334 910.667 754.001 910.267 768.001 907.733C804.401 901.067 823.467 893.067 849.601 873.2C868.267 859.067 883.067 850.8 899.334 845.6C916.934 839.867 927.334 838.667 957.334 838.8C989.867 838.8 996.401 840 1020.13 849.467C1032.8 854.4 1038.13 855.867 1046.4 856.4L1056.67 857.067L1073.5 845.6L1056.67 828.8L1052.4 825.6C1045.47 820.4 1040.8 818.4 1023.2 813.333C987.067 802.8 971.334 794 950.667 773.2C932.134 754.4 922.001 750.267 886.534 747.333C876.401 746.533 865.467 745.467 862.267 745.2L856.534 744.533L856.801 719.6C857.067 689.867 859.334 667.2 864.667 639.6C876.534 579.867 897.867 534.133 936.534 486C952.801 465.733 960.934 452.4 966.801 436.8C977.601 408.133 977.867 382.667 968.534 304C958.534 220.4 933.734 154.133 892.934 103.067C886.267 94.6667 884.001 92.8 880.534 92.4C876.801 92 876.001 91.2 874.267 86.4C872.134 79.7334 867.201 75.0667 842.667 56.6667C799.067 24 766.934 7.0667 738.801 2.13336C725.867 -0.266638 724.534 5.67436e-05 725.467 4.26672Z"
@@ -160,6 +114,8 @@
                fill="white" />
          </svg>
       </a>
+      <!-- Boton de colapsar sidebar en vista de computadora -->
+
       <ul class="space-y-2 font-medium">
          <!-- <div class="flex px-2">
             <h1 class="text-xs font-semibold text-gray-500 dark:text-gray-400">Menú</h1>
@@ -237,6 +193,22 @@
             </a>
          </li>
          <li>
+            <a href="cambios"
+               class="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
+               <svg
+                  class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                  viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                     d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
+               </svg>
+
+               <span class="flex-1 ms-3 whitespace-nowrap">Cambios</span>
+               <span
+                  class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-700 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-300"><?php echo $totalTickets; ?></span>
+            </a>
+         </li>
+         <li>
             <button type="button" href="encuestas"
                class="flex items-center w-full p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300"
                aria-controls="dropdown-encuestas" data-collapse-toggle="dropdown-encuestas"
@@ -251,8 +223,9 @@
                   </g>
                </svg>
                <span class="flex-1 ml-3 text-left rtl:text-right whitespace-nowrap">Encuestas</span>
-               <svg class="w-5 h-5 group-hover:text-gray-900 transition-transform duration-300" aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+               <svg
+                  class="w-5 h-5 text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-transform duration-300"
+                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                      d="m9 5 7 7-7 7" />
                </svg>
@@ -372,7 +345,7 @@
 
    <?php if ($userRow = $userResult->fetch_assoc()): ?>
       <button type="button"
-         class="flex mx-3  rounded-lg py-2 text-left px-3 gap-4 hover:bg-blue-700 focus:bg-blue-700 hover:border-blue-800 focus:border-blue-800 dark:hover:bg-gray-700"
+         class="flex mx-3 rounded-lg mb-8 py-2 sm:mb-0 text-left px-3 gap-4 hover:bg-blue-700 focus:bg-blue-700 hover:border-blue-800 dark:focus:bg-gray-700 focus:border-blue-800 dark:hover:bg-gray-700"
          aria-expanded="false" data-dropdown-toggle="userDropdown">
          <div class="relative">
             <?php if ($_SESSION['imagen']): ?>
@@ -389,7 +362,9 @@
                <?php echo $_SESSION['nombre']; ?>
                <?php echo $_SESSION['apellido']; ?>
             </div>
-            <div class="text-xs text-gray-300 dark:text-gray-400"><?php echo $_SESSION['tipo']; ?></div>
+            <div class="text-xs text-gray-300 dark:text-gray-400">
+               <?php echo userRole($_SESSION['tipo']); ?>
+            </div>
          </div>
       </button>
 

@@ -14,24 +14,13 @@ include '../configuration/conn-session.php';
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
     <title>Mercurio | Gestión de tickets</title>
+    <link rel="stylesheet" href="../../node_modules/simple-datatables/dist/style.css">
     <script type="module">
         import { DataTable } from "../../node_modules/simple-datatables/dist/module.js";
         window.dt = new DataTable("#search-table", {
             searchable: true,
             sortable: true,
         });
-    </script>
-    <link rel="stylesheet" href="../../node_modules/simple-datatables/dist/style.css">
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            let myTable = document.getElementById('search-table');
-            if (myTable && typeof simpleDatatables !== 'undefined') {
-                const dataTable = new DataTable(myTable, {
-                    searchable: true,
-                    sortable: true,
-                });
-            }
-        }); 
     </script>
 </head>
 
@@ -114,6 +103,29 @@ include '../configuration/conn-session.php';
         }
     }
 
+    function getImage($imagen)
+    {
+        if ($imagen == '') {
+            echo '
+            <div
+                class="flex justify-center items-center border border-gray-300 dark:border-gray-600 rounded-full w-8 h-8 mr-1.5">
+                <svg class="w-6 pb-1 text-gray-400 dark:text-gray-200" aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2"
+                        d="M12 14c-2.206 0-4-1.794-4-4s1.794-4 4-4s4 1.794 4 4s-1.794 4-4 4Zm0 2c3.866 0 7 3.134 7 7H5c0-3.866 3.134-7 7-7Z" />
+                </svg>
+            </div>';
+        } else {
+            echo '
+            <div class="flex justify-center items-center">
+                <img src="../../assets/imgUsers/' . htmlspecialchars($imagen) . '"
+                    alt="User Image"
+                    class="w-8 h-8 mr-1.5 rounded-full">
+            </div>';
+        }
+    }
+
     function getAsignado($asignado)
     {
         global $conn;
@@ -121,7 +133,7 @@ include '../configuration/conn-session.php';
         if ($asignado == "") {
             echo 'Sin asignar';
         } else {
-            $query = "SELECT nombre, apellido FROM users WHERE userId = ?";
+            $query = "SELECT nombre, apellido, imagen FROM users WHERE userId = ?";
             $stmt = $conn->prepare($query);
             $stmt->bind_param("i", $asignado);
             $stmt->execute();
@@ -211,15 +223,28 @@ include '../configuration/conn-session.php';
                             <?php
                             $userId = $_SESSION['userId'];
                             $tipo = $_SESSION['tipo'];
+                            $nombre = $_SESSION['nombre'];
 
-                            if ($tipo == 'tecnico') {
-                                $stmt = $conn->prepare('SELECT COUNT(*) FROM tbticket WHERE asignado = ? AND estado <> 0');
-                                $row = $stmt->bind_param('i', $userId);
-                                $stmt->execute();
-                                $row = $stmt->get_result()->fetch_row();
-                            } else {
-                                $stmt = $conn->query('SELECT COUNT(*) FROM tbticket WHERE estado <> 0');
-                                $row = $stmt->fetch_row();
+                            switch ($tipo) {
+                                case 'tecnico':
+                                    $stmt = $conn->prepare('
+                                        SELECT COUNT(*) 
+                                        FROM tbticket t
+                                        LEFT JOIN users u ON t.asignado = u.userId
+                                        WHERE t.asignado = ? AND t.estado <> 0
+                                    ');
+                                    $stmt->bind_param('i', $userId);
+                                    $stmt->execute();
+                                    $row = $stmt->get_result()->fetch_row();
+                                    break;
+                                default:
+                                    $stmt = $conn->query('
+                                        SELECT COUNT(*) 
+                                        FROM tbticket t
+                                        LEFT JOIN users u ON t.asignado = u.userId
+                                        WHERE t.estado <> 0');
+                                    $row = $stmt->fetch_row();
+                                    break;
                             }
 
                             $totalRegistros = $row[0];
@@ -231,13 +256,27 @@ include '../configuration/conn-session.php';
 
                             // '<>' es lo mismo que '!='
                             if ($tipo == 'tecnico') {
-                                $sql = "SELECT * FROM tbticket WHERE asignado = ? AND estado <> 0 ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                                $sql = "
+                                    SELECT t.*, u.imagen 
+                                    FROM tbticket t
+                                    LEFT JOIN users u ON t.asignado = u.userId
+                                    WHERE t.asignado = ? AND t.estado <> 0
+                                    ORDER BY t.fhticket DESC
+                                    LIMIT ? OFFSET ?
+                                ";
                                 $stmt = $conn->prepare($sql);
-                                $stmt->bind_param('i', $userId);
+                                $stmt->bind_param('iii', $userId, $registrosPorPagina, $offset);
                                 $stmt->execute();
                                 $resultado = $stmt->get_result();
                             } else {
-                                $sql = "SELECT * FROM tbticket WHERE estado <> 0 ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                                $sql = "
+                                    SELECT t.*, u.imagen 
+                                    FROM tbticket t
+                                    LEFT JOIN users u ON t.asignado = u.userId
+                                    WHERE t.estado <> 0
+                                    ORDER BY t.fhticket DESC
+                                    LIMIT $registrosPorPagina OFFSET $offset
+                                ";
                                 $resultado = $conn->query($sql);
                             }
 
@@ -272,7 +311,8 @@ include '../configuration/conn-session.php';
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-nowrap">
+                                            <?php getImage($fila['imagen']); ?>
                                             <?php getAsignado($fila['asignado']); ?>
                                         </div>
                                     </td>
@@ -325,7 +365,10 @@ include '../configuration/conn-session.php';
                                                 </svg>
                                                 Atender</button>
                                         <?php endif; ?>
-                                        <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'coordinador'): ?>
+                                        <?php if (
+                                            ($tipo == 'admin' && in_array($fila['estado'], ['1', '2', '3', '4', '5', '7', '8'])) ||
+                                            ($tipo == 'comercializacion' && $fila['estado'] == '1' && $fila['nombre'] == $nombre)
+                                        ): ?>
                                             <button type="button"
                                                 onclick="window.location.href = 'editar?id=<?php echo $fila['idTicket']; ?>'"
                                                 class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600 mb-2">
@@ -338,9 +381,9 @@ include '../configuration/conn-session.php';
                                                 Editar</button>
                                         <?php endif; ?>
                                         <?php if (
-                                            ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' || $fila['estado'] == '8' || $fila['estado'] == '9') &&
+                                            in_array($fila['estado'], ['1', '2', '3', '4', '5', '6', '7', '8', '9']) &&
                                             $tipo != 'comercializacion' &&
-                                            ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '6'))
+                                            ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '6')) || ($tipo == 'comercializacion' && $fila['estado'] == '1' && $fila['nombre'] == $nombre)
                                         ): ?>
                                             <button type="button" data-modal-target="popup-confirmation"
                                                 data-modal-toggle="popup-confirmation"

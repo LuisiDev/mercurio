@@ -209,8 +209,9 @@ function getAsignado($asignado)
                             </p>
                         <?php } ?>
                     </div>
-                    <?php if (!empty($row['placasContacto']) && !empty($row['marcaContacto'])) { ?>
-                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del vehiculo</span>
+                        <?php if (!empty($row['placasContacto']) || !empty($row['marcaContacto'])) { ?>
+                            <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del vehiculo</span>
+                        <?php } ?>                       
                         <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                             <?php if (!empty($row['placasContacto'])) { ?>
                                 <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas:
@@ -222,7 +223,6 @@ function getAsignado($asignado)
                                     </span><?php echo $row['marcaContacto']; ?></p>
                             <?php } ?>
                         </div>
-                    <?php } ?>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del ticket</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha del ticket:
@@ -405,7 +405,7 @@ function getAsignado($asignado)
                     <?php endif; ?>
 
                     <div class="relative">
-                        <form action="../procesos/atender" method="POST" enctype="multipart/form-data"
+                        <form id="formAtender" action="../procesos/atender" method="POST" enctype="multipart/form-data"
                             class="max-w-sm mx-auto">
                             <input type="hidden" name="idTicket" value="<?php echo $idTicket ?>" />
                             <input type="hidden" name="prioridad" value="<?php echo $row['prioridad']; ?>" />
@@ -464,9 +464,8 @@ function getAsignado($asignado)
                                 <select name="estado" id="estado"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <option value="3" <?php if ($row['estado'] == 3) {
-                                        echo 'selected';
-                                    } ?>>Arribo a domicilio
-                                    </option>
+                                        echo 'selected'; 
+                                    } ?>>Arribo a domicilio</option>
                                     <option value="4" <?php if ($row['estado'] == 4) {
                                         echo 'selected';
                                     } ?>>Inicio - Antecedentes antes de manipulación
@@ -508,7 +507,7 @@ function getAsignado($asignado)
                                     de arribo</label>
                                 <input type="file" id="evidenciaArribo" name="evidenciaArribo"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    onchange="loadFile(event)" aaccept="image/*" data-max-size="3145728"
                                     aria-describedby="evidencia-arribo">
                                 <div id="evidencia-arribo" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
@@ -519,7 +518,7 @@ function getAsignado($asignado)
                                     de inicio</label>
                                 <input type="file" id="evidenciaInicio" name="evidenciaInicio"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    onchange="loadFile(event)" accept="image/*" data-max-size="3145728"
                                     aria-describedby="evidencia-inicio">
                                 <div id="evidencia-inicio" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
@@ -530,7 +529,7 @@ function getAsignado($asignado)
                                     de realización</label>
                                 <input type="file" id="evidenciaRealizacion" name="evidenciaRealizacion"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    onchange="loadFile(event)" accept="image/*" data-max-size="3145728"
                                     aria-describedby="evidencia-realizacion">
                                 <div id="evidencia-realizacion" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
@@ -541,7 +540,7 @@ function getAsignado($asignado)
                                     de finalización</label>
                                 <input type="file" id="evidenciaFinalizacion" name="evidenciaFinalizacion"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                    onchange="loadFile(event)" accept=".jpeg, .jpg, .png, .webp"
+                                    onchange="loadFile(event)" accept="image/*" data-max-size="3145728"
                                     aria-describedby="evidencia-finalizacion">
                                 <div id="evidencia-finalizacion" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
@@ -571,6 +570,23 @@ function getAsignado($asignado)
                                     class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Enviar</button>
                             </div>
                         </form>
+
+                        <div id="modalAlerta" class="modal hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 overflow-y-auto">
+                            <div class="modal-box bg-white dark:bg-gray-800 dark:text-gray-200 w-96 mx-auto mt-20 p-6 rounded-lg shadow-lg">
+                                <div class="modal-header flex justify-between items-center">
+                                    <h3 class="text-lg font-semibold">Alerta</h3>
+                                    <button id="closeModalBtn" class="focus:outline-none">
+                                        <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body mt-4">
+                                    <p id="modalAlertaMensaje"></p>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -578,6 +594,30 @@ function getAsignado($asignado)
         </div>
     </div>
 
+    <script>
+        document.getElementById('formAtender').addEventListener('submit', function(event) {
+            const maxSize = 3145728; // 3MB en bytes
+            const files = [
+                document.getElementById('evidenciaArribo').files[0],
+                document.getElementById('evidenciaInicio').files[0],
+                document.getElementById('evidenciaRealizacion').files[0],
+                document.getElementById('evidenciaFinalizacion').files[0]
+            ];
+
+            for (const file of files) {
+                if (file && file.size > maxSize) {
+                    event.preventDefault();
+                    document.getElementById('modalAlertaMensaje').innerText = `La imagen ${file.name} es mayor a 3MB (${(file.size / 1048576).toFixed(2)} MB).`;
+                    document.getElementById('modalAlerta').classList.remove('hidden');
+                    return;
+                }
+            }
+        });
+
+        document.getElementById('closeModalBtn').addEventListener('click', function() {
+            document.getElementById('modalAlerta').classList.add('hidden');
+        });
+    </script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="../../assets/js/redir.js"></script>
     <script src="../../assets/js/image.js"></script>

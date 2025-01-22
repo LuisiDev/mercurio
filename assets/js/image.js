@@ -49,12 +49,18 @@ var file = null; // Variable para almacenar el archivo cargado
 
 var loadFile = function (event) {
   var input = event.target;
-  file = input.files[0];
+  var file = input.files[0];
+  var maxSize = parseInt(input.dataset.maxSize, 10) || 10 * 1024 * 1024;
+
 
   if (!file) {
     return;
   }
-
+  if (file.size > maxSize) {
+    alert("El archivo excede el tamaño máximo permitido de 3 MB.");
+    input.value = '';
+    return;
+}
   currentInputId = input.id; // Almacena el ID del input que cargó la imagen
 
   if (objectURL) {
