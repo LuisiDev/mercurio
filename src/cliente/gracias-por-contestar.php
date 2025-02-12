@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../output.css">
-    <title>Ticket no encontrado | Mercurio</title>
+    <title>Ticket completado | Mercurio</title>
 </head>
 
 <body class="bg-gray-100 overscroll-none">
@@ -158,13 +158,13 @@
                     invitamos a revisar nuestros servicios y productos en la página principal de <span
                         class="text-transparent bg-clip-text bg-gradient-to-r to-blue-600 from-sky-400">ATLANTIDA</span>.
                 </h3>
-                <div class="mt-4">
-                    <button onclick="location.href='../inicio'"
+                <div class="mt-8">
+                    <a type="button" href="https://atlantida.mx/mercurio"
                         class="mt-4 bg-gray-100 border border-gray-300 hover:bg-gray-200 text-blue-700 font-bold py-2 px-5 rounded-full">Página
-                        principal</button>
-                    <button onclick="location.href='../index'"
+                        principal</a>
+                    <!-- <button onclick="location.href='../index'"
                         class="mt-4 bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-5 rounded-full">Volver a
-                        mis tickets</button>
+                        mis tickets</button> -->
                 </div>
         </div>
     </div>

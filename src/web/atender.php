@@ -10,6 +10,15 @@ if (isset($_GET['id'])) {
 
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_array($result);
+        if ($row['estado'] == 6) {
+            echo "<script>alert('El ticket se encuentra finalizado');</script>";
+            echo "<script>window.location.href = 'gestion';</script>";
+            exit;
+        } elseif ($row['estado'] == 0) {
+            echo "<script>alert('El ticket se encuentra eliminado');</script>";
+            echo "<script>window.location.href = 'gestion';</script>";
+            exit;
+        }
     } else {
         echo "<script>alert('No se encontró el ticket');</script>";
         echo "<script>window.location.href = 'gestion.php';</script>";
@@ -19,12 +28,16 @@ if (isset($_GET['id'])) {
     echo "<script>window.location.href = 'gestion.php';</script>";
 }
 
-function traducirFecha($fhticket)
+function traducirFecha($fecha)
 {
-    $dia = date('d', strtotime($fhticket));
-    $mes = date('m', strtotime($fhticket));
-    $hora = date('h:i', strtotime($fhticket));
-    $am_pm = strtoupper(date('a', strtotime($fhticket)));
+    if ($fecha === null) {
+        return 'Actividad pendiente de realizar';
+    }
+
+    $dia = date('d', strtotime($fecha));
+    $mes = date('m', strtotime($fecha));
+    $hora = date('h:i', strtotime($fecha));
+    $am_pm = strtoupper(date('a', strtotime($fecha)));
     $meses = array(
         '01' => 'Ene',
         '02' => 'Feb',
@@ -39,7 +52,7 @@ function traducirFecha($fhticket)
         '11' => 'Nov',
         '12' => 'Dic'
     );
-    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fhticket));
+    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fecha));
 }
 
 function getStatus($status)
@@ -140,8 +153,8 @@ function getAsignado($asignado)
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-4">
             <div class="grid grid-cols-1 gap-4 mb-4">
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -375,6 +388,13 @@ function getAsignado($asignado)
                             </div>
                         <?php endif; ?>
                     </div>
+                    <?php if (in_array($row['estado'], [1, 2, 3, 4, 5, 7, 8, 9])): ?>
+                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Trazado del ticket</span>
+                        <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                            <a href="../cliente/visualizacion?token=<?php echo $row['token']; ?>" target="_blank"
+                                class="text-blue-600 hover:text-blue-800">Ver trazado del ticket</a>
+                        </div>
+                    <?php endif; ?>
                     <?php if ($row['estado'] == 0 || $row['estado'] == 6): ?>
                         <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de
                             finalización</span>
@@ -534,6 +554,28 @@ function getAsignado($asignado)
                                 <div id="evidencia-realizacion" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
                             </div>
+
+                            <div class="hidden my-6" id="evidenciaGrabacion">
+                                <div>
+                                    <label for="evidenciaGrabacion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dispositivo de grabación</label>
+                                    <select name="evidenciaGrabacion" id="listaDeDispositivos" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Prueba"></select>
+                                    <p class="mt-3 font-medium text-medium text-gray-500 dark:text-gray-300" id="duracion"></p>
+                                </div>
+
+                                <div class="mt-5" id="grabDispositivoBtn">
+                                    <button class="text-center inline-flex items-center text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                     type="button" id="btnComenzarGrabacion">
+                                     <svg class="w-4 h-4 text-white me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M9 5a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h0a3 3 0 0 1-3-3z"/><path d="M5 10a7 7 0 0 0 14 0M8 21h8m-4-4v4"/></g></svg>
+                                     Comenzar
+                                    </button>
+                                    <button class="text-center inline-flex items-center text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
+                                    type="button" id="btnDetenerGrabacion">
+                                    <svg class="w-4 h-4 text-white me-2" xmlns="http://www.w3.org/2000/svg" width="124" height="124" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12c0-1.886 0-2.828.586-3.414S10.114 8 12 8s2.828 0 3.414.586S16 10.114 16 12s0 2.828-.586 3.414S13.886 16 12 16s-2.828 0-3.414-.586S8 13.886 8 12Z"/></g></svg>
+                                    Detener
+                                </button>
+                                </div>
+                            </div>
+
                             <div class="hidden" id="evidenciaFinalizacion">
                                 <label for="evidenciaFinalizacion"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
@@ -621,6 +663,7 @@ function getAsignado($asignado)
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="../../assets/js/redir.js"></script>
     <script src="../../assets/js/image.js"></script>
+    <script src="js/audio.js"></script>
 </body>
 
 </html>

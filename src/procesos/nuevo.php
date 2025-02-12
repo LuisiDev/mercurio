@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     date_default_timezone_set("America/Mexico_City");
     $fhticket = date('Y-m-d H:i:s');
     $nombre = $_SESSION['nombre'];
-    $numTrabajador = $_SESSION['user'];
+    $numTrabajador = $_SESSION['userId'];
     $numCliente = $_POST['numCliente'];
     $dispositivo = $_POST['dispositivo'];
     $imeiCliente = $_POST['imeiCliente'];
@@ -77,8 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'AKIA3HJXVSKBLWJPDZCZ';
-            $mail->Password = 'BI1QGHoakbEdXBO42Duf0N9VHABb6Y1Sw6yQUpiLzaS5';
+            $mail->Username = 'AKIA3HJXVSKBEFDT5ML2';
+            $mail->Password = 'BMEcNVN8oRp2GP381twDDdycy3jttJN0eNd+ovvUQqD7';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div style="background: #1175cf;">
             <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px;">
             <div style="background: #0078e3;">
-            <img src="https://atlantida.mx/mercurio/assets/img/logoATL_w.webp" style="display: block; margin: 0 auto; padding: 20px 0px 10px; width: 200px; height: auto" alt="Grupo Cardinales">
+            <img src="https://atlantida.mx/assets/img/GPLogos/LOGO%20AT.png" style="display: block; margin: 0 auto; padding: 10px 0px 10px; width: 180px; height: auto" alt="ATLANTIDA">
             </div>
             <div style="background: #fff; padding: 0 30px 0 30px;">
             <br>
@@ -132,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p style="text-align: center; color: #535353; font-size: 11px; padding: 15px 0 15px 0"> Si no solicitaste esta solicitud, por favor ignora este mensaje.</p>
             </div>
             <div style="background: #0078e3; text-align: center; color: #fff; padding: 5px">
-            <p style="font-size: 12px;">&copy; 2024. Grupo Cardinales. All Rights Reserved.</p>
+            <p style="font-size: 12px;">&copy; 2025. ATLANTIDA, miembro de Grupo Cardinales. All Rights Reserved.</p>
             <p style="font-size: 12px;">Desarrollado por ATENEA</p>
             </div>
             </div>

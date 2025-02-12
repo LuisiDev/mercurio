@@ -1,26 +1,25 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $idTicket = $_POST['idTicket'] ?? null;
-    $motivo = $_POST['motivo_eliminacion'] ?? null;
-    $eliminadoPor = $_POST['eliminadoPor'] ?? null;
+include '../configuration/connection.php';
 
-    if ($idTicket && $motivo && $eliminadoPor) {
-        // Lógica para eliminar el ticket en la base de datos
-        $stmt = $pdo->prepare('DELETE FROM tickets WHERE id = :id');
-        $stmt->execute(['id' => $idTicket]);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $idTicket = $_POST['idTicket'];
+    $motivo = $_POST['motivo_eliminacion'];
+    $fhEliminacion = date('Y-m-d H:i:s');
+    $eliminadoPor = $_POST['eliminadopor'];
 
-        if ($stmt->rowCount() > 0) {
-            echo 'Ticket eliminado';
+    $query = "UPDATE tbticket SET estado = 0, motivo_eliminacion = ?, fhEliminacion = ?, eliminadopor = ? WHERE idTicket = ?";
+    $stmt = $conn->prepare($query);
+    if ($stmt) {
+        $stmt->bind_param("sssi", $motivo, $fhEliminacion, $eliminadoPor, $idTicket);
+        $result = $stmt->execute();
+
+        if ($result) {
+            echo json_encode(array('status' => 'success', 'message' => 'Ticket eliminado correctamente'));
         } else {
-            http_response_code(400);
-            echo 'No se pudo eliminar el ticket';
+            echo json_encode(array('status' => 'error', 'message' => 'Error al eliminar el ticket'));
         }
+        $stmt->close();
     } else {
-        http_response_code(400);
-        echo 'Faltan datos para eliminar el ticket';
+        echo json_encode(array('status' => 'error', 'message' => 'Error al preparar la consulta'));
     }
-} else {
-    http_response_code(405);
-    echo 'Método no permitido';
 }
-?>

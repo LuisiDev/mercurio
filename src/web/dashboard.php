@@ -7,13 +7,16 @@ $nombre = $_SESSION['nombre'];
 
 $tecnicosData = [];
 
-if ($tipo == 'tecnico') {
-    $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, u.imagen, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
-    $stmt->bind_param('i', $userId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-} else {
-    $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, u.imagen, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+switch ($tipo) {
+    case 'tecnico':
+        $stmt = $conn->prepare("SELECT u.userId, u.nombre, u.apellido, u.imagen, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userId = ? AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        break;
+    default:
+        $result = $conn->query("SELECT u.userId, u.nombre, u.apellido, u.imagen, SUM(CASE WHEN t.estado = '0' THEN 1 ELSE 0 END) AS eliminado, SUM(CASE WHEN t.estado = '1' THEN 1 ELSE 0 END) AS creado, SUM(CASE WHEN t.estado = '2' THEN 1 ELSE 0 END) AS asignado, SUM(CASE WHEN t.estado = '3' THEN 1 ELSE 0 END) AS arribo, SUM(CASE WHEN t.estado = '4' THEN 1 ELSE 0 END) AS inicio, SUM(CASE WHEN t.estado = '5' THEN 1 ELSE 0 END) AS realizacion, SUM(CASE WHEN t.estado = '6' THEN 1 ELSE 0 END) AS finalizacion, SUM(CASE WHEN t.estado = '7' THEN 1 ELSE 0 END) AS programado, SUM(CASE WHEN t.estado = '8' THEN 1 ELSE 0 END) AS congelado, SUM(CASE WHEN t.estado = '9' THEN 1 ELSE 0 END) AS cancelado FROM users u LEFT JOIN tbticket t ON u.userId = t.asignado WHERE u.tipo = 'tecnico' AND u.userStatus = 0 GROUP BY u.userId, u.nombre, u.apellido");
+        break;
 }
 
 if (!$result) {
@@ -29,8 +32,8 @@ $totalCreados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estad
 $totalEliminados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '0'")->fetch_assoc()['total'];
 $totalCreadosSinAsignar = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '1' AND asignado IS NULL")->fetch_assoc()['total'];
 $totalAsignado = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '2'")->fetch_assoc()['total'];
-$totalCreadosUsuario = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '0' || estado = '1' || estado = '2' || estado = '3' || estado = '4' || estado = '5' || estado = '6' || estado = '7' || estado = '8' || estado = '9' AND nombre = '$nombre'")->fetch_assoc()['total'];
-$totalAtendidosUsuario = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '6' || estado = '0' AND token IS NULL AND nombre = '$nombre'")->fetch_assoc()['total'];
+$totalCreadosUsuario = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE (estado IN ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')) AND nombre = '$nombre'")->fetch_assoc()['total'];
+$totalAtendidosUsuario = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE (estado IN ('6', '0')) AND nombre = '$nombre'")->fetch_assoc()['total'];
 $totalCorreos = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE correo != ''")->fetch_assoc()['total'];
 $totalCreadosCorreo = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE (estado ='0' OR estado = '1' OR estado = '2' OR estado = '3' OR estado = '4' OR estado = '5' OR estado = '6' OR estado = '7' OR estado = '8' OR estado = '9') AND correo != '' AND nombre = '$nombre'")->fetch_assoc()['total'];
 $totalFinalizados = $conn->query("SELECT COUNT(*) AS total FROM tbticket WHERE estado = '6' || estado = '0' AND token IS NULL")->fetch_assoc()['total'];
@@ -233,7 +236,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                     <?php echo $_SESSION['nombre'] . ' ' . $_SESSION['apellido']; ?>
                                 </h5>
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                    <?php echo $_SESSION['tipo']; ?>
+                                    <?php echo userType($_SESSION['tipo']); ?>
                                 </p>
                             </div>
                         </div>
@@ -450,52 +453,52 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                     <dd class="text-blue-600 dark:text-blue-300 text-sm font-medium">Inicio</dd>
                                 </dl>
                                 <dl
+                                    class="bg-cyan-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                                    <dt
+                                        class="w-8 h-8 rounded-full bg-cyan-200 dark:bg-gray-500 text-cyan-600 dark:text-cyan-300 text-sm font-medium flex items-center justify-center mb-1">
+                                        <?php echo $tecnicoData['realizacion'] ?>
+                                    </dt>
+                                    <dd class="text-cyan-600 dark:text-cyan-300 text-sm font-medium">Realizando</dd>
+                                </dl>
+                                <dl
                                     class="bg-green-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-green-200 dark:bg-gray-500 text-green-600 dark:text-green-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['realizacion'] ?>
-                                    </dt>
-                                    <dd class="text-green-600 dark:text-green-300 text-sm font-medium">Realizando</dd>
-                                </dl>
-                                <dl
-                                    class="bg-yellow-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
-                                    <dt
-                                        class="w-8 h-8 rounded-full bg-yellow-200 dark:bg-gray-500 text-yellow-600 dark:text-yellow-300 text-sm font-medium flex items-center justify-center mb-1">
                                         <?php echo $tecnicoData['finalizacion'] ?>
                                     </dt>
-                                    <dd class="text-yellow-600 dark:text-yellow-300 text-sm font-medium">Finalizado</dd>
-                                </dl>
-                                <dl
-                                    class="bg-teal-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
-                                    <dt
-                                        class="w-8 h-8 rounded-full bg-teal-200 dark:bg-teal-500 text-teal-600 dark:text-teal-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['programado'] ?>
-                                    </dt>
-                                    <dd class="text-teal-600 dark:text-teal-300 text-sm font-medium">Programado</dd>
+                                    <dd class="text-green-600 dark:text-green-300 text-sm font-medium">Finalizado</dd>
                                 </dl>
                                 <dl
                                     class="bg-indigo-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-indigo-200 dark:bg-gray-500 text-indigo-600 dark:text-indigo-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['congelado'] ?>
+                                        <?php echo $tecnicoData['programado'] ?>
                                     </dt>
-                                    <dd class="text-indigo-600 dark:text-indigo-300 text-sm font-medium">Congelado</dd>
+                                    <dd class="text-indigo-600 dark:text-indigo-300 text-sm font-medium">Programado</dd>
                                 </dl>
                                 <dl
-                                    class="bg-amber-100 dark:bg-amber-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                                    class="bg-blue-200 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
-                                        class="w-8 h-8 rounded-full bg-amber-200 dark:bg-amber-500 text-amber-600 dark:text-amber-300 text-sm font-medium flex items-center justify-center mb-1">
-                                        <?php echo $tecnicoData['cancelado'] ?>
+                                        class="w-8 h-8 rounded-full bg-blue-300 dark:bg-gray-500 text-blue-700 dark:text-blue-400 text-sm font-medium flex items-center justify-center mb-1">
+                                        <?php echo $tecnicoData['congelado'] ?>
                                     </dt>
-                                    <dd class="text-amber-600 dark:text-amber-300 text-sm font-medium">Cancelado</dd>
+                                    <dd class="text-blue-700 dark:text-blue-400 text-sm font-medium">Congelado</dd>
                                 </dl>
                                 <dl
                                     class="bg-red-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
                                     <dt
                                         class="w-8 h-8 rounded-full bg-red-200 dark:bg-gray-500 text-red-600 dark:text-red-300 text-sm font-medium flex items-center justify-center mb-1">
+                                        <?php echo $tecnicoData['cancelado'] ?>
+                                    </dt>
+                                    <dd class="text-red-600 dark:text-red-300 text-sm font-medium">Cancelado</dd>
+                                </dl>
+                                <dl
+                                    class="bg-pink-100 dark:bg-gray-600 rounded-lg flex flex-col items-center justify-center h-[78px]">
+                                    <dt
+                                        class="w-8 h-8 rounded-full bg-pink-200 dark:bg-gray-500 text-pink-600 dark:text-pink-300 text-sm font-medium flex items-center justify-center mb-1">
                                         <?php echo $tecnicoData['eliminado'] ?>
                                     </dt>
-                                    <dd class="text-red-600 dark:text-red-300 text-sm font-medium">Archivado</dd>
+                                    <dd class="text-pink-600 dark:text-pink-300 text-sm font-medium">Archivado</dd>
                                 </dl>
                             </div>
                             <button data-collapse-toggle="more-details-<?php echo $tecnicoData['userId']; ?>" type="button"
@@ -542,7 +545,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                             <div
                                 class="grid grid-cols-1 items-center border-gray-200 border-t dark:border-gray-700 justify-between">
                                 <div class="flex justify-between items-center pt-5">
-                                    <a href="reporte-tecnico?id=<?php echo $tecnicoData['userId']; ?>"
+                                    <a href="reporte-tecnico2?year=<?php echo date('Y'); ?>&week=<?php echo date('W'); ?>&id=<?php echo $tecnicoData['userId']; ?>"
                                         class="uppercase text-sm font-semibold inline-flex items-center rounded-lg text-blue-600 hover:text-blue-700 dark:hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700 px-3 py-2">
                                         Ver reporte completo
                                         <svg class="w-2.5 h-2.5 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -614,7 +617,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                     <?php echo $tecnicoData['eliminado']; ?>
                                 ],
                                 labels: ['Asignado', 'Arribo', 'Inicio', 'Realización', 'Finalizado', 'Programado', 'Congelado', 'Cancelado', 'Archivado'],
-                                colors: ['#4b5563', '#d03801', '#3174f3', '#057a55', '#9f580a', '#5850ec', '#319795', '#f59e0b', '#e11d48'],
+                                colors: ['#6b7280', '#d03801', '#3174f3', '#057a55', '#057a55', '#5850ec', '#1a56db', '#e02424', '#d61f69'],
                                 dataLabels: {
                                     enabled: false,
                                 },

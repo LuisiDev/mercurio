@@ -12,17 +12,22 @@ document.addEventListener("DOMContentLoaded", function () {
     evidenciaInicioDiv.style.display = "none";
     evidenciaRealizacionDiv.style.display = "none";
     evidenciaFinalizacionDiv.style.display = "none";
+    evidenciaGrabacion.style.display = "none";
 
     resetFileInputsAndHideImage();
 
     if (estadoSelect.value === "3") {
       evidenciaArriboDiv.style.display = "block";
+      evidenciaGrabacion.style.display = "none";
     } else if (estadoSelect.value === "4") {
       evidenciaInicioDiv.style.display = "block";
+      evidenciaGrabacion.style.display = "none";
     } else if (estadoSelect.value === "5") {
       evidenciaRealizacionDiv.style.display = "block";
+      evidenciaGrabacion.style.display = "none";
     } else if (estadoSelect.value === "6") {
       evidenciaFinalizacionDiv.style.display = "block";
+      evidenciaGrabacion.style.display = "block";
     }
   }
 

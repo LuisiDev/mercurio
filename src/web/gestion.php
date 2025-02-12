@@ -56,31 +56,31 @@ include '../configuration/conn-session.php';
     {
         switch ($status) {
             case "1":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Creado';
+                echo '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Creado</span>';
                 break;
             case "2":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-orange-400 rounded-full"></div> Asignado';
+                echo '<span class="bg-gray-300 text-gray-900 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-500 dark:text-gray-300">Asignado</span>';
                 break;
             case "3":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Arribo';
+                echo '<span class="bg-orange-200 text-orange-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-orange-700 dark:text-orange-300">Arribo</span>';
                 break;
             case "4":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Inicio';
+                echo '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Inicio</span>';
                 break;
             case "5":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-green-400 rounded-full"></div> Realización';
+                echo '<span class="bg-cyan-200 text-cyan-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-cyan-800 dark:text-cyan-300">Realización</span>';
                 break;
             case "6":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-400 rounded-full"></div> Finalización';
+                echo '<span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Finalizado</span>';
                 break;
             case "7":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-indigo-400 rounded-full"></div> Programado';
+                echo '<span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">Programado</span>';
                 break;
             case "8":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Congelado';
+                echo '<span class="bg-blue-500 text-gray-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-700 dark:text-blue-300">Congelado</span>';
                 break;
             case "9":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Cancelado';
+                echo '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Cancelado</span>';
                 break;
         }
     }
@@ -89,16 +89,16 @@ include '../configuration/conn-session.php';
     {
         switch ($prioridad) {
             case "Pendiente":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Pendiente';
+                echo '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Pendiente</span>';
                 break;
             case "1":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-500 rounded-full"></div> Baja';
+                echo '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Baja</span>';
                 break;
             case "2":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-500 rounded-full"></div> Media';
+                echo '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Media</span>';
                 break;
             case "3":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-red-500 rounded-full"></div> Alta';
+                echo '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Alta</span>';
                 break;
         }
     }

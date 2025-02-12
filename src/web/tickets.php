@@ -67,8 +67,8 @@ include '../configuration/conn-session.php';
     }
     ?>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-4">
             <div class="grid grid-cols-1 gap-4 mb-4">
 
                 <div>
@@ -191,7 +191,8 @@ include '../configuration/conn-session.php';
                                     d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
                                     clip-rule="evenodd" />
                             </svg>
-                            Hace <?php
+                            Hace 
+                            <?php
                             $fecha = new DateTime($fila['fhticket']);
                             $hoy = new DateTime();
                             $diferencia = $hoy->diff($fecha);
@@ -200,28 +201,34 @@ include '../configuration/conn-session.php';
                         </span>
                         <?php if ($fila['estado'] == 0): ?>
                             <span
-                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Eliminado</span>
+                                class="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300">Archivado</span>
                         <?php elseif ($fila['estado'] == 1): ?>
                             <span
                                 class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Creado</span>
                         <?php elseif ($fila['estado'] == 2): ?>
                             <span
-                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Iniciando</span>
+                                class="bg-gray-300 text-gray-900 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-500 dark:text-gray-300">Asignado</span>
                         <?php elseif ($fila['estado'] == 3): ?>
                             <span
-                                class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Realizando</span>
+                                class="bg-orange-200 text-orange-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-orange-700 dark:text-orange-300">Arribo</span>
                         <?php elseif ($fila['estado'] == 4): ?>
                             <span
-                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Hecho</span>
+                                class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Inicio</span>
                         <?php elseif ($fila['estado'] == 5): ?>
                             <span
-                                class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Programado</span>
+                                class="bg-cyan-200 text-cyan-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-cyan-800 dark:text-cyan-300">Realización</span>
                         <?php elseif ($fila['estado'] == 6): ?>
                             <span
-                                class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Congelado</span>
+                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Finalizado</span>
                         <?php elseif ($fila['estado'] == 7): ?>
                             <span
-                                class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Cancelado</span>
+                                class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">Programado</span>
+                        <?php elseif ($fila['estado'] == 8): ?>
+                            <span
+                                class="bg-blue-500 text-gray-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-700 dark:text-blue-300">Congelado</span>
+                        <?php elseif ($fila['estado'] == 9): ?>
+                            <span
+                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Cancelado</span>
                         <?php endif; ?>
                         <div id="ticket-description" data-accordion="close">
                             <button href="#" class="inline-flex font-normal items-center mt-3.5"

@@ -116,8 +116,8 @@ function getStatus($status)
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-4">
             <div class="grid grid-cols-1 gap-4 mb-4">
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">

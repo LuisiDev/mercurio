@@ -43,8 +43,32 @@ include '../configuration/conn-session.php';
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="sm:ml-64">
-        <div class="mt-14">
+    <div class="mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div>
+
+            <div>
+                <div class="sm:hidden">
+                    <label for="tabs" class="sr-only">Select your country</label>
+                    <select id="tabs"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <option>Profile</option>
+                        <option>Invoioce</option>
+                    </select>
+                </div>
+                <ul
+                    class="hidden justify-center text-sm font-medium text-center text-gray-500 rounded-lg sm:flex dark:divide-gray-700 dark:text-gray-400">
+                    <li class="w-1/6 focus-within:z-10 shadow-sm">
+                        <a href="#"
+                            class="inline-block w-full p-4 text-gray-900 bg-gray-100 border-r border-gray-200 dark:border-gray-700 rounded-s-lg focus:ring-4 focus:ring-blue-300 active focus:outline-none dark:bg-gray-700 dark:text-white"
+                            aria-current="page">Profile</a>
+                    </li>
+                    <li class="w-1/6 focus-within:z-10 shadow-sm">
+                        <a href="#"
+                            class="inline-block w-full p-4 bg-white border-s-0 border-gray-200 dark:border-gray-700 rounded-e-lg hover:text-gray-700 hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700">Invoice</a>
+                    </li>
+                </ul>
+            </div>
+
             <div class="grid grid-cols-1 gap-4 mb-4">
 
                 <div class="pr-8 pt-8">
@@ -78,6 +102,27 @@ include '../configuration/conn-session.php';
                 </div>
 
                 <div class="relative overflow-x-auto sm:rounded-lg">
+
+                    <!-- Buscador -->
+                    <div class="flex justify-end px-8 py-4">
+                        <label for="table-search" class="sr-only">Buscador</label>
+                        <div class="relative">
+                            <div
+                                class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <button type="submit" class="p-1 focus:outline-none focus:shadow-outline">
+
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                                            d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <input type="search" name="search" id="search"
+                                class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="Buscar ticket">
+                        </div>
+                    </div>
 
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="search-table">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-400">
@@ -116,7 +161,7 @@ include '../configuration/conn-session.php';
                         </tbody>
                     </table>
 
-                    <div id="pagination" class="flex justify-center mt-4 space-x-2"></div>
+                    <div id="pagination" class="flex justify-end mt-4 mr-10 space-x-2"></div>
                 </div>
 
             </div>
@@ -127,7 +172,6 @@ include '../configuration/conn-session.php';
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const tableBody = document.getElementById('table-data');
-            const pagination = document.getElementById('pagination');
             // const searchTable = document.getElementById('search-table');
 
             let currentPage = 1;
@@ -178,27 +222,31 @@ include '../configuration/conn-session.php';
                 modalDelete.classList.add('hidden');
             });
 
+            function tipoUsuario() {
+                return "<?php echo $_SESSION['tipo']; ?>";
+            }
+
             // Función para obtener el estado con formato
             function getStatus(status) {
                 switch (status) {
                     case "1":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Creado';
+                        return '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Creado</span>';
                     case "2":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-orange-400 rounded-full"></div> Asignado';
+                        return '<span class="bg-gray-300 text-gray-900 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-500 dark:text-gray-300">Asignado</span>';
                     case "3":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Arribo';
+                        return '<span class="bg-orange-200 text-orange-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-orange-700 dark:text-orange-300">Arribo</span>';
                     case "4":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Inicio';
+                        return '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Inicio</span>';
                     case "5":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-green-400 rounded-full"></div> Realización';
+                        return '<span class="bg-cyan-200 text-cyan-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-cyan-800 dark:text-cyan-300">Realización</span>';
                     case "6":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-yellow-400 rounded-full"></div> Finalización';
+                        return '<span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Finalizado</span>';
                     case "7":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-indigo-400 rounded-full"></div> Programado';
+                        return '<span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">Programado</span>';
                     case "8":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Congelado';
+                        return '<span class="bg-blue-500 text-gray-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-700 dark:text-blue-300">Congelado</span>';
                     case "9":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Cancelado';
+                        return '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Cancelado</span>';
                     default:
                         return "No especificado";
                 }
@@ -208,15 +256,15 @@ include '../configuration/conn-session.php';
             function getPrioridad(prioridad) {
                 switch (prioridad) {
                     case "Pendiente":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Pendiente';
+                        return '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Pendiente</span>';
                     case "1":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-blue-500 rounded-full"></div> Baja';
+                        return '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Baja</span>';
                     case "2":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-yellow-500 rounded-full"></div> Media';
+                        return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Media</span>';
                     case "3":
-                        return '<div class="h-2.5 w-2.5 mr-1 bg-red-500 rounded-full"></div> Alta';
+                        return '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Alta</span>';
                     default:
-                        return "No especificado";
+                        return '<span class="bg-gray-200 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-900 dark:text-gray-300">No especificado</span>';
                 }
             }
 
@@ -224,7 +272,9 @@ include '../configuration/conn-session.php';
             async function loadTableData(page = 1) {
                 try {
                     const response = await fetch(`fetch-tickets.php?page=${page}`);
-                    const { tickets, totalTickets, registrosPorPagina, paginaActual } = await response.json();
+                    const { tickets, totalTickets, registrosPorPagina, paginaActual, tipo } = await response.json();
+
+                    console.log(tickets);
 
                     tableBody.innerHTML = "";
 
@@ -264,7 +314,7 @@ include '../configuration/conn-session.php';
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 flex flex-col gap-2">
-                                    ${getActionButtons(ticket, <?php echo json_encode($_SESSION['nombre']); ?>)}
+                                    ${getActionButtons(ticket, ticket.nombre, ticket.tipo)}
                                 </td>
                             </tr>
                         `;
@@ -283,7 +333,7 @@ include '../configuration/conn-session.php';
             // Función para generar los botones de acción basados en las condiciones
             function getActionButtons(ticket, nombre) {
                 const buttons = [];
-                if ([6, 9].includes(Number(ticket.estado)) || ticket.tipo === "comercializacion") {
+                if ([6, 9].includes(Number(ticket.estado)) || tipoUsuario() === "comercializacion") {
                     buttons.push(`
                     <button onclick="window.location.href='detalles?id=${ticket.idTicket}'" 
                         class="px-3 py-2 mb-1 w-fit text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -297,7 +347,7 @@ include '../configuration/conn-session.php';
                     </button>
                 `);
                 }
-                if (ticket.estado == 1 && !ticket.asignado && ticket.tipo !== "comercializacion") {
+                if (ticket.estado == 1 && !ticket.asignado && tipoUsuario() !== "comercializacion") {
                     buttons.push(`
                     <button onclick="window.location.href='asignar?id=${ticket.idTicket}'" 
                         class="px-3 py-2 mb-1 w-fit text-sm font-medium text-center inline-flex items-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
@@ -311,7 +361,7 @@ include '../configuration/conn-session.php';
                     </button>
                 `);
                 }
-                if ([1, 2, 3, 4, 5, 7, 8].includes(Number(ticket.estado)) && ticket.asignado && ticket.tipo !== "comercializacion") {
+                if ([1, 2, 3, 4, 5, 7, 8].includes(Number(ticket.estado)) && ticket.asignado && tipoUsuario() !== "comercializacion") {
                     buttons.push(`
                     <button onclick="window.location.href='atender?id=${ticket.idTicket}'" 
                         class="px-3 py-2 mb-1 w-fit text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -326,8 +376,8 @@ include '../configuration/conn-session.php';
                 `);
                 }
                 if (
-                    (ticket.tipo === 'admin' && [1, 2, 3, 4, 5, 7, 8].includes(Number(ticket.estado))) ||
-                    (ticket.tipo === 'comercializacion' && ticket.estado == 1 && ticket.nombre === nombre)
+                    (tipoUsuario() === 'admin' && [1, 2, 3, 4, 5, 7, 8].includes(Number(ticket.estado))) ||
+                    (tipoUsuario() === 'comercializacion' && ticket.estado == 1 && ticket.nombre === nombre)
                 ) {
                     buttons.push(`
                     <button onclick="window.location.href='editar?id=${ticket.idTicket}'" 
@@ -343,8 +393,8 @@ include '../configuration/conn-session.php';
                 `);
                 }
                 if (
-                    ([1, 2, 3, 4, 5, 6, 7, 8].includes(Number(ticket.estado)) && ticket.tipo !== "comercializacion") ||
-                    (ticket.tipo === "tecnico" && ticket.estado == 6)
+                    ([1, 2, 3, 4, 5, 6, 7, 8].includes(Number(ticket.estado)) && tipoUsuario() !== "comercializacion" && tipoUsuario() !== "tecnico") ||
+                    (tipoUsuario() === "tecnico" && [6, 9].includes(Number(ticket.estado)))
                 ) {
                     buttons.push(`
                     <button data-modal-target="modalDelete" data-id="${ticket.idTicket}"
@@ -363,46 +413,108 @@ include '../configuration/conn-session.php';
             }
 
             // Función para actualizar la paginación
-            function updatePagination(totalTickets, registrosPorPagina, paginaActual) {
+            function updatePagination(totalTickets, registrosPorPagina, paginaActual, query = '') {
                 const totalPaginas = Math.ceil(totalTickets / registrosPorPagina);
+                const pagination = document.getElementById('pagination');
                 pagination.innerHTML = "";
 
-                for (let i = 1; i <= totalPaginas; i++) {
+                const maxVisibleButtons = 10;
+                let startPage = Math.max(1, paginaActual - Math.floor(maxVisibleButtons / 2));
+                let endPage = Math.min(totalPaginas, startPage + maxVisibleButtons - 1);
+
+                if (endPage - startPage < maxVisibleButtons - 1) {
+                    startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
                     const button = document.createElement("button");
                     button.textContent = i;
                     button.className = `px-3 py-2 rounded-lg ${i === paginaActual ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
                     button.addEventListener('click', () => {
-                        currentPage = i;
-                        loadTableData(currentPage);
+                        fetchTickets(query, i);
                     });
-
                     pagination.appendChild(button);
                 }
-            }
 
-            function searchTable() {
-                const input = document.getElementById('search-table');
-                const filter = input.value.toUpperCase();
-                const rows = tableBody.getElementsByTagName('tr');
+                if (endPage < totalPaginas) {
+                    const ellipsis = document.createElement("span");
+                    ellipsis.textContent = "...";
+                    ellipsis.className = "px-3 py-2";
+                    pagination.appendChild(ellipsis);
 
-                for (let i = 0; i < rows.length; i++) {
-                    const td = rows[i].getElementsByTagName('td')[0];
-                    if (td) {
-                        const textValue = td.textContent || td.innerText;
-                        if (textValue.toUpperCase().indexOf(filter) > -1) {
-                            rows[i].style.display = '';
-                        } else {
-                            rows[i].style.display = 'none';
-                        }
-                    }
+                    const lastButton = document.createElement("button");
+                    lastButton.textContent = totalPaginas;
+                    lastButton.className = `px-3 py-2 rounded-lg ${totalPaginas === paginaActual ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`;
+                    lastButton.addEventListener('click', () => {
+                        fetchTickets(query, totalPaginas);
+                    });
+                    pagination.appendChild(lastButton);
                 }
+
             }
+
+            document.getElementById('search').addEventListener('input', function () {
+                const query = this.value;
+                fetchTickets(query, 1);
+            });
+
+            function fetchTickets(query, page) {
+                fetch(`fetch-tickets.php?search=${query}&page=${page}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const tableData = document.getElementById('table-data');
+                        tableData.innerHTML = '';
+                        data.tickets.forEach(ticket => {
+                            const row = document.createElement('tr');
+                            row.className = "bg-white border-b dark:bg-gray-800 dark:border-gray-700";
+                            row.innerHTML = `
+                                <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">${ticket.idTicket}</td>
+                                <td class="px-6 py-4">${ticket.asunto || "No proporcionado"}</td>
+                                <td class="px-6 py-4">${ticket.numCliente}</td>
+                                <td class="px-6 py-4">${ticket.fhticket}</td>
+                                <td class="px-6 py-4">${ticket.servicio || "No proporcionado"}</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        ${ticket.imagen ? `<img src="../../assets/imgUsers/${ticket.imagen}" alt="${ticket.nombre}" class="w-8 h-8 mr-1.5 rounded-full">` : `
+                                            <div class="flex justify-center items-center border border-gray-300 dark:border-gray-600 rounded-full w-8 h-8 mr-1.5">
+                                                <svg class="w-6 pb-1 text-gray-400 dark:text-gray-200"
+                                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2"
+                                                        d="M12 14c-2.206 0-4-1.794-4-4s1.794-4 4-4s4 1.794 4 4s-1.794 4-4 4Zm0 2c3.866 0 7 3.134 7 7H5c0-3.866 3.134-7 7-7Z" />
+                                                </svg>
+                                            </div>
+                                        `}
+                                        ${ticket.nombre || "No asignado"}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        ${getPrioridad(ticket.prioridad)}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        ${getStatus(ticket.estado)}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 flex flex-col gap-2">
+                                    ${getActionButtons(ticket, ticket.nombre, ticket.tipo)}
+                                </td>
+                `;
+                            tableData.appendChild(row);
+                        });
+
+                        updatePagination(data.totalTickets, data.registrosPorPagina, data.paginaActual, query);
+                    });
+            }
+
+            // Fetch initial tickets
+            fetchTickets('', 1);
 
             // Inicialización
             loadTableData(currentPage);
-
-            // Add event listener for search input
-            document.getElementById('search-table').addEventListener('input', searchTable);
         });
     </script>
 

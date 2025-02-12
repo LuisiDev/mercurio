@@ -48,7 +48,7 @@ include '../configuration/conn-session.php';
     {
         switch ($status) {
             case "0":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-red-500 rounded-full"></div> Eliminado';
+                echo '<span class="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300">Archivado</span>';
                 break;
         }
     }
@@ -57,16 +57,16 @@ include '../configuration/conn-session.php';
     {
         switch ($prioridad) {
             case "Pendiente":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Pendiente';
+                echo '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Pendiente</span>';
                 break;
             case "1":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-500 rounded-full"></div> Baja';
+                echo '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Baja</span>';
                 break;
             case "2":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-500 rounded-full"></div> Media';
+                echo '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Media</span>';
                 break;
             case "3":
-                echo '<div class="h-2.5 w-2.5 mr-1 bg-red-500 rounded-full"></div> Alta';
+                echo '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Alta</span>';
                 break;
         }
     }
@@ -96,8 +96,8 @@ include '../configuration/conn-session.php';
         }
     }
     ?>
-    <div class="sm:ml-64">
-        <div class="mt-14">
+    <div class="mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div>
             <div class="grid grid-cols-1 gap-4 mb-4">
 
                 <div class="p-8">

@@ -37,9 +37,9 @@ if ($user == null || $user == '') {
     <div>
         <img src="../../assets/img/mercurio-be.png" class="w-32 mx-auto mt-6 object-bottom" alt="Logo de Mercurio">
         <div class="grid place-items-center text-center">
-            <h1 class="text-gray-700 my-20 font-thin text-lg">
+            <h2 class="text-gray-700 my-20 font-medium text-lg">
                 Se ha encontrado una sesión activa.
-            </h1>
+            </h2>
             <div>
                 <?php
                 if ($imagen == null || $imagen == '') {
@@ -48,7 +48,6 @@ if ($user == null || $user == '') {
                     echo "<img src='../../assets/img/$imagen' class='w-28 h-28' alt='Imagen de perfil'>";
                 }
                 ?>
-
             </div>
             <div class="my-4">
                 <h2 class="text-gray-900 font-semibold text-2xl">
@@ -63,8 +62,8 @@ if ($user == null || $user == '') {
                     Si, es mi sesión
                 </a>
             </div>
-            <div class="my-4">
-                <a href="logout.php" class="text-gray-900 underline underline-offset-4 text-sm">
+            <div class="my-8">
+                <a href="logout.php" class="text-red-700 underline underline-offset-4 text-sm">
                     No, cerrar sesión
                 </a>
             </div>

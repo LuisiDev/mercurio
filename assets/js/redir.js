@@ -11,13 +11,13 @@ function returnBack() {
 }
 
 function assignTicket() {
-    window.location.href = "asignar";
-}
-
-function attendTicket() {
-    window.location.href = "atender";
+    window.location.href = 'asignar' + '?id=' + document.getElementById('ticketId').value;
 }
 
 function editTicket() {
-    window.location.href = "editar";
+    window.location.href = 'editar' + '?id=' + document.getElementById('ticketId').value;
+}
+
+function deleteTicket() {
+    window.location.href = 'eliminar';
 }

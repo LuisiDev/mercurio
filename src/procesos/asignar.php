@@ -6,10 +6,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $id = $_POST['idTicket'];
     $prioridad = $_POST['prioridad'];
     $asignado = $_POST['asignado'];
+    $estado = 2;
+    $fhAsignado = date('Y-m-d H:i:s');
 
-    $sql = "UPDATE tbticket SET prioridad = ?, asignado = ? WHERE idTicket = ?";
+    $sql = "UPDATE tbticket SET prioridad = ?, asignado = ?, fhAsignado = ?, estado = ? WHERE idTicket = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('ssi', $prioridad, $asignado, $id);
+    $stmt->bind_param('sssii', $prioridad, $asignado, $fhAsignado, $estado, $id);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {

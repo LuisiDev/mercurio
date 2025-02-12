@@ -64,31 +64,31 @@ function getStatusHTML($status)
 {
     switch ($status) {
         case "1":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Creado';
+            echo '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Creado</span>';
             break;
         case "2":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-orange-400 rounded-full"></div> Asignado';
+            echo '<span class="bg-gray-300 text-gray-900 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-500 dark:text-gray-300">Asignado</span>';
             break;
         case "3":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Arribo';
+            echo '<span class="bg-orange-200 text-orange-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-orange-700 dark:text-orange-300">Arribo</span>';
             break;
         case "4":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-400 rounded-full"></div> Inicio';
+            echo '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Inicio</span>';
             break;
         case "5":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-green-400 rounded-full"></div> Realización';
+            echo '<span class="bg-cyan-200 text-cyan-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-cyan-800 dark:text-cyan-300">Realización</span>';
             break;
         case "6":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-400 rounded-full"></div> Finalización';
+            echo '<span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Finalizado</span>';
             break;
         case "7":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-indigo-400 rounded-full"></div> Programado';
+            echo '<span class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">Programado</span>';
             break;
         case "8":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Congelado';
+            echo '<span class="bg-blue-500 text-gray-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-700 dark:text-blue-300">Congelado</span>';
             break;
         case "9":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-red-600 rounded-full"></div> Cancelado';
+            echo '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Cancelado</span>';
             break;
     }
 }
@@ -97,16 +97,16 @@ function getPrioridad($prioridad)
 {
     switch ($prioridad) {
         case "Pendiente":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-gray-400 rounded-full"></div> Pendiente';
+            echo '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Pendiente</span>';
             break;
         case "1":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-blue-500 rounded-full"></div> Baja';
+            echo '<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Baja</span>';
             break;
         case "2":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-yellow-500 rounded-full"></div> Media';
+            echo '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Media</span>';
             break;
         case "3":
-            echo '<div class="h-2.5 w-2.5 mr-1 bg-red-500 rounded-full"></div> Alta';
+            echo '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Alta</span>';
             break;
     }
 }
@@ -153,12 +153,17 @@ function getAsignado($asignado)
     <link rel="stylesheet" href="../../node_modules/simple-datatables/dist/style.css">
     <script type="module">
         import { DataTable } from "../../node_modules/simple-datatables/dist/module.js";
-        window.dt = new DataTable("#search-table", {
+        window.dt = new DataTable("#asignados-table", {
             searchable: true,
             sortable: true,
         });
 
         window.dt = new DataTable("#semanas-table", {
+            searchable: true,
+            sortable: true,
+        });
+
+        window.dt = new DataTable("#meses-table", {
             searchable: true,
             sortable: true,
         });
@@ -217,8 +222,8 @@ function getAsignado($asignado)
     }
     ?>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-3">
             <div class="grid grid-cols-1 gap-4 mb-4">
 
                 <!-- Nombre del técnico al que se ingreso tomando en cuenta el id del tecnico -->
@@ -401,12 +406,16 @@ function getAsignado($asignado)
 
                 <div class="flex justify-center rounded-md mb-4" role="group">
                     <button type="button" onclick="showAsignados()"
-                        class="px-4 py-2 text-sm font-medium bg-white text-gray-900 bg-transparent border border-gray-200 rounded-s-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+                        class="px-4 py-2 text-sm font-medium bg-white text-gray-900 bg-transparent border border-gray-200 rounded-s-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:hover:text-white dark:hover:border-gray-800 dark:hover:bg-gray-900 dark:focus:bg-gray-700">
                         Asignados
                     </button>
                     <button type="button" onclick="showSemanales()"
-                        class="px-4 py-2 text-sm font-medium bg-white text-gray-900 bg-transparent border border-gray-200 rounded-e-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:border-white dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:bg-gray-700">
+                        class="px-4 py-2 text-sm font-medium bg-white text-gray-900 bg-transparent border border-gray-200 hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:hover:text-white dark:hover:border-gray-800 dark:hover:bg-gray-900 dark:focus:bg-gray-700">
                         Semanales
+                    </button>
+                    <button type="button" onclick="showMensuales()"
+                        class="px-4 py-2 text-sm font-medium bg-white text-gray-900 bg-transparent border border-gray-200 rounded-e-lg hover:bg-gray-900 hover:text-white focus:z-10 focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white dark:text-white dark:border-gray-600 dark:bg-gray-800 dark:hover:text-white dark:hover:border-gray-800 dark:hover:bg-gray-900 dark:focus:bg-gray-700">
+                        Mensuales
                     </button>
                 </div>
 
@@ -414,11 +423,19 @@ function getAsignado($asignado)
                     function showAsignados() {
                         document.getElementById('asignados').style.display = 'block';
                         document.getElementById('semanales').style.display = 'none';
+                        document.getElementById('mensuales').style.display = 'none';
                     }
 
                     function showSemanales() {
                         document.getElementById('asignados').style.display = 'none';
+                        document.getElementById('mensuales').style.display = 'none';
                         document.getElementById('semanales').style.display = 'block';
+                    }
+
+                    function showMensuales() {
+                        document.getElementById('asignados').style.display = 'none';
+                        document.getElementById('semanales').style.display = 'none';
+                        document.getElementById('mensuales').style.display = 'block';
                     }
                 </script>
 
@@ -427,161 +444,45 @@ function getAsignado($asignado)
                         Tickets asignados
                     </h2>
 
-                    <div
-                        class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
-                        <div>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">Mostrar</span>
-                            <button type="button" id="dropdownShowButton" data-dropdown-toggle="dropdownShow"
-                                class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dar:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                                <span class="sr-only">Botón de mostrar</span>
-                                Todos
-                                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m19 9-7 7-7-7" />
-                                </svg>
-                            </button>
-                            <div id="dropdownShow"
-                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownShowButton">
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Todos</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Creado</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Iniciado</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Realizando</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Hecho</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Programado</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Congelado</a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Cancelado</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <label for="table-search" class="sr-only">Buscador</label>
-                        <div class="relative">
-                            <div
-                                class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                        d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-                                </svg>
-                            </div>
-                            <input type="text" id="table-search-tickets"
-                                class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Buscar ticket">
-                        </div>
-                    </div>
-
                     <!-- Tabla de tickets asignados -->
                     <div class="relative overflow-x-auto sm:rounded-lg">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="search-table">
-                            <thead
-                                class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-400">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="asignados-table">
+                            <thead class="text-xs bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col"
+                                        class="rounded-tl-lg px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
                                         No. de ticket
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
                                         Asunto
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
                                         No. de cliente
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        <div class="flex items-center">
-                                            Fecha
-                                            <a href="#">
-                                                <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd"
-                                                        d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
-                                        </div>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        Fecha
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        <div class="flex items-center">
-                                            Servicio
-                                            <a href="#">
-                                                <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd"
-                                                        d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
-                                        </div>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        Servicio
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        <div class="flex items-center">
-                                            Asignado
-                                            <a href="#">
-                                                <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd"
-                                                        d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
-                                        </div>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        Asignado
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        <div class="flex items-center">
-                                            Prioridad
-                                            <a href="#">
-                                                <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd"
-                                                        d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
-                                        </div>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        Prioridad
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        <div class="flex items-center">
-                                            Estado
-                                            <a href="#">
-                                                <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path fill-rule="evenodd"
-                                                        d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                            </a>
-                                        </div>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        Estado
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col"
+                                        class="rounded-tr-lg px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
                                         <span class="sr-only">Acciones</span>
                                     </th>
                                 </tr>
@@ -613,7 +514,7 @@ function getAsignado($asignado)
                                 $stmt->fetch();
                                 $stmt->close();
 
-                                $registrosPorPagina = 10;
+                                $registrosPorPagina = $row[0];
                                 $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
                                 $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
                                 $offset = ($paginaActual - 1) * $registrosPorPagina;
@@ -635,47 +536,48 @@ function getAsignado($asignado)
                                     <?php include '../components/modal-baja-ticket.php'; ?>
                                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <th scope="row"
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php echo htmlspecialchars($fila['idTicket']); ?>
                                             </div>
                                         </th>
-                                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        <td
+                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php echo htmlspecialchars($fila['asunto'] ?? 'No proporcionado'); ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php echo htmlspecialchars($fila['numCliente'] ?? 'No proporcionado'); ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php echo htmlspecialchars($fila['fhticket'] ?? 'No proporcionado'); ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php echo htmlspecialchars($fila['servicio'] ?? 'No proporcionado'); ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php getAsignado($fila['asignado']); ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php getPrioridad($fila['prioridad'] ?? 'No proporcionado'); ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <div class="flex items-center">
                                                 <?php getStatusHTML($fila['estado']); ?>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <?php if ($fila['estado'] == '6' || $fila['estado'] == '9' || $tipo == 'comercializacion'): ?>
                                                 <button type="button"
                                                     onclick="window.location.href = 'detalles?id=<?php echo $fila['idTicket']; ?>'"
@@ -755,53 +657,14 @@ function getAsignado($asignado)
                         </table>
                     </div>
 
-                    <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 p-8"
-                        aria-label="Navegación">
-                        <span
-                            class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Mostrando
-                            <span
-                                class="font-semibold text-gray-900 dark:text-white"><?php echo $offset + 1; ?>-<?php echo min($offset + $registrosPorPagina, $totalRegistros); ?></span>
-                            de <span
-                                class="font-semibold text-gray-900 dark:text-white"><?php echo $totalRegistros; ?></span></span>
-                        <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                            <?php
-                            $rango = 6; // Número de páginas a mostrar
-                            $inicio = max($paginaActual - floor($rango / 2), 1);
-                            $fin = min($inicio + $rango - 1, $totalPaginas);
-
-                            if ($fin - $inicio + 1 < $rango) {
-                                $inicio = max($fin - $rango + 1, 1);
-                            }
-
-                            if ($paginaActual > 1): ?>
-                                <li>
-                                    <a href="reporte-tecnico?page=<?php echo $paginaActual - 1; ?>&id=<?php echo $tecnicoId; ?>"
-                                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Anterior</a>
-                                </li>
-                            <?php endif; ?>
-
-                            <?php for ($i = $inicio; $i <= $fin; $i++): ?>
-                                <li>
-                                    <a href="reporte-tecnico?page=<?php echo $i; ?>&id=<?php echo $tecnicoId; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white <?php if ($i == $paginaActual)
-                                              echo 'bg-blue-50 text-blue-500'; ?>"><?php echo $i; ?></a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <?php if ($paginaActual < $totalPaginas): ?>
-                                <li>
-                                    <a href="reporte-tecnico?page=<?php echo $paginaActual + 1; ?>&id=<?php echo $tecnicoId; ?>"
-                                        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-700 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Siguiente</a>
-                                </li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
                 </div>
 
                 <div class="hidden" id="semanales">
+                    
                     <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-3 md:mt-0 mt-4">
                         Tickets realizados en la semana <?php echo date('W'); ?>
                     </h2>
-                    <h3 class="text-lg font-semibold text-gray-700 mb-8 md:mt-0">De la fecha
+                    <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-8 md:mt-0">De la fecha
                         <?php echo date('d/m/Y', strtotime('monday this week')); ?> al
                         <?php echo date('d/m/Y', strtotime('saturday this week')); ?>
                     </h3>
@@ -809,58 +672,6 @@ function getAsignado($asignado)
                     <div
                         class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
                         <div class="flex justify-between">
-                            <div>
-                                <span class="text-sm text-gray-500 dark:text-gray-400">Mostrar</span>
-                                <button type="button" id="dropdownShowButton" data-dropdown-toggle="dropdownShow"
-                                    class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dar:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                                    <span class="sr-only">Botón de mostrar</span>
-                                    Todos
-                                    <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="m19 9-7 7-7-7" />
-                                    </svg>
-                                </button>
-                                <div id="dropdownShow"
-                                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                        aria-labelledby="dropdownShowButton">
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Todos</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Creado</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Iniciado</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Realizando</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Hecho</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Programado</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Congelado</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"
-                                                class="button px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Cancelado</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
                             <div>
                                 <!-- Boton para seleccionar semanas, en este caso, al dar click en el boton abra un modal con un calendario para seleccionar la semana sin un dropdown -->
                                 <button type="button" id="dropdownWeekButton" data-modal-toggle="modal-week"
@@ -877,49 +688,23 @@ function getAsignado($asignado)
                             </div>
                         </div>
 
-                        <div class="flex justify-between">
-                            <label for="table-search" class="sr-only">Buscador</label>
-                            <div class="relative">
-                                <div
-                                    class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                                            d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-                                    </svg>
-                                </div>
-                                <input type="text" id="table-search-tickets"
-                                    class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Buscar ticket">
-                            </div>
-
-                            <!-- Boton para exportar tabla en PDF -->
-                            <button type="button"
-                                class="button px-4 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                <svg class="w-5 h-5 text-white me-2" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd"
-                                        d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                Exportar
-                            </button>
-
-                        </div>
-
                         <?php
                         // Obtener la semana seleccionada o la semana actual
                         $week = isset($_GET['week']) ? (int) $_GET['week'] : date('W');
                         $year = date('Y');
 
-                        // Consulta optimizada para filtrar por semana
+                        // Calcular las fechas de inicio y fin de la semana (viernes a viernes)
+                        $startDate = date('Y-m-d', strtotime($year . "W" . str_pad($week, 2, '0', STR_PAD_LEFT) . '5'));
+                        $endDate = date('Y-m-d', strtotime($startDate . ' +7 days'));
+
+                        // Consulta optimizada para filtrar por semana (viernes a viernes)
                         $sqlTickets = "
                             SELECT idTicket, asunto, numCliente, fhticket, servicio, asignado, prioridad, estado
                             FROM tbticket
-                            WHERE WEEK(fhticket, 1) = ? AND YEAR(fhticket) = ?
+                            WHERE fhticket >= ? AND fhticket < ?
                         ";
                         $stmtTickets = $conn->prepare($sqlTickets);
-                        $stmtTickets->bind_param('ii', $week, $year);
+                        $stmtTickets->bind_param('ss', $startDate, $endDate);
                         $stmtTickets->execute();
                         $resultTickets = $stmtTickets->get_result();
                         ?>
@@ -943,11 +728,11 @@ function getAsignado($asignado)
                                     </div>
                                 </div>
                                 <div class="modal-body p-4 space-y-4 text-sm text-gray-700 dark:text-gray-200 w-96">
-                                    <div>
+                                    <!-- <div>
                                         <span>
 
                                         </span>
-                                    </div>
+                                    </div> -->
                                     <div class="contents">
                                         <!-- Todas las semanas del año -->
                                         <?php
@@ -991,449 +776,718 @@ function getAsignado($asignado)
                                     .catch(error => console.error('Error:', error));
                             }
                         </script>
+                    </div>
 
-                        <!-- Tabla de tickets de la semana -->
-                        <div class="relative overflow-x-auto sm:rounded-lg">
-                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="semanas-table">
-                                <thead
-                                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-900 dark:text-gray-400">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3">
-                                            No. de ticket
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Asunto
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            No. de cliente
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            <div class="flex items-center">
-                                                Fecha
-                                                <a href="#">
-                                                    <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path fill-rule="evenodd"
-                                                            d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            <div class="flex items-center">
-                                                Servicio
-                                                <a href="#">
-                                                    <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path fill-rule="evenodd"
-                                                            d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            <div class="flex items-center">
-                                                Asignado
-                                                <a href="#">
-                                                    <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path fill-rule="evenodd"
-                                                            d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            <div class="flex items-center">
-                                                Prioridad
-                                                <a href="#">
-                                                    <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path fill-rule="evenodd"
-                                                            d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            <div class="flex items-center">
-                                                Estado
-                                                <a href="#">
-                                                    <svg class="w-3 h-3 ms-1.5" aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path fill-rule="evenodd"
-                                                            d="M12.832 3.445a1 1 0 0 0-1.664 0l-4 6A1 1 0 0 0 8 11h8a1 1 0 0 0 .832-1.555l-4-6Zm-1.664 17.11a1 1 0 0 0 1.664 0l4-6A1 1 0 0 0 16 13H8a1 1 0 0 0-.832 1.555l4 6Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </a>
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            <span class="sr-only">Acciones</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $userId = $_SESSION['userId'];
-                                    $tipo = $_SESSION['tipo'];
+                    <!-- Tabla de tickets de la semana -->
+                    <div class="relative overflow-x-auto sm:rounded-lg">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="semanas-table">
+                            <thead class="text-xs bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
+                                <tr>
+                                    <th scope="col"
+                                        class="rounded-tl-lg px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        NO. DE TICKET
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        ASUNTO
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        NO. DE CLIENTE
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        FECHA
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        SERVICIO
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        ASIGNADO
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        PRIORIDAD
+                                    </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        ESTADO
+                                    </th>
+                                    <th scope="col"
+                                        class="rounded-tr-lg px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                        <span class="sr-only">Acciones</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $userId = $_SESSION['userId'];
+                                $tipo = $_SESSION['tipo'];
 
-                                    // Parámetros de la URL
-                                    $tecnicoId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-                                    $week = isset($_GET['week']) ? (int) $_GET['week'] : date('W'); // Semana seleccionada o actual
-                                    $year = date('Y'); // Año actual
-                                    
-                                    // Paginación
-                                    $registrosPorPagina = 10;
-                                    $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-                                    $offset = ($paginaActual - 1) * $registrosPorPagina;
+                                // Parámetros de la URL
+                                $tecnicoId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+                                $week = isset($_GET['week']) ? (int) $_GET['week'] : date('W'); // Semana seleccionada o actual
+                                $year = date('Y'); // Año actual
+                                
+                                // Paginación
+                                $registrosPorPagina = $row[0];
+                                $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                                $offset = ($paginaActual - 1) * $registrosPorPagina;
 
-                                    // Consulta base para los tickets
-                                    $sql = "SELECT SQL_CALC_FOUND_ROWS idTicket, fhticket, nombre, numTrabajador, numCliente, dispositivo, prioridad, estado, asignado 
+                                // Consulta base para los tickets
+                                $sql = "SELECT idTicket, asunto, fhticket, servicio, nombre, numTrabajador, numCliente, dispositivo, prioridad, estado, asignado 
                                     FROM tbticket 
                                     WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) 
                                     AND WEEK(fhticket, 1) = ? 
                                     AND YEAR(fhticket) = ? ";
 
-                                    // Filtrar por técnico si se seleccionó uno
-                                    if ($tecnicoId > 0) {
-                                        $sql .= "AND asignado = ? ";
-                                    }
-
-                                    // Orden y límite
-                                    $sql .= "ORDER BY fhticket DESC LIMIT ?, ?";
-                                    $stmt = $conn->prepare($sql);
-
-                                    // Vinculación de parámetros
-                                    if ($tecnicoId > 0) {
-                                        $stmt->bind_param('iiiii', $week, $year, $tecnicoId, $offset, $registrosPorPagina);
-                                    } else {
-                                        $stmt->bind_param('iiii', $week, $year, $offset, $registrosPorPagina);
-                                    }
-
-                                    // Ejecutar consulta
-                                    $stmt->execute();
-                                    $resultado = $stmt->get_result();
-
-                                    // Obtener total de registros para la paginación
-                                    $totalRegistrosQuery = $conn->query("SELECT FOUND_ROWS() AS total");
-                                    $totalRegistros = $totalRegistrosQuery->fetch_assoc()['total'];
-                                    $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
-
-                                    // Mostrar los resultados en la tabla
-                                    while ($fila = $resultado->fetch_assoc()): ?>
-                                        <?php include '../components/modal-baja-ticket.php'; ?>
-                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                            <th scope="row"
-                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <div class="flex items-center">
-                                                    <?php echo htmlspecialchars($fila['idTicket']); ?>
-                                                </div>
-                                            </th>
-                                            <td
-                                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                <div class="flex items-center">
-                                                    <?php echo htmlspecialchars($fila['asunto'] ?? 'No proporcionado'); ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <?php echo htmlspecialchars($fila['numCliente'] ?? 'No proporcionado'); ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <?php echo htmlspecialchars($fila['fhticket'] ?? 'No proporcionado'); ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <?php echo htmlspecialchars($fila['servicio'] ?? 'No proporcionado'); ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <?php getAsignado($fila['asignado']); ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <?php getPrioridad($fila['prioridad'] ?? 'No proporcionado'); ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <?php getStatusHTML($fila['estado']); ?>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4">
-                                                <?php if ($fila['estado'] == '4' || $fila['estado'] == '7' || $tipo == 'comercializacion'): ?>
-                                                    <button type="button" onclick="window.location.href = 'detalles?id=
-                                <?php echo $fila['idTicket']; ?>'" class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center
-                                text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none
-                                focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                        <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                            viewBox="0 0 22 22">
-                                                            <path fill-rule="evenodd"
-                                                                d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7ZM8 16a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1Zm1-5a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                        Detalles
-                                                    </button>
-                                                <?php endif; ?>
-                                                <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'comercializacion'): ?>
-                                                    <button type="button" onclick="window.location.href = 'asignar?id=
-                                <?php echo $fila['idTicket']; ?>'" class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center
-                                text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none
-                                focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700
-                                dark:focus:ring-green-800">
-                                                        <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                            viewBox="0 0 22 22">
-                                                            <path fill-rule="evenodd"
-                                                                d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                        Asignar
-                                                    </button>
-                                                <?php endif; ?>
-                                                <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '5' || $fila['estado'] == '6') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
-                                                    <button type="button" onclick="window.location.href = 'atender?id=
-                                <?php echo $fila['idTicket']; ?>'" class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white
-                                bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none
-                                focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800
-                                mb-2">
-                                                        <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                            viewBox="0 0 22 22">
-                                                            <path fill-rule="evenodd"
-                                                                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                        Atender</button>
-                                                <?php endif; ?>
-                                                <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'coordinador'): ?>
-                                                    <button type="button" onclick="window.location.href = 'editar?id=
-                                <?php echo $fila['idTicket']; ?>'" class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white
-                                bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none
-                                focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500
-                                dark:focus:ring-yellow-600 mb-2">
-                                                        <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                            viewBox="0 0 22 22">
-                                                            <path fill-rule="evenodd"
-                                                                d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                        Editar</button>
-                                                <?php endif; ?>
-                                                <?php if (
-                                                    ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7') &&
-                                                    $tipo != 'comercializacion' &&
-                                                    ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '4'))
-                                                ): ?>
-                                                    <button type="button" data-modal-target="popup-confirmation"
-                                                        data-modal-toggle="popup-confirmation"
-                                                        data-id="<?php echo $fila['idTicket']; ?>" class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white
-                                    bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none
-                                    focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800
-                                    mb-2">
-                                                        <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                            viewBox="0 0 22 22">
-                                                            <path fill-rule="evenodd"
-                                                                d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                        Eliminar</button>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endwhile; ?>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 p-8"
-                            aria-label="Navegación">
-                            <span
-                                class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Mostrando
-                                <span class="font-semibold text-gray-900 dark:text-white">
-                                    <?php echo $offset + 1; ?>-
-                                    <?php echo min($offset + $registrosPorPagina, $totalRegistros); ?>
-                                </span>
-                                de <span class="font-semibold text-gray-900 dark:text-white">
-                                    <?php echo $totalRegistros; ?></span></span>
-                            <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                                <?php
-                                $rango = 6; // Número de páginas a mostrar
-                                $inicio = max($paginaActual - floor($rango / 2), 1);
-                                $fin = min($inicio + $rango - 1, $totalPaginas);
-
-                                if ($fin - $inicio + 1 < $rango) {
-                                    $inicio = max($fin - $rango + 1, 1);
+                                // Filtrar por técnico si se seleccionó uno
+                                if ($tecnicoId > 0) {
+                                    $sql .= "AND asignado = ? ";
                                 }
 
-                                if ($paginaActual > 1): ?>
-                                    <li>
-                                        <a href=" reporte-tecnico?page=<?php echo $paginaActual - 1; ?>&id=
-                                <?php echo $tecnicoId; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white
-                                border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700
-                                dark:bg-gray-600 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-600
-                                dark:hover:text-white">Anterior</a>
-                                    </li>
-                                <?php endif; ?>
+                                // Orden y límite
+                                $sql .= "ORDER BY fhticket DESC LIMIT ?, ?";
+                                $stmt = $conn->prepare($sql);
 
-                                <?php for ($i = $inicio; $i <= $fin; $i++): ?>
-                                    <li>
-                                        <a href="reporte-tecnico?page=<?php echo $i; ?>&id=<?php echo $tecnicoId; ?>" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white <?php if ($i == $paginaActual)
-                                                  echo 'bg-blue-50 text-blue-500'; ?>"><?php echo $i; ?></a>
-                                    </li>
-                                <?php endfor; ?>
+                                // Vinculación de parámetros
+                                if ($tecnicoId > 0) {
+                                    $stmt->bind_param('iiiii', $week, $year, $tecnicoId, $offset, $registrosPorPagina);
+                                } else {
+                                    $stmt->bind_param('iiii', $week, $year, $offset, $registrosPorPagina);
+                                }
 
-                                <?php if ($paginaActual < $totalPaginas): ?>
-                                    <li>
-                                        <a href="reporte-tecnico?page=<?php echo $paginaActual + 1; ?>&id=<?php echo $tecnicoId; ?>"
-                                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-700 dark:border-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Siguiente</a>
-                                    </li>
-                                <?php endif; ?>
-                            </ul>
-                        </nav>
+                                // Ejecutar consulta
+                                $stmt->execute();
+                                $resultado = $stmt->get_result();
+
+                                // Obtener total de registros para la paginación
+                                $totalRegistrosQuery = $conn->query("SELECT FOUND_ROWS() AS total");
+                                $totalRegistros = $totalRegistrosQuery->fetch_assoc()['total'];
+                                $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
+
+                                // Mostrar los resultados en la tabla
+                                while ($fila = $resultado->fetch_assoc()): ?>
+                                    <?php include '../components/modal-baja-ticket.php'; ?>
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <th scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php echo htmlspecialchars($fila['idTicket']); ?>
+                                            </div>
+                                        </th>
+                                        <td
+                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php echo htmlspecialchars($fila['asunto'] ?? 'No proporcionado'); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php echo htmlspecialchars($fila['numCliente'] ?? 'No proporcionado'); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php echo htmlspecialchars($fila['fhticket'] ?? 'No proporcionado'); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php echo htmlspecialchars($fila['servicio'] ?? 'No proporcionado'); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php getAsignado($fila['asignado']); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php getPrioridad($fila['prioridad'] ?? 'No proporcionado'); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <div class="flex items-center">
+                                                <?php getStatusHTML($fila['estado']); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <?php if ($fila['estado'] == '6' || $fila['estado'] == '9' || $tipo == 'comercializacion'): ?>
+                                                <button type="button"
+                                                    onclick="window.location.href = 'detalles?id=<?php echo $fila['idTicket']; ?>'"
+                                                    class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                        viewBox="0 0 22 22">
+                                                        <path fill-rule="evenodd"
+                                                            d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7ZM8 16a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1Zm1-5a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Detalles
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'comercializacion'): ?>
+                                                <button type="button"
+                                                    onclick="window.location.href = 'asignar?id=<?php echo $fila['idTicket']; ?>'"
+                                                    class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                        viewBox="0 0 22 22">
+                                                        <path fill-rule="evenodd"
+                                                            d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Asignar
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '7' || $fila['estado'] == '8') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
+                                                <button type="button"
+                                                    onclick="window.location.href = 'atender?id=<?php echo $fila['idTicket']; ?>'"
+                                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2">
+                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                        viewBox="0 0 22 22">
+                                                        <path fill-rule="evenodd"
+                                                            d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Atender</button>
+                                            <?php endif; ?>
+                                            <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'coordinador'): ?>
+                                                <button type="button"
+                                                    onclick="window.location.href = 'editar?id=<?php echo $fila['idTicket']; ?>'"
+                                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600 mb-2">
+                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                        viewBox="0 0 22 22">
+                                                        <path fill-rule="evenodd"
+                                                            d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Editar</button>
+                                            <?php endif; ?>
+                                            <?php if (
+                                                ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' || $fila['estado'] == '8' || $fila['estado'] == '9') &&
+                                                $tipo != 'comercializacion' &&
+                                                ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '4'))
+                                            ): ?>
+                                                <button type="button" data-modal-target="popup-confirmation"
+                                                    data-modal-toggle="popup-confirmation"
+                                                    data-id="<?php echo $fila['idTicket']; ?>"
+                                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 mb-2">
+                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                        viewBox="0 0 22 22">
+                                                        <path fill-rule="evenodd"
+                                                            d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Eliminar</button>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
                     </div>
 
                 </div>
 
             </div>
+
+            <?php
+            // Meses en español
+            $meses = [
+                'Enero',
+                'Febrero',
+                'Marzo',
+                'Abril',
+                'Mayo',
+                'Junio',
+                'Julio',
+                'Agosto',
+                'Septiembre',
+                'Octubre',
+                'Noviembre',
+                'Diciembre'
+            ];
+
+            // Consulta optimizada para filtrar por mes
+            $sqlTickets = "
+                    SELECT idTicket, asunto, numCliente, fhticket, servicio, asignado, prioridad, estado
+                    FROM tbticket
+                    WHERE MONTH(fhticket) = ? AND YEAR(fhticket) = ?
+                ";
+            $stmtTickets = $conn->prepare($sqlTickets);
+            $month = date('n');
+            $year = date('Y');
+            $stmtTickets->bind_param('ii', $month, $year);
+            $stmtTickets->execute();
+            $resultTickets = $stmtTickets->get_result();
+            ?>
+
+            <div class="hidden" id="mensuales">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-3 md:mt-0 mt-4">
+                    Tickets realizados en el mes de <?php echo $meses[date('n') - 1]; ?>
+                </h2>
+
+                <div
+                    class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4">
+                    <div class="flex justify-between">
+                        <div>
+                            <!-- Boton para seleccionar meses, en este caso, al dar click en el boton abra un modal con un calendario para seleccionar el mes sin un dropdown -->
+                            <button type="button" id="dropdownMonthButton" data-modal-toggle="modal-month"
+                                class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dar:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                <span class="sr-only">Botón de mes</span>
+                                <?php echo $meses[date('n') - 1]; ?>
+                                <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m19 9-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between">
+
+                        <!-- Boton para exportar tabla en PDF -->
+                        <button type="button"
+                            class="button px-4 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <svg class="w-5 h-5 text-white me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                    d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Exportar
+                        </button>
+
+                    </div>
+
+                    <div id="modal-week" class="modal fixed inset-0 z-50 hidden bg-gray-900 overflow-y-auto"
+                        style="margin-top: 0;">
+                        <div class="modal-box bg-white dark:bg-gray-800 dark:text-gray-200 w-96 mx-auto mt-20">
+                            <div class="modal-header flex justify-between px-8 py-5">
+                                <div>
+                                    <h3 class="text-lg font-semibold">Seleccionar mes</h3>
+                                </div>
+                                <div>
+                                    <button onclick="document.getElementById('modal-month').classList.add('hidden')"
+                                        type="button" data-modal-toggle="modal-week" class="focus:outline-none">
+                                        <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="modal-body p-4 space-y-4 text-sm text-gray-700 dark:text-gray-200 w-96">
+                                <div>
+                                    <span>
+
+                                    </span>
+                                </div>
+                                <div class="contents">
+                                    <!-- Todas las meses del año -->
+                                    <?php
+                                    $meses = [
+                                        'Enero',
+                                        'Febrero',
+                                        'Marzo',
+                                        'Abril',
+                                        'Mayo',
+                                        'Junio',
+                                        'Julio',
+                                        'Agosto',
+                                        'Septiembre',
+                                        'Octubre',
+                                        'Noviembre',
+                                        'Diciembre'
+                                    ];
+                                    for ($i = 1; $i <= 12; $i++): ?>
+                                        <button data-month="<?php echo $i; ?>"
+                                            class="button w-full text-left text-sm text-gray-700 dark:text-gray-200"
+                                            onclick="fetchTicketsByMonth(<?php echo $i; ?>)">
+                                            <?php echo $meses[$i - 1]; ?>
+                                        </button>
+                                    <?php endfor; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        const modalMonth = document.getElementById('modal-month');
+                        const dropdownMonthButton = document.getElementById('dropdownMonthButton');
+
+                        dropdownMonthButton.addEventListener('click', () => {
+                            modalMonth.classList.remove('hidden');
+                        });
+
+                        document.querySelectorAll('[data-month]').forEach(button => {
+                            button.addEventListener('click', function () {
+                                const month = this.getAttribute('data-month');
+                                fetchTicketsByMonth(month);
+                            });
+                        });
+
+                        function fetchTicketsByMonth(month) {
+                            fetch(`reporte-tecnico?month=${month}`)
+                                .then(response => response.text())
+                                .then(data => {
+                                    if (!response.ok) throw new Error('Error al cargar los tickets');
+                                    return response.text();
+                                })
+                                .then(data => {
+                                    document.querySelector('.relative.overflow-x-auto').innerHTML = data;
+                                    modalMonth.classList.add('hidden');
+                                })
+                                .catch(error => console.error(error));
+                        }
+                    </script>
+
+                </div>
+
+                <!-- Tabla de tickets del mes -->
+                <div class="relative overflow-x-auto sm:rounded-lg">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400" id="meses-table">
+                        <thead class="text-xs bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
+                            <tr>
+                                <th scope="col"
+                                    class="rounded-tl-lg px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    NO. DE TICKET
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    ASUNTO
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    NO. DE CLIENTE
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    FECHA
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    SERVICIO
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    ASIGNADO
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    PRIORIDAD
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    ESTADO
+                                </th>
+                                <th scope="col"
+                                    class="rounded-tr-lg px-6 py-3 uppercase dark:border-none text-gray-700 dark:text-gray-400 dark:bg-gray-900">
+                                    <span class="sr-only">Acciones</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $userId = $_SESSION['userId'];
+                            $tipo = $_SESSION['tipo'];
+
+                            // Parámetros de la URL
+                            $tecnicoId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+                            $month = date('n'); // Mes actual
+                            $year = date('Y'); // Año actual
+                            
+                            // Paginación
+                            $registrosPorPagina = 10;
+                            $paginaActual = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+                            $offset = ($paginaActual - 1) * $registrosPorPagina;
+
+                            // Consulta base para los tickets
+                            $sql = "SELECT SQL_CALC_FOUND_ROWS idTicket, asunto, fhticket, servicio, nombre, numTrabajador, numCliente, dispositivo, prioridad, estado, asignado 
+                                    FROM tbticket 
+                                    WHERE (estado = 6 OR (estado = 0 AND token IS NULL)) 
+                                    AND MONTH(fhticket) = ? AND YEAR(fhticket) = ? ";
+
+                            // Filtrar por técnico si se seleccionó uno
+                            if ($tecnicoId > 0) {
+                                $sql .= "AND asignado = ? ";
+                            }
+
+                            // Orden y límite
+                            $sql .= "ORDER BY fhticket DESC LIMIT ?, ?";
+                            $stmt = $conn->prepare($sql);
+
+                            // Vinculación de parámetros
+                            if ($tecnicoId > 0) {
+                                $stmt->bind_param('iiiii', $month, $year, $tecnicoId, $offset, $registrosPorPagina);
+                            } else {
+                                $stmt->bind_param('iiii', $month, $year, $offset, $registrosPorPagina);
+                            }
+
+                            // Ejecutar consulta
+                            $stmt->execute();
+                            $resultado = $stmt->get_result();
+
+                            // Obtener total de registros para la paginación
+                            $totalRegistrosQuery = $conn->query("SELECT FOUND_ROWS() AS total");
+                            $totalRegistros = $totalRegistrosQuery->fetch_assoc()['total'];
+                            $totalPaginas = ceil($totalRegistros / $registrosPorPagina);
+
+                            // Mostrar los resultados en la tabla
+                            while ($fila = $resultado->fetch_assoc()): ?>
+                                <?php include '../components/modal-baja-ticket.php'; ?>
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <th scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php echo htmlspecialchars($fila['idTicket']); ?>
+                                        </div>
+                                    </th>
+                                    <td
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php echo htmlspecialchars($fila['asunto'] ?? 'No proporcionado'); ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php echo htmlspecialchars($fila['numCliente'] ?? 'No proporcionado'); ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php echo htmlspecialchars($fila['fhticket'] ?? 'No proporcionado'); ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php echo htmlspecialchars($fila['servicio'] ?? 'No proporcionado'); ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php getAsignado($fila['asignado']); ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php getPrioridad($fila['prioridad'] ?? 'No proporcionado'); ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <div class="flex items-center">
+                                            <?php getStatusHTML($fila['estado']); ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <?php if ($fila['estado'] == '6' || $fila['estado'] == '9' || $tipo == 'comercializacion'): ?>
+                                            <button type="button"
+                                                onclick="window.location.href = 'detalles?id=<?php echo $fila['idTicket']; ?>'"
+                                                class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7ZM8 16a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H9a1 1 0 0 1-1-1Zm1-5a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H9Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Detalles
+                                            </button>
+                                        <?php endif; ?>
+                                        <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'comercializacion'): ?>
+                                            <button type="button"
+                                                onclick="window.location.href = 'asignar?id=<?php echo $fila['idTicket']; ?>'"
+                                                class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Asignar
+                                            </button>
+                                        <?php endif; ?>
+                                        <?php if (($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '7' || $fila['estado'] == '8') && isset($fila['asignado']) && !empty($fila['asignado']) && $tipo != 'comercializacion'): ?>
+                                            <button type="button"
+                                                onclick="window.location.href = 'atender?id=<?php echo $fila['idTicket']; ?>'"
+                                                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Atender</button>
+                                        <?php endif; ?>
+                                        <?php if ($fila['estado'] == '1' && $fila['asignado'] == null && $tipo != 'coordinador'): ?>
+                                            <button type="button"
+                                                onclick="window.location.href = 'editar?id=<?php echo $fila['idTicket']; ?>'"
+                                                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600 mb-2">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Editar</button>
+                                        <?php endif; ?>
+                                        <?php if (
+                                            ($fila['estado'] == '1' || $fila['estado'] == '2' || $fila['estado'] == '3' || $fila['estado'] == '4' || $fila['estado'] == '5' || $fila['estado'] == '6' || $fila['estado'] == '7' || $fila['estado'] == '8' || $fila['estado'] == '9') &&
+                                            $tipo != 'comercializacion' &&
+                                            ($tipo != 'tecnico' || ($tipo == 'tecnico' && $fila['estado'] == '4'))
+                                        ): ?>
+                                            <button type="button" data-modal-target="popup-confirmation"
+                                                data-modal-toggle="popup-confirmation"
+                                                data-id="<?php echo $fila['idTicket']; ?>"
+                                                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 mb-2">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Eliminar</button>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
         </div>
 
-        <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                document.getElementById('table-search-tickets').addEventListener('keyup', function (e) {
-                    const value = e.target.value.toLowerCase();
-                    document.querySelectorAll('.ticket-card').forEach(row => {
-                        const text = row.textContent.toLowerCase();
-                        row.style.display = text.includes(value) ? '' : 'none';
-                    });
+    </div>
+    </div>
+
+    <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('table-search-tickets').addEventListener('keyup', function (e) {
+                const value = e.target.value.toLowerCase();
+                document.querySelectorAll('.ticket-card').forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(value) ? '' : 'none';
                 });
             });
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                document.querySelectorAll('[data-accordion-target]').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const targetId = button.getAttribute('data-accordion-target');
-                        const targetDiv = document.querySelector(`[data-accordion-id="${targetId}"]`);
-                        targetDiv.classList.toggle('hidden');
-                    });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-accordion-target]').forEach(button => {
+                button.addEventListener('click', function () {
+                    const targetId = button.getAttribute('data-accordion-target');
+                    const targetDiv = document.querySelector(`[data-accordion-id="${targetId}"]`);
+                    targetDiv.classList.toggle('hidden');
                 });
             });
-        </script>
-        <script>
-            $(document).ready(function () {
-                $('[data-modal-toggle]').click(function () {
-                    var ticketId = $(this).attr('data-id');
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('[data-modal-toggle]').click(function () {
+                var ticketId = $(this).attr('data-id');
 
-                    $('#dynamicTicketId').text(ticketId);
-                    $('#confirmButton').attr('data-id', ticketId);
-                });
-
-                $('#confirmButton').click(function () {
-                    var ticketId = $(this).attr('data-id');
-
-                    $('#dynamicTicketIdDelete').text(ticketId);
-                    $('#idTicketHidden').val(ticketId);
-
-                    $('#popup-delete').removeClass('hidden');
-                });
+                $('#dynamicTicketId').text(ticketId);
+                $('#confirmButton').attr('data-id', ticketId);
             });
 
-            deletedTickets = () => {
-                window.location.href = 'tickets-eliminados';
-            }
-        </script>
-        <script>
-            // Gráfica de Todos los Tickets
-            const optionsTicketsAsignado = {
-                chart: {
-                    height: "100%",
-                    type: "area",
-                    fontFamily: "Inter, sans-serif",
-                    dropShadow: {
-                        enabled: false,
-                    },
-                    toolbar: {
-                        show: false,
-                    },
-                },
-                tooltip: {
-                    enabled: true,
-                    x: {
-                        show: false,
-                    },
-                },
-                fill: {
-                    type: "gradient",
-                    gradient: {
-                        opacityFrom: 0.55,
-                        opacityTo: 0,
-                        shade: "#1C64F2",
-                        gradientToColors: ["#1C64F2"],
-                    },
-                },
-                dataLabels: {
+            $('#confirmButton').click(function () {
+                var ticketId = $(this).attr('data-id');
+
+                $('#dynamicTicketIdDelete').text(ticketId);
+                $('#idTicketHidden').val(ticketId);
+
+                $('#popup-delete').removeClass('hidden');
+            });
+        });
+
+        deletedTickets = () => {
+            window.location.href = 'tickets-eliminados';
+        }
+    </script>
+    <script>
+        // Gráfica de Todos los Tickets
+        const optionsTicketsAsignado = {
+            chart: {
+                height: "100%",
+                type: "area",
+                fontFamily: "Inter, sans-serif",
+                dropShadow: {
                     enabled: false,
                 },
-                stroke: {
-                    width: 6,
-                },
-                grid: {
+                toolbar: {
                     show: false,
-                    StrokeDashArray: 4,
-                    padding: {
-                        left: 2,
-                        right: 2,
-                        top: 0
-                    },
                 },
-                series: [
-                    {
-                        name: "Tickets asignados",
-                        data: [<?php echo $datosAsignado; ?>],
-                        color: "#1A56DB",
-                    },
-                ],
-                xaxis: {
-                    categories: ['<?php echo $categoriasAsignado; ?>'],
-                    labels: {
+            },
+            tooltip: {
+                enabled: true,
+                x: {
+                    show: false,
+                },
+            },
+            fill: {
+                type: "gradient",
+                gradient: {
+                    opacityFrom: 0.55,
+                    opacityTo: 0,
+                    shade: "#1C64F2",
+                    gradientToColors: ["#1C64F2"],
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                width: 6,
+            },
+            grid: {
+                show: false,
+                StrokeDashArray: 4,
+                padding: {
+                    left: 2,
+                    right: 2,
+                    top: 0
+                },
+            },
+            series: [
+                {
+                    name: "Tickets asignados",
+                    data: [<?php echo $datosAsignado; ?>],
+                    color: "#1A56DB",
+                },
+            ],
+            xaxis: {
+                categories: ['<?php echo $categoriasAsignado; ?>'],
+                labels: {
 
-                        show: true,
-                    },
-                    axisBorder: {
-                        show: false,
-                    },
-                    axisTicks: {
-                        show: false,
-                    },
-                },
-                yaxis: {
                     show: true,
                 },
-            };
+                axisBorder: {
+                    show: false,
+                },
+                axisTicks: {
+                    show: false,
+                },
+            },
+            yaxis: {
+                show: true,
+            },
+        };
 
-            var chartTicketsAsignado = new ApexCharts(document.querySelector("#total-asignado"), optionsTicketsAsignado);
-            chartTicketsAsignado.render();
-        </script>
+        var chartTicketsAsignado = new ApexCharts(document.querySelector("#total-asignado"), optionsTicketsAsignado);
+        chartTicketsAsignado.render();
+    </script>
 </body>
 
 </html>

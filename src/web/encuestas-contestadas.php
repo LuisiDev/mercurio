@@ -70,8 +70,8 @@ include '../configuration/conn-session.php';
     }
     ?>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-4">
             <div class="grid grid-cols-1 gap-4 mb-4">
 
                 <div>
@@ -135,13 +135,13 @@ include '../configuration/conn-session.php';
 
                 switch ($tipo) {
                     case 'tecnico':
-                        $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '6') AND token = '' AND asignado = ?");
+                        $stmt = $conn->prepare("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '6') AND token IS NULL AND asignado = ?");
                         $stmt->bind_param("i", $userId);
                         $stmt->execute();
                         $row = $stmt->get_result()->fetch_row();
                         break;
                     default:
-                        $stmt = $conn->query("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '6') AND token = ''");
+                        $stmt = $conn->query("SELECT COUNT(*) FROM tbticket WHERE (estado = '0' || estado = '6') AND token IS NULL");
                         $row = $stmt->fetch_row();
                         break;
                 }
@@ -154,14 +154,14 @@ include '../configuration/conn-session.php';
 
                 switch ($tipo) {
                     case 'tecnico':
-                        $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '6') AND token = '' AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                        $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '6') AND token IS NULL AND asignado = ? ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
                         $stmt = $conn->prepare($sql);
                         $stmt->bind_param("i", $userId);
                         $stmt->execute();
                         $resultado = $stmt->get_result();
                         break;
                     default:
-                        $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '6') AND token = '' ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
+                        $sql = "SELECT * FROM tbticket WHERE (estado = '0' || estado = '6') AND token IS NULL ORDER BY fhticket DESC LIMIT $registrosPorPagina OFFSET $offset";
                         $resultado = $conn->query($sql);
                         break;
                 }
@@ -196,34 +196,34 @@ include '../configuration/conn-session.php';
                         </span>
                         <?php if ($fila['estado'] == 0): ?>
                             <span
-                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Eliminado</span>
+                                class="bg-pink-100 text-pink-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-pink-900 dark:text-pink-300">Archivado</span>
                         <?php elseif ($fila['estado'] == 1): ?>
                             <span
                                 class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Creado</span>
                         <?php elseif ($fila['estado'] == 2): ?>
                             <span
-                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Asignado</span>
+                                class="bg-gray-300 text-gray-900 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-500 dark:text-gray-300">Asignado</span>
                         <?php elseif ($fila['estado'] == 3): ?>
                             <span
-                                class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Arribo</span>
+                                class="bg-orange-200 text-orange-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-orange-700 dark:text-orange-300">Arribo</span>
                         <?php elseif ($fila['estado'] == 4): ?>
                             <span
-                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Inicio</span>
+                                class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">Inicio</span>
                         <?php elseif ($fila['estado'] == 5): ?>
                             <span
-                                class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Realización</span>
+                                class="bg-cyan-200 text-cyan-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-cyan-800 dark:text-cyan-300">Realización</span>
                         <?php elseif ($fila['estado'] == 6): ?>
                             <span
-                                class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Finalización</span>
+                                class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Finalizado</span>
                         <?php elseif ($fila['estado'] == 7): ?>
                             <span
-                                class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Programado</span>
+                                class="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-indigo-900 dark:text-indigo-300">Programado</span>
                         <?php elseif ($fila['estado'] == 8): ?>
                             <span
-                                class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Congelado</span>
+                                class="bg-blue-500 text-gray-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-700 dark:text-blue-300">Congelado</span>
                         <?php elseif ($fila['estado'] == 9): ?>
                             <span
-                                class="bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300">Cancelado</span>
+                                class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Cancelado</span>
                         <?php endif; ?>
                         <div id="ticket-description" data-accordion="close">
                             <button href="#" class="inline-flex font-normal items-center mt-3.5"

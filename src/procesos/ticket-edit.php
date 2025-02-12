@@ -17,15 +17,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $numCliente = $_POST['numCliente'];
     $dispositivo = $_POST['dispositivo'];
     $imeiCliente = $_POST['imeiCliente'];
-    $fhRevision = isset($_POST['fhRevision']) ? $_POST['fhRevision'] : null;
+    $fhRevision = $_POST['fhRevision'] ?? null;
     $numContacto = $_POST['numContacto'];
     $nomContacto = $_POST['nomContacto'];
     $placasContacto = $_POST['placasContacto'];
     $marcaContacto = $_POST['marcaContacto'];
-    $prioridad = 'Pendiente';
+    $prioridad = $_POST['prioridad'];
     $asunto = $_POST['asunto'];
     $descripcion = $_POST['descripcion'];
-    $estado = '1';
+    $estado = $_POST['estado'];
     $domicilio = $_POST['domicilio'];
     $ciudad = $_POST['ciudad'];
     $domestado = $_POST['domestado'];
@@ -34,10 +34,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $servicio  = $_POST['servicio'];
     $correo = $_POST['correo'];
     $token = $_POST['token'];
+    $imagen_actual = $_POST['imagen_actual'];
 
     $directorio = "../../assets/imgTickets/";
     $archivo = isset($_FILES['imagen']['name']) ? basename($_FILES['imagen']['name']) : null;
-    $rutaArchivo = $directorio . $archivo;
+    $rutaArchivo = "{$directorio}{$archivo}";
     $tipoArchivo = strtolower(pathinfo($rutaArchivo, PATHINFO_EXTENSION));
 
     if (isset($_FILES['imagen']) && $_FILES["imagen"]["size"] > 0) {
@@ -57,16 +58,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "move_uploaded_file: " . move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaArchivo);
         }
     } else {
-        $rutaArchivo = null;
+        $rutaArchivo = $imagen_actual;
     }
 
     $sql = "UPDATE tbticket SET fhticket=?, nombre=?, numTrabajador=?, numCliente=?, dispositivo=?, imeiCliente=?, fhRevision=?, numContacto=?, nomContacto=?, placasContacto=?, marcaContacto=?, prioridad=?, asunto=?, descripcion=?, estado=?, domicilio=?, ciudad=?, domestado=?, codpostal=?, domdescripcion=?, servicio=?, correo=?, evidencia=? WHERE idTicket=? AND token=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssssssssssssssssssi", $fhticket, $nombre, $numTrabajador, $numCliente, $dispositivo, $imeiCliente, $fhRevision, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $prioridad, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $correo, $archivo, $idTicket, $token);
+    $stmt->bind_param("ssssssssssssssssssssssssi", $fhticket, $nombre, $numTrabajador, $numCliente, $dispositivo, $imeiCliente, $fhRevision, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $prioridad, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $correo, $rutaArchivo, $idTicket, $token);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
-        $idTicket = $stmt->insert_id;
+        $tipoEdicion = 'Edición';
+        $fechaEdicion = date('Y-m-d H:i:s');
+        $userId = $_SESSION['userId'];
+
+        $sqlEdicion = "INSERT INTO edicion (idTicket, userId, tipoEdicion, fechaEdicion) VALUES (?, ?, ?, ?)";
+        $stmtEdicion = $conn->prepare($sqlEdicion);
+        $stmtEdicion->bind_param("iiss", $idTicket, $userId, $tipoEdicion, $fechaEdicion);
+        $stmtEdicion->execute();
         echo "<script>alert('¡Ticket editado correctamente!');</script>";
         echo "<script>window.location.href = '../web/tickets.php';</script>";
 
@@ -78,8 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->isSMTP();
             $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'AKIA3HJXVSKBLWJPDZCZ';
-            $mail->Password = 'BI1QGHoakbEdXBO42Duf0N9VHABb6Y1Sw6yQUpiLzaS5';
+            $mail->Username = 'AKIA3HJXVSKBEFDT5ML2';
+            $mail->Password = 'BMEcNVN8oRp2GP381twDDdycy3jttJN0eNd+ovvUQqD7';
             $mail->SMTPSecure = 'tls';
             $mail->Port = 587;
 
@@ -91,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div style="background: #1175cf;">
             <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px;">
             <div style="background: #0078e3;">
-            <img src="https://atlantida.mx/mercurio/assets/img/logoATL_w.webp" style="display: block; margin: 0 auto; padding: 20px 0px 10px; width: 200px; height: auto" alt="Grupo Cardinales">
+            <img src="https://atlantida.mx/assets/img/GPLogos/LOGO%20AT.png" style="display: block; margin: 0 auto; padding: 10px 0px 10px; width: 180px; height: auto" alt="ATLANTIDA">
             </div>
             <div style="background: #fff; padding: 0 30px 0 30px;">
             <br>
@@ -133,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p style="text-align: center; color: #535353; font-size: 11px; padding: 15px 0 15px 0"> Si no solicitaste esta solicitud, por favor ignora este mensaje.</p>
             </div>
             <div style="background: #0078e3; text-align: center; color: #fff; padding: 5px">
-            <p style="font-size: 12px;">&copy; 2024. Grupo Cardinales. All Rights Reserved.</p>
+            <p style="font-size: 12px;">&copy; 2025. ATLANTIDA, miembro de Grupo Cardinales. All Rights Reserved.</p>
             <p style="font-size: 12px;">Desarrollado por ATENEA</p>
             </div>
             </div>
@@ -145,7 +153,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         echo "<script>alert('¡No se pudo editar el ticket!');</script>";
-        var_dump($_POST);
     }
 
     $stmt->close();

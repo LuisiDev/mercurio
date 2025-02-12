@@ -12,11 +12,16 @@ if (isset($_GET['id'])) {
         $row = mysqli_fetch_array($result);
     } else {
         echo "<script>alert('No se encontró el ticket');</script>";
-        echo "<script>window.location.href = 'gestion.php';</script>";
+        echo "<script>window.location.href = 'gestion';</script>";
     }
 } else {
     echo "<script>alert('No se encontró el ticket');</script>";
-    echo "<script>window.location.href = 'gestion.php';</script>";
+    echo "<script>window.location.href = 'gestion';</script>";
+}
+
+function obtenerNumeroTicket($row)
+{
+    return htmlspecialchars($row['idTicket']);
 }
 ?>
 
@@ -61,8 +66,8 @@ if (isset($_GET['id'])) {
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-4">
             <div class="grid grid-cols-1 gap-4 mb-4">
                 <div class="max-w-full w-full h-full bg-white rounded-lg shadow dark:bg-gray-800 p-4 md:p-6">
 
@@ -70,6 +75,10 @@ if (isset($_GET['id'])) {
                         class="max-w-full mx-auto">
                         <input type="hidden" name="idTicket" value="<?php echo htmlspecialchars($row['idTicket']); ?>">
                         <input type="hidden" name="token" value="<?php echo htmlspecialchars($row['token']); ?>">
+                        <input type="hidden" name="imagen_actual"
+                            value="<?php echo htmlspecialchars($row['evidencia']); ?>">
+                        <input type="hidden" name="estado" value="<?php echo htmlspecialchars($row['estado']); ?>">
+                        <input type="hidden" name="prioridad" value="<?php echo htmlspecialchars($row['prioridad']); ?>">
                         <div class="mb-5">
                             <label for="servicio"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Servicio
@@ -435,7 +444,21 @@ if (isset($_GET['id'])) {
                                     placeholder="Correo eléctronico">
                             </div>
                         </div>
-
+                        <div class="flex mt-5">
+                            <span>
+                                <svg class="w-6 h-6 text-blue-800 dark:text-gray-300" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </span>
+                            <p class="ms-2 font-semibold text-blue-700 dark:text-white">
+                                Número del ticket por editar:
+                            </p>
+                            <span class="ms-2 font-semibold underline text-blue-700 dark:text-gray-300">
+                                <?php echo htmlspecialchars($row['idTicket'] ?? ''); ?>
+                            </span>
+                        </div>
                         <div class="mt-10">
                             <button type="button" onclick="reload()"
                                 class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Limpiar

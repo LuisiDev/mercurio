@@ -27,7 +27,7 @@ if ($tipo == 'tecnico') {
 }
 
 if ($tipo == 'tecnico') {
-   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE (estado = '0' || estado = '4') AND token != '' AND asignado = ?";
+   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE (estado = '0' || estado = '9') AND token != '' AND asignado = ?";
    $stmt = $conn->prepare($sql);
    $stmt->bind_param('i', $userId);
    $stmt->execute();
@@ -35,7 +35,7 @@ if ($tipo == 'tecnico') {
    $fila = $resultado->fetch_assoc();
    $totalEncuestas = $fila['total'];
 } else {
-   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE (estado = '0' || estado = '4') AND token != ''";
+   $sql = "SELECT COUNT(*) as total FROM tbticket WHERE (estado = '0' || estado = '9') AND token != ''";
    $resultado = $conn->query($sql);
    $fila = $resultado->fetch_assoc();
    $totalEncuestas = $fila['total'];

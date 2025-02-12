@@ -10,6 +10,11 @@ if (isset($_GET['id'])) {
 
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_array($result);
+        if (in_array($row['estado'], [0, 2, 3, 4, 5, 6, 7, 8, 9])) {
+            echo "<script>alert('El ticket se encuentra asignado');</script>";
+            echo "<script>window.location.href = 'gestion';</script>";
+            exit;
+        }
     } else {
         echo "<script>alert('No se encontró el ticket');</script>";
         echo "<script>window.location.href = 'gestion.php';</script>";
@@ -112,8 +117,8 @@ function getStatus($status)
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-4">
             <div class="grid grid-cols-1 gap-4 mb-4">
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -238,64 +243,51 @@ function getStatus($status)
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Creado por:
                             </span><?php echo $row['nombre']; ?></p>
+                        <?php // Si fue editado, mostrar el nombre del editor
+                        if (!empty($row['editado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Editado por:
+                                </span><?php echo $row['editado']; ?></p>
+                        <?php } ?>
                         <?php if (!empty($row['eliminadopor'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Eliminado por:
                                 </span><?php echo $row['eliminadopor']; ?></p>
                         <?php } ?>
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Creado:
                             </span><?php echo traducirFecha($row['fhticket']); ?></p>
-                        <?php
-                        switch ($row['estado']) {
-                            case '2':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Iniciando:
-                                    </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Iniciando:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '3':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Haciendo:
-                                    </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Haciendo:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '4':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Hecho:
-                                    </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Hecho:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '5':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Programado:
-                                    </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Programado:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '6':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
-                                    </span><?php echo $row['fh_contestacion']; ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Comentarios de Congelado:
-                                    </span><?php echo $row['txt_contestacion']; ?></p>
-                                <?php
-                                break;
-                            case '7':
-                                ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
-                                    </span><?php echo $row['fh_eliminacion']; ?></p>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Motivo de eliminación:
-                                    </span><?php echo $row['motivo_eliminacion']; ?></p>
-                                <?php
-                                break;
-                        }
-                        ?>
+                        <?php if (!empty($row['fhAsignado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Asignación:
+                                </span><?php echo traducirFecha($row['fhAsignado']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhAsignado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Arribo:
+                                </span><?php echo traducirFecha($row['fhArribo']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhInicio'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Inicio:
+                                </span><?php echo traducirFecha($row['fhInicio']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhRealizacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Realización:
+                                </span><?php echo traducirFecha($row['fhRealizacion']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhFinalizacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Finalización:
+                                </span><?php echo traducirFecha($row['fhFinalizacion']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhProgramada'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Programado:
+                                </span><?php echo traducirFecha($row['fhProgramada']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhCongelado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
+                                </span><?php echo traducirFecha($row['fhCongelado']); ?></p>
+                        <?php } ?>
+                        <?php if (!empty($row['fhEliminacion'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
+                                </span><?php echo traducirFecha($row['fhEliminacion']); ?></p>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Motivo de Eliminación:
+                                </span><?php echo $row['motivo_eliminacion']; ?></p>
+                        <?php } ?>
                     </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Evidencias</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
@@ -350,6 +342,13 @@ function getStatus($status)
                             </div>
                         <?php endif; ?>
                     </div>
+                    <?php if (in_array($row['estado'], [1, 2, 3, 4, 5, 7, 8, 9])): ?>
+                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Trazado del ticket</span>
+                        <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                            <a href="../cliente/visualizacion?token=<?php echo $row['token']; ?>" target="_blank"
+                                class="text-blue-600 hover:text-blue-800">Ver trazado del ticket</a>
+                        </div>
+                    <?php endif; ?>
                     <?php if ($row['estado'] == 4): ?>
                         <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de
                             finalización</span>

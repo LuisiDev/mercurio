@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $empMejExp = $_POST['empMejExp'] ?? null;
     $empComp = $_POST['empComp'] ?? null;
     $empPalabra = $_POST['empPalabra'] ?? null;
-    $firma = $_POST['firma'] ?? null;
+    $firma = $_POST['firma'];
     $comentario = $_POST['comentario'] ?? null;
     $token = $_POST['token'];
 

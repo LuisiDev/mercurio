@@ -1,24 +1,9 @@
-<?php
-function userRole($tipo)
-{
-   switch ($tipo) {
-      case 'admin':
-         return 'Administrador';
-      case 'cliente':
-         return 'Cliente';
-      case 'acomercial':
-         return 'Asesor comercial';
-      case 'comercializacion':
-         return 'Comercialización';
-      case 'tecnico':
-         return 'Técnico';
-      case 'coordinador':
-         return 'Coordinador';
-      default:
-         return 'Sin tipo de usuario';
+<style>
+   .rotate-90 {
+      transform: rotate(90deg);
+      transition: transform 0.3s;
    }
-}
-?>
+</style>
 
 <nav
    class="backdrop-blur-[10px] backdrop-saturate-[200%] bg-[rgba(255,255,255,0.2)] border rounded-none border-solid border-[rgba(216,216,216,0.13)] -webkit-backdrop-filter: blur(10px) saturate(200%) fixed top-0 z-40 w-full dark:backdrop-blur-[10px] dark:backdrop-saturate-[200%] dark:bg-[rgba(0,0,0,0.2)] dark:border-solid dark:border-[rgba(0, 0, 0, 0.13)] sm:hidden">
@@ -46,7 +31,7 @@ function userRole($tipo)
 </nav>
 
 <aside id="logo-sidebar"
-   class="flex flex-col shadow-2xl fixed top-0 left-0 z-50 w-64 h-screen pt-4 transition-transform -translate-x-full bg-blue-600 border-r border-blue-500 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+   class="flex flex-col shadow-2xl fixed top-0 left-0 z-40 w-64 h-screen pt-4 transition-transform -translate-x-full bg-blue-600 border-r border-blue-500 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
    aria-label="Sidebar">
    <div class="h-full px-3 pb-4 overflow-y-auto bg-blue-600 dark:bg-gray-800">
       <a href="dashboard" class="flex items-center ps-2.5 mb-5">
@@ -164,21 +149,9 @@ function userRole($tipo)
                <span class="flex-1 ms-3 whitespace-nowrap">Ver tickets</span>
             </a>
          </li>
-         <!-- <li>
-            <a href="#"
-               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
-               <svg
-                  class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd"
-                     d="M11.906 1.994a8.002 8.002 0 0 1 8.09 8.421 7.996 7.996 0 0 1-1.297 3.957.996.996 0 0 1-.133.204l-.108.129c-.178.243-.37.477-.573.699l-5.112 6.224a1 1 0 0 1-1.545 0L5.982 15.26l-.002-.002a18.146 18.146 0 0 1-.309-.38l-.133-.163a.999.999 0 0 1-.13-.202 7.995 7.995 0 0 1 6.498-12.518ZM15 9.997a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z"
-                     clip-rule="evenodd" />
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Tracking</span>
-            </a>
-         </li> -->
+         <?php if ($_SESSION['tipo'] == "tecnico"): ?>
          <li>
-            <a href="gestion"
+            <a href="gestion3"
                class="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
                <svg
                   class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
@@ -192,22 +165,103 @@ function userRole($tipo)
                   class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-700 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-300"><?php echo $totalTickets; ?></span>
             </a>
          </li>
-         <li>
-            <a href="cambios"
-               class="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
+         <?php endif; ?>
+         <!-- <li>
+            <a href="#"
+               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
                <svg
-                  class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd"
+                     d="M11.906 1.994a8.002 8.002 0 0 1 8.09 8.421 7.996 7.996 0 0 1-1.297 3.957.996.996 0 0 1-.133.204l-.108.129c-.178.243-.37.477-.573.699l-5.112 6.224a1 1 0 0 1-1.545 0L5.982 15.26l-.002-.002a18.146 18.146 0 0 1-.309-.38l-.133-.163a.999.999 0 0 1-.13-.202 7.995 7.995 0 0 1 6.498-12.518ZM15 9.997a3 3 0 1 1-5.999 0 3 3 0 0 1 5.999 0Z"
+                     clip-rule="evenodd" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Tracking</span>
+            </a>
+         </li> -->
+         <?php if ($_SESSION['tipo'] != "tecnico"): ?>
+         <li>
+            <button type="button" href="gestion"
+               class="flex items-center w-full p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300"
+               aria-controls="dropdown-gestion" data-collapse-toggle="dropdown-gestion"
+               data-dropdown-id="dropdown-gestion">
+               <svg
+                  class="flex-shrink-0 w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                   aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                   viewBox="0 0 24 24">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                     d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
+                     d="M4 13h3.439a.991.991 0 0 1 .908.6 3.978 3.978 0 0 0 7.306 0 .99.99 0 0 1 .908-.6H20M4 13v6a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-6M4 13l2-9h12l2 9M9 7h6m-7 3h8" />
                </svg>
+               <span class="flex-1 ml-3 text-left rtl:text-right whitespace-nowrap">Gestión</span>
+               <svg
+                  class="w-5 h-5 text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white transition-transform duration-300"
+                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                     d="m9 5 7 7-7 7" />
+               </svg>
+            </button>
+            <ul id="dropdown-gestion" class="hidden py-2 space-y-2">
+               <li class="group transition duration-300 transform hover:translate-x-2">
+                  <a href="gestion3"
+                     class="flex items-center w-full p-2 text-left text-gray-100 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700 group">
+                     <svg
+                        class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                           d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                     </svg>
 
-               <span class="flex-1 ms-3 whitespace-nowrap">Cambios</span>
-               <span
-                  class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-700 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-300"><?php echo $totalTickets; ?></span>
-            </a>
+                     <span class="ml-2">Tickets</span>
+                     <span
+                        class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-700 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-300"><?php echo $totalTickets; ?></span>
+                  </a>
+               </li>
+               <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "coordinador"): ?>
+                  <li class="group transition duration-300 transform hover:translate-x-2">
+                     <a href="usuarios"
+                        class="flex items-center w-full p-2 text-left text-gray-100 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700">
+                        <svg
+                           class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                           aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                           <path fill-rule="evenodd"
+                              d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H6Zm7.25-2.095c.478-.86.75-1.85.75-2.905a5.973 5.973 0 0 0-.75-2.906 4 4 0 1 1 0 5.811ZM15.466 20c.34-.588.535-1.271.535-2v-1a5.978 5.978 0 0 0-1.528-4H18a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2h-4.535Z"
+                              clip-rule="evenodd" />
+                        </svg>
+                        <span class="ml-2">Usuarios</span>
+                     </a>
+                  </li>
+               <?php endif; ?>
+               <li class="group transition duration-300 transform hover:translate-x-2">
+                  <a href="clientes"
+                     class="flex items-center w-full p-2 text-left text-gray-100 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700">
+                     <svg
+                        class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                           d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z"
+                           clip-rule="evenodd" />
+                     </svg>
+                     <span class="ml-2">Clientes</span>
+                  </a>
+               </li>
+               <?php if ($_SESSION['tipo'] == "admin"): ?>
+                  <li class="group transition duration-300 transform hover:translate-x-2">
+                     <a href="articulos"
+                        class="flex items-center w-full p-2 text-left text-gray-100 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 hover:text-gray-900 dark:text-white dark:hover:bg-gray-700">
+                        <svg
+                           class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                           xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+                           <path fill="currentColor" fill-rule="evenodd"
+                              d="M4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v4H4zm4 2V3h1v2z" clip-rule="evenodd" />
+                           <path fill="currentColor" d="M2 8v5a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8h-3v2h-1V8H6v2H5V8z" />
+                        </svg>
+                        <span class="ml-2">Artículos</span>
+                     </a>
+                  </li>
+               <?php endif; ?>
+            </ul>
          </li>
+         <?php endif; ?>
          <li>
             <button type="button" href="encuestas"
                class="flex items-center w-full p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300"
@@ -229,17 +283,6 @@ function userRole($tipo)
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                      d="m9 5 7 7-7 7" />
                </svg>
-
-               <script>
-                  document.addEventListener('DOMContentLoaded', () => {
-                     const dropdownButton = document.querySelector('[data-dropdown-id="dropdown-encuestas"]');
-                     const svgIcon = dropdownButton.querySelectorAll('svg')[1];
-
-                     dropdownButton.addEventListener('click', () => {
-                        svgIcon.classList.toggle('rotate-90');
-                     });
-                  });
-               </script>
             </button>
             <ul id="dropdown-encuestas" class="hidden py-2 space-y-2">
                <li class="group transition duration-300 transform hover:translate-x-2">
@@ -276,22 +319,22 @@ function userRole($tipo)
                </li>
             </ul>
          </li>
-         <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "coordinador"): ?>
-            <li>
-               <a href="usuarios"
-                  class="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
-                  <svg
-                     class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                     viewBox="0 0 24 24">
-                     <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                        d="M4.5 17H4a1 1 0 0 1-1-1 3 3 0 0 1 3-3h1m0-3.05A2.5 2.5 0 1 1 9 5.5M19.5 17h.5a1 1 0 0 0 1-1 3 3 0 0 0-3-3h-1m0-3.05a2.5 2.5 0 1 0-2-4.45m.5 13.5h-7a1 1 0 0 1-1-1 3 3 0 0 1 3-3h3a3 3 0 0 1 3 3 1 1 0 0 1-1 1Zm-1-9.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
-                  </svg>
+         <li>
+            <a href="cambios"
+               class="flex items-center p-2 text-gray-100 rounded-lg dark:text-white hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 group transition duration-300 transform hover:translate-x-2">
+               <svg
+                  class="w-5 h-5 text-gray-200 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                  viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                     d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5" />
+               </svg>
 
-                  <span class="flex-1 ms-3 whitespace-nowrap">Usuarios</span>
-               </a>
-            </li>
-         <?php endif; ?>
+               <span class="flex-1 ms-3 whitespace-nowrap">Cambios</span>
+               <span
+                  class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-700 bg-blue-200 rounded-full dark:bg-blue-900 dark:text-blue-300"><?php echo $totalTickets; ?></span>
+            </a>
+         </li>
          <!-- <?php if ($_SESSION['tipo'] == "admin" || $_SESSION['tipo'] == "coordinador"): ?>
             <li>
                <a href="bitacora"
@@ -363,7 +406,7 @@ function userRole($tipo)
                <?php echo $_SESSION['apellido']; ?>
             </div>
             <div class="text-xs text-gray-300 dark:text-gray-400">
-               <?php echo userRole($_SESSION['tipo']); ?>
+               <?php echo userType($_SESSION['tipo']); ?>
             </div>
          </div>
       </button>
@@ -438,47 +481,9 @@ function userRole($tipo)
    </a>
 </div>
 
+<script src="js/sidebar-drop.js"></script>
 <script src="js/animation.js"></script>
 <script src="js/light-dark.js" type="module"></script>
-<script>
-   document.addEventListener('DOMContentLoaded', () => {
-      const toggleButton = document.getElementById('dark-mode-toggle');
-      const htmlElement = document.documentElement;
-
-      if (localStorage.getItem('dark-mode') === 'true') {
-         htmlElement.classList.add('dark');
-      }
-
-      toggleButton.addEventListener('click', () => {
-         if (htmlElement.classList.contains('dark')) {
-            htmlElement.classList.remove('dark');
-            localStorage.setItem('dark-mode', 'false');
-         } else {
-            htmlElement.classList.add('dark');
-            localStorage.setItem('dark-mode', 'true');
-         }
-      });
-   });
-
-   document.addEventListener('DOMContentLoaded', () => {
-      const toggleButton = document.getElementById('dark-mode-toggle-2');
-      const htmlElement = document.documentElement;
-
-      if (localStorage.getItem('dark-mode') === 'true') {
-         htmlElement.classList.add('dark');
-      }
-
-      toggleButton.addEventListener('click', () => {
-         if (htmlElement.classList.contains('dark')) {
-            htmlElement.classList.remove('dark');
-            localStorage.setItem('dark-mode', 'false');
-         } else {
-            htmlElement.classList.add('dark');
-            localStorage.setItem('dark-mode', 'true');
-         }
-      });
-   });
-</script>
 
 <!-- Notificaction url: https://flowbite.com/docs/components/toast/#push-notification -->
 

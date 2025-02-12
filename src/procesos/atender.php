@@ -64,9 +64,89 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $rutaEvidenciaFinalizacion = subirEvidencia('evidenciaFinalizacion', $carpetaDestino);
     }
 
-    $sql = "UPDATE tbticket SET prioridad = ?, asignado = ?, estado = ?, txt_contestacion = ?, fhContestacion = ?, evidenciaArribo = ?, evidenciaInicio = ?, evidenciaRealizacion = ?, evidenciaFinalizacion = ? WHERE idTicket = ?";
+    $fhArribo = null;
+    $fhInicio = null;
+    $fhRealizacion = null;
+    $fhFinalizacion = null;
+    $fhCongelado = null;
+    $fhCancelado = null;
+    $fhProgramada = null;
+    $fhEliminacion = null;
+
+    if ($estado == 3) {
+        $fhArribo = date('Y-m-d H:i:s');
+    } elseif ($estado == 4) {
+        $fhInicio = date('Y-m-d H:i:s');
+    } elseif ($estado == 5) {
+        $fhRealizacion = date('Y-m-d H:i:s');
+    } elseif ($estado == 6) {
+        $fhFinalizacion = date('Y-m-d H:i:s');
+    } elseif ($estado == 7) {
+        $fhProgramada = date('Y-m-d H:i:s');
+    } elseif ($estado == 8) {
+        $fhCongelado = date('Y-m-d H:i:s');
+    } elseif ($estado == 9) {
+        $fhCancelado = date('Y-m-d H:i:s');
+    } elseif ($estado == 0) {
+        $fhEliminacion = date('Y-m-d H:i:s');
+    }
+
+    // Construir dinámicamente la consulta SQL
+    $sql = "UPDATE tbticket SET prioridad = ?, asignado = ?, estado = ?, txt_contestacion = ?, fhContestacion = ?";
+    $params = [$prioridad, $asignado, $estado, $contestacion, $fhcontestacion];
+    $types = 'ssiss';
+
+    if ($fhArribo !== null) {
+        $sql .= ", fhArribo = ?";
+        $params[] = $fhArribo;
+        $types .= 's';
+    }
+    if ($fhInicio !== null) {
+        $sql .= ", fhInicio = ?";
+        $params[] = $fhInicio;
+        $types .= 's';
+    }
+    if ($fhRealizacion !== null) {
+        $sql .= ", fhRealizacion = ?";
+        $params[] = $fhRealizacion;
+        $types .= 's';
+    }
+    if ($fhFinalizacion !== null) {
+        $sql .= ", fhFinalizacion = ?";
+        $params[] = $fhFinalizacion;
+        $types .= 's';
+    }
+    if ($fhCongelado !== null) {
+        $sql .= ", fhCongelado = ?";
+        $params[] = $fhCongelado;
+        $types .= 's';
+    }
+    if ($fhCancelado !== null) {
+        $sql .= ", fhCancelado = ?";
+        $params[] = $fhCancelado;
+        $types .= 's';
+    }
+    if ($fhProgramada !== null) {
+        $sql .= ", fhProgramada = ?";
+        $params[] = $fhProgramada;
+        $types .= 's';
+    }
+    if ($fhEliminacion !== null) {
+        $sql .= ", fhEliminacion = ?";
+        $params[] = $fhEliminacion;
+        $types .= 's';
+    }
+
+    $sql .= ", evidenciaArribo = ?, evidenciaInicio = ?, evidenciaRealizacion = ?, evidenciaFinalizacion = ? WHERE idTicket = ?";
+    $params[] = $rutaEvidenciaArribo;
+    $params[] = $rutaEvidenciaInicio;
+    $params[] = $rutaEvidenciaRealizacion;
+    $params[] = $rutaEvidenciaFinalizacion;
+    $params[] = $id;
+    $types .= 'ssssi';
+
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param('sssssssssi', $prioridad, $asignado, $estado, $contestacion, $fhcontestacion, $rutaEvidenciaArribo, $rutaEvidenciaInicio, $rutaEvidenciaRealizacion, $rutaEvidenciaFinalizacion, $id);
+    $stmt->bind_param($types, ...$params);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
@@ -95,8 +175,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     $mail->isSMTP();
                     $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
                     $mail->SMTPAuth = true;
-                    $mail->Username = 'AKIA3HJXVSKBDCQSUVUK';
-                    $mail->Password = 'BBJq0wi3aCh0zuMhCuO2jlNTWaejJ8Mw8h7gBg8XMyRv';
+                    $mail->Username = 'AKIA3HJXVSKBEFDT5ML2';
+                    $mail->Password = 'BMEcNVN8oRp2GP381twDDdycy3jttJN0eNd+ovvUQqD7';
                     $mail->SMTPSecure = 'tls';
                     $mail->Port = 587;
 
@@ -108,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <div style="background: #1175cf;">
                     <div style="max-width: 600px; margin: auto; background: #fff; padding: 30px;">
                     <div style="background: #0078e3;">
-                    <img src="https://grupocardinales.com/assets/img/gcLogo.png" style="display: block; margin: 0 auto; padding: 20px 0px 10px; width: 200px; height: auto" alt="Grupo Cardinales">
+                    <img src="https://atlantida.mx/assets/img/GPLogos/LOGO%20AT.png" style="display: block; margin: 0 auto; padding: 10px 0px 10px; width: 180px; height: auto" alt="ATLANTIDA">
                     </div>
                     <div style="background: #fff; padding: 0 30px 0 30px;">
                     <br>
@@ -157,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <p style="text-align: center">Gracias por confiar en nuestros servicios.</p>
                     </div>
                     <div style="background: #0078e3; text-align: center; color: #fff; padding: 5px">
-                    <p style="font-size: 12px;">&copy; 2024. Grupo Cardinales. All Rights Reserved.</p>
+                    <p style="font-size: 12px;">&copy; 2025. ATLANTIDA, miembro de Grupo Cardinales. All Rights Reserved.</p>
                     <p style="font-size: 12px;">Desarrollado por ATENEA</p>
                     </div>
                     </div>

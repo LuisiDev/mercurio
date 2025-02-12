@@ -1,8 +1,17 @@
 <?php
 include '../configuration/conn-session.php';
-include '../components/modal-alta-usuario.php';
-include '../components/modal-edicion-usuario.php';
-include '../components/modal-baja-usuario.php';
+
+function getTotalEmailsSent($userId)
+{
+    global $conn;
+    $query = "SELECT COUNT(*) as total FROM tbticket INNER JOIN users ON tbticket.numTrabajador = users.userId WHERE (estado IN ('0', '1', '2', '3', '4', '5', '6', '8', '9') AND correo != '' AND users.userId = ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $fila = $result->fetch_assoc();
+    return $fila['total'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -42,12 +51,18 @@ include '../components/modal-baja-usuario.php';
         </div>
     </div>
 
-    <?php include '../components/sidebar.php'; ?>
+    <?php
+    include '../components/sidebar.php';
+    include '../components/modal-alta-usuario.php';
+    include '../components/modal-edicion-usuario.php';
+    include '../components/modal-baja-usuario.php';
+    ?>
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="sm:ml-64">
-        <div class="mt-14">
+    <div class="mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div>
+            
             <div class="grid grid-cols-1 gap-4 mb-4">
 
                 <div class="p-8">
@@ -221,7 +236,9 @@ include '../components/modal-baja-usuario.php';
                                                     class="w-8 h-8 rounded-full">
                                             </div>
                                         <?php endif; ?>
-                                        <?php echo htmlspecialchars($fila['user']) ?>
+                                        <div class="ms-3 rtl:ms-0 mt-1.5">
+                                            <?php echo htmlspecialchars($fila['user']) ?>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <?php echo htmlspecialchars($fila['nombre']) ?>
@@ -233,10 +250,10 @@ include '../components/modal-baja-usuario.php';
                                         <?php echo htmlspecialchars($fila['email']) ?>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <?php echo htmlspecialchars($fila['correosEnviados']) ?>
+                                        <?php echo getTotalEmailsSent($fila['userId']); ?>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <?php echo userRole($fila['tipo']); ?>
+                                        <?php echo userType($fila['tipo']); ?>
                                     </td>
                                     <td class="px-6 py-4">
                                         <?php echo htmlspecialchars($fila['fhCreacion']) ?>

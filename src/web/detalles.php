@@ -19,12 +19,16 @@ if (isset($_GET['id'])) {
     echo "<script>window.location.href = 'gestion.php';</script>";
 }
 
-function traducirFecha($fhticket)
+function traducirFecha($fecha)
 {
-    $dia = date('d', strtotime($fhticket));
-    $mes = date('m', strtotime($fhticket));
-    $hora = date('h:i', strtotime($fhticket));
-    $am_pm = strtoupper(date('a', strtotime($fhticket)));
+    if ($fecha === null) {
+        return 'Actividad pendiente de realizar';
+    }
+
+    $dia = date('d', strtotime($fecha));
+    $mes = date('m', strtotime($fecha));
+    $hora = date('h:i', strtotime($fecha));
+    $am_pm = strtoupper(date('a', strtotime($fecha)));
     $meses = array(
         '01' => 'Ene',
         '02' => 'Feb',
@@ -39,7 +43,7 @@ function traducirFecha($fhticket)
         '11' => 'Nov',
         '12' => 'Dic'
     );
-    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fhticket));
+    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fecha));
 }
 
 function getStatus($status)
@@ -102,6 +106,7 @@ function getAsignado($asignado)
     }
 }
 ?>
+<?php include '../components/modal-baja-ticket-detalles.php'; ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -143,8 +148,8 @@ function getAsignado($asignado)
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
-    <div class="p-4 sm:ml-64">
-        <div class="p-4 mt-14">
+    <div class="p-4 mt-16 sm:mt-0 lg:mb-4 sm:ml-64">
+        <div class="p-4">
             <div class="grid grid-cols-1 gap-4 mb-4">
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
@@ -166,9 +171,20 @@ function getAsignado($asignado)
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="m1 9 4-4-4-4" />
                                 </svg>
+                                <button onclick="returnBack()"
+                                    class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Detalles</button>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 9 4-4-4-4" />
+                                </svg>
                                 <button onclick="reload()"
-                                    class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Atender
-                                    ticket</button>
+                                    class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Ticket
+                                    #<?php echo $row['idTicket'] ?></button>
                             </div>
                         </li>
                     </ol>
@@ -259,16 +275,16 @@ function getAsignado($asignado)
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Código Postal:
                                 </span><?php echo $row['codpostal']; ?></p>
                         <?php } ?>
-                        <?php if (!empty($row['evidencia'])) { ?>
-                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Evidencia:
-                                </span><?php echo $row['evidencia']; ?>
-                            </p>
-                        <?php } ?>
                     </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Actividad del ticket</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Creado por:
                             </span><?php echo $row['nombre']; ?></p>
+                        <?php // Si fue editado, mostrar el nombre del editor
+                        if (!empty($row['editado'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Editado por:
+                                </span><?php echo $row['editado']; ?></p>
+                        <?php } ?>
                         <?php if (!empty($row['asignado'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Atendido por:
                                 </span><?php getAsignado($row['asignado']); ?></p>
@@ -305,7 +321,7 @@ function getAsignado($asignado)
                         <?php } ?>
                         <?php if (!empty($row['fhCongelado'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Congelado:
-                                </span><?php echo traducirFecha($row['fh']); ?></p>
+                                </span><?php echo traducirFecha($row['fhCongelado']); ?></p>
                         <?php } ?>
                         <?php if (!empty($row['fhEliminacion'])) { ?>
                             <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha y hora de Eliminado:
@@ -378,6 +394,13 @@ function getAsignado($asignado)
                             </div>
                         <?php endif; ?>
                     </div>
+                    <?php if (in_array($row['estado'], [1, 2, 3, 4, 5, 7, 8, 9])): ?>
+                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Trazado del ticket</span>
+                        <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                            <a href="../cliente/visualizacion?token=<?php echo $row['token']; ?>" target="_blank"
+                                class="text-blue-600 hover:text-blue-800">Ver trazado del ticket</a>
+                        </div>
+                    <?php endif; ?>
                     <?php if ($row['estado'] == 0 || $row['estado'] == 6): ?>
                         <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del formulario de
                             finalización</span>
@@ -399,56 +422,223 @@ function getAsignado($asignado)
                                     $formData = $resultForm->fetch_assoc();
                                     $formId = $formData['idForm'];
                                     ?>
-                                    <p>Contestado completamente. <a href="resultado?id=<?= htmlspecialchars($formId); ?>"
+                                    <p>Contestado completamente. <a
+                                            href="resultado-de-encuesta?id=<?= htmlspecialchars($formId); ?>"
                                             class="text-blue-600 hover:text-blue-800">Ver
                                             resultados</a>.</p>
                                 <?php } ?>
                             <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
+                        <?php endif; ?>
 
-                    <div class="relative">
-                        <div class="mt-6">
-                            <button type="button" onclick="returnBack()"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Regresar</button>
+
+                        <div class="block md:flex">
+                            <?php
+                            // Si es usuario administrador y coordinador, con estado del ticket 1, 2, 3, 4, 5, 7, 8 y asignado este vacio, mostrar el botón de asignar
+                            if ($tipo == 'admin' || $tipo == 'coordinador') {
+                                if (in_array($row['estado'], [1, 2, 3, 4, 5, 7, 8]) && empty($row['asignado'])) {
+                                    ?>
+                                    <div class="relative">
+                                        <div class="mt-1 md:mt-6 mx-1">
+                                            <button type="button" onclick="assignTicket(<?php echo $row['idTicket']; ?>)"
+                                                class="px-3 py-2 mb-2 text-sm font-medium text-center inline-flex items-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Asignar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                            ?>
+                            <?php
+                            if (($tipo == 'admin' || $tipo == 'coordinador') && in_array($row['estado'], [1, 2, 3, 4, 5, 7, 8, 9]) && !empty($row['asignado'])) {
+                                ?>
+                                <div class="relative">
+                                    <div class="mt-1 md:mt-6 mx-1">
+                                        <button type="button" onclick="attendTicket(<?php echo $row['idTicket']; ?>)"
+                                            class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2">
+                                            <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                <path fill-rule="evenodd"
+                                                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            Atender</button>
+                                    </div>
+                                </div>
+                                <?php
+                            } elseif ($tipo == 'tecnico' && in_array($row['estado'], [1, 2, 3, 4, 5, 7, 8]) && !empty($row['asignado']) && $row['asignado'] == $userId) {
+                                ?>
+                                <div class="relative">
+                                    <div class="mt-1 md:mt-6 mx-1">
+                                        <button type="button" onclick="attendTicket(<?php echo $row['idTicket']; ?>)"
+                                            class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-green-500 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 mb-2">
+                                            <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                <path fill-rule="evenodd"
+                                                    d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            Atender</button>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                            <?php
+                            // Si es usuario administrador, con estado del ticket 1, 2, 3, 4, 5, 7, 8 mostrar el botón de editar
+                            if ($tipo == 'admin') {
+                                if (in_array($row['estado'], [1, 2, 3, 4, 5, 7, 8])) {
+                                    ?>
+                                    <div class="relative">
+                                        <div class="mt-1 md:mt-6 mx-1">
+                                            <button type="button" onclick="editTicket(<?php echo $row['idTicket']; ?>)"
+                                                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-yellow-400 rounded-lg hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 dark:bg-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-600 mb-2">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M14 4.182A4.136 4.136 0 0 1 16.9 3c1.087 0 2.13.425 2.899 1.182A4.01 4.01 0 0 1 21 7.037c0 1.068-.43 2.092-1.194 2.849L18.5 11.214l-5.8-5.71 1.287-1.31.012-.012Zm-2.717 2.763L6.186 12.13l2.175 2.141 5.063-5.218-2.141-2.108Zm-6.25 6.886-1.98 5.849a.992.992 0 0 0 .245 1.026 1.03 1.03 0 0 0 1.043.242L10.282 19l-5.25-5.168Zm6.954 4.01 5.096-5.186-2.218-2.183-5.063 5.218 2.185 2.15Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Editar</button>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                            ?>
+                            <?php
+                            // Si es usuario administrador y coordinador, con estado del ticket 1, 2, 3, 4, 5, 6, 7, 8, 9 mostrar el botón de eliminar
+                            if ($tipo == 'admin' || $tipo == 'coordinador') {
+                                if (in_array($row['estado'], [1, 2, 3, 4, 5, 6, 7, 8, 9])) {
+                                    ?>
+                                    <div class="relative">
+                                        <div class="mt-1 md:mt-6 mx-1">
+                                            <button type="button" data-modal-target="popup-confirmation"
+                                                data-modal-toggle="popup-confirmation" data-id="<?php echo $row['idTicket']; ?>"
+                                                class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 mb-2">
+                                                <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                    <path fill-rule="evenodd"
+                                                        d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Eliminar</button>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            } else
+                                // Si es usuario técnico, con estado del ticket 6, 9, mostrar el botón de eliminar
+                                if ($tipo == 'tecnico') {
+                                    if (in_array($row['estado'], [6, 9])) {
+                                        ?>
+                                        <div class="relative">
+                                            <div class="mt-1 md:mt-6 mx-1">
+                                                <button type="button" data-modal-target="popup-confirmation"
+                                                    data-modal-toggle="popup-confirmation" data-id="<?php echo $row['idTicket']; ?>"
+                                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 mb-2">
+                                                    <svg class="w-3 h-3 text-white me-2" aria-hidden="true"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
+                                                        <path fill-rule="evenodd"
+                                                            d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Eliminar</button>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                }
+                            ?>
+                            <div class="mt-1 md:mt-6 mx-1">
+                                <button type="button" onclick="returnBack()"
+                                    class="px-3 py-2 text-sm font-medium text-center inline-flex items-center border border-gray-300 dark:border-none text-blue-700 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:text-white dark:bg-gray-700 dark:hover:bg-blue-500 dark:focus:ring-blue-600 mb-2">
+                                    <svg class="w-3 h-3 text-blue-500 dark:text-white me-2" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M14.5 8.046H11V6.119c0-.921-.9-1.446-1.524-.894l-5.108 4.49a1.2 1.2 0 0 0 0 1.739l5.108 4.49c.624.556 1.524.027 1.524-.893v-1.928h2a3.023 3.023 0 0 1 3 3.046V19a5.593 5.593 0 0 0-1.5-10.954Z" />
+                                    </svg>
+                                    Regresar</button>
+                            </div>
+
                         </div>
+
                     </div>
-
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="../../assets/js/redir.js"></script>
-    <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script>
-        function showImageEvidence(element) {
-            var imageUrl = element.src;
-            var overlay = document.createElement('div');
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            overlay.style.display = 'flex';
-            overlay.style.justifyContent = 'center';
-            overlay.style.alignItems = 'center';
-            overlay.style.zIndex = '9999';
+        <script src="../../assets/js/redir.js"></script>
+        <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('[data-modal-toggle]').click(function () {
+                    var tickfetId = $(this).attr('data-id');
 
-            var image = document.createElement('img');
-            image.src = imageUrl;
-            image.style.maxWidth = '90%';
-            image.style.maxHeight = '90%';
+                    $('#dynamicTicketId').text(ticketId);
+                    $('#confirmButton').attr('data-id', ticketId);
+                });
 
-            overlay.appendChild(image);
-            document.body.appendChild(overlay);
+                $('#confirmButton').click(function () {
+                    var ticketId = $(this).attr('data-id');
 
-            overlay.addEventListener('click', function () {
-                document.body.removeChild(overlay);
+                    $('#dynamicTicketIdDelete').text(ticketId);
+                    $('#idTicketHidden').val(ticketId);
+
+                    $('#popup-delete').removeClass('hidden');
+                });
             });
-        }
-    </script>
+
+            deletedTickets = () => {
+                window.location.href = 'tickets-eliminados';
+            }
+
+            function assignTicket(idTicket) {
+                window.location.href = 'asignar?id=' + idTicket;
+            }
+
+            function attendTicket(idTicket) {
+                window.location.href = 'atender?id=' + idTicket;
+            }
+
+            function editTicket(idTicket) {
+                window.location.href = 'editar?id=' + idTicket;
+            }
+
+            function showImageEvidence(element) {
+                var imageUrl = element.src;
+                var overlay = document.createElement('div');
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100%';
+                overlay.style.height = '100%';
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                overlay.style.display = 'flex';
+                overlay.style.justifyContent = 'center';
+                overlay.style.alignItems = 'center';
+                overlay.style.zIndex = '9999';
+
+                var image = document.createElement('img');
+                image.src = imageUrl;
+                image.style.maxWidth = '90%';
+                image.style.maxHeight = '90%';
+
+                overlay.appendChild(image);
+                document.body.appendChild(overlay);
+
+                overlay.addEventListener('click', function () {
+                    document.body.removeChild(overlay);
+                });
+            }
+        </script>
 </body>
 
 </html>

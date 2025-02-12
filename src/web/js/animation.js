@@ -113,7 +113,7 @@ const ANIMATIONS = [
           animation-timing-function: var(--expo-out);
         }
         ::view-transition-new(root) {
-          mask: url('assets/custom-svg.svg') top left / 0 no-repeat;
+          mask: url('../../assets/img/custom-svg.svg') top left / 0 no-repeat;
           mask-origin: top left;
           animation: scale 1.5s;
         }
@@ -167,7 +167,7 @@ const ANIMATIONS = [
           animation-timing-function: var(--expo-in);
         }
         ::view-transition-new(root) {
-          mask: url('../../../assets/img/mercurio-be.png') center / 0 no-repeat;
+          mask: url('../../assets/img/logoATL_b.webp') center / 0 no-repeat;
           animation: scale 2s;
         }
         ::view-transition-old(root),

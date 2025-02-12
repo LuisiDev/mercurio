@@ -86,16 +86,16 @@ function getStatusDescription($status, $asignado)
     }
 }
 
-function traducirFecha($fhticket)
+function traducirFecha($fecha)
 {
-    if ($fhticket === null) {
+    if ($fecha === null) {
         return 'Actividad pendiente de realizar';
     }
 
-    $dia = date('d', strtotime($fhticket));
-    $mes = date('m', strtotime($fhticket));
-    $hora = date('h:i', strtotime($fhticket));
-    $am_pm = strtoupper(date('a', strtotime($fhticket)));
+    $dia = date('d', strtotime($fecha));
+    $mes = date('m', strtotime($fecha));
+    $hora = date('h:i', strtotime($fecha));
+    $am_pm = strtoupper(date('a', strtotime($fecha)));
     $meses = array(
         '01' => 'Ene',
         '02' => 'Feb',
@@ -110,7 +110,7 @@ function traducirFecha($fhticket)
         '11' => 'Nov',
         '12' => 'Dic'
     );
-    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fhticket));
+    return $dia . ' de ' . $meses[$mes] . ' a las ' . $hora . ' ' . $am_pm . ' del ' . date('Y', strtotime($fecha));
 }
 
 function getStatus($status)
@@ -202,7 +202,8 @@ function getAsignado($asignado)
                             <?php echo $asunto; ?>
                         </h2>
                         <p class="text-gray-600">A continuación, se verá el estado del ticket por el que pasa,
-                            junto con las evidencias y comentarios. Al finalizar, por favor, contesta el formulario de
+                            junto con las evidencias y comentarios. Al finalizar, por favor, confirme el servicio con
+                            una firma de
                             satisfacción para la conclusión del ticket.</p>
                     </div>
                     <div class="mb-6">
@@ -481,12 +482,18 @@ function getAsignado($asignado)
                     </div>
                     <?php if ($current_status == "6"): ?>
                         <div class="text-center">
-                            <h2 class="text-2xl font-bold mt-8">Formulario de finalización</h2>
-                            <p class="mb-6 text-gray-600">El trabajo del ticket a terminado. Por favor, contesta el
-                                formulario de finalización para la finalización completa.</p>
+                            <h2 class="text-2xl font-bold mt-8">Firma de finalización</h2>
+                            <p class="mt-4 text-gray-600">El trabajo del ticket a terminado. Por favor, confirme las
+                                evidencias y disponga una firma para la finalización completa del ticket.</p>
+                            <p class="mt-3 mb-6 text-gray-600">
+                                Al solicitar nuestros servicio, usted aceptar los términos y condiciones del servicio
+                                técnico, Descarga y visualice los términos en le siguiente enlace: <a target="_blank"
+                                    href="../../assets/docs/terminos-y-condiciones.pdf"
+                                    class="text-blue-600 hover:underline">Términos y condiciones</a>
+                            </p>
                             <a href="formulario?token=<?php echo $token; ?>"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Contestar
-                                formulario</a>
+                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Finalizar
+                                ticket</a>
                         </div>
                     <?php else: ?>
                     <?php endif; ?>
@@ -499,7 +506,7 @@ function getAsignado($asignado)
 
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
     <script>
-      function showImageEvidence(element) {
+        function showImageEvidence(element) {
             var imageUrl = element.src;
             var overlay = document.createElement('div');
             overlay.style.position = 'fixed';
