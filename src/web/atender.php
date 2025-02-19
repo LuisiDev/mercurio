@@ -427,7 +427,7 @@ function getAsignado($asignado)
                     <div class="relative">
                         <form id="formAtender" action="../procesos/atender" method="POST" enctype="multipart/form-data"
                             class="max-w-sm mx-auto">
-                            <input type="hidden" name="idTicket" value="<?php echo $idTicket ?>" />
+                            <input type="hidden" id="idTicket" value="<?php echo $idTicket ?>" />
                             <input type="hidden" name="prioridad" value="<?php echo $row['prioridad']; ?>" />
                             <input type="hidden" name="asignado" value="<?php echo $row['asignado']; ?>" />
                             <?php if (isset($_SESSION['tipo']) && ($_SESSION['tipo'] == 'admin' || $_SESSION['tipo'] == 'coordinador')): ?>

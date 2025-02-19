@@ -80,7 +80,7 @@ const init = () => {
                 const blobAudio = new Blob(fragmentosDeAudio);
                 const formData = new FormData();
                 formData.append("audio", blobAudio);
-                formData.append("idTicket", $idTicket.value); // Añadir el ID del ticket al FormData
+                formData.append("idTicket", $idTicket.value);
                 const RUTA_SERVIDOR = "../procesos/guardar-audio.php";
                 $duracion.textContent = "Enviando el audio...";
                 fetch(RUTA_SERVIDOR, {
