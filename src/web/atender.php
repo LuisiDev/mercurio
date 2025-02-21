@@ -124,6 +124,17 @@ function getAsignado($asignado)
     <link rel="stylesheet" href="./loading.css">
     <script src="./js/loading.js"></script>
     <title>Atender | Mercurio</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+
+        #hiddenCanvas {
+            width: 1200px;
+            height: 1800px;
+            display: none;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-50 dark:bg-gray-700">
@@ -222,20 +233,20 @@ function getAsignado($asignado)
                             </p>
                         <?php } ?>
                     </div>
-                        <?php if (!empty($row['placasContacto']) || !empty($row['marcaContacto'])) { ?>
-                            <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del vehiculo</span>
-                        <?php } ?>                       
-                        <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
-                            <?php if (!empty($row['placasContacto'])) { ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas:
-                                    </span><?php echo $row['placasContacto']; ?>
-                                </p>
-                            <?php } ?>
-                            <?php if (!empty($row['marcaContacto'])) { ?>
-                                <p><span class="font-medium text-gray-700 dark:text-gray-200">Marca/modelo:
-                                    </span><?php echo $row['marcaContacto']; ?></p>
-                            <?php } ?>
-                        </div>
+                    <?php if (!empty($row['placasContacto']) || !empty($row['marcaContacto'])) { ?>
+                        <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del vehiculo</span>
+                    <?php } ?>
+                    <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
+                        <?php if (!empty($row['placasContacto'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Placas:
+                                </span><?php echo $row['placasContacto']; ?>
+                            </p>
+                        <?php } ?>
+                        <?php if (!empty($row['marcaContacto'])) { ?>
+                            <p><span class="font-medium text-gray-700 dark:text-gray-200">Marca/modelo:
+                                </span><?php echo $row['marcaContacto']; ?></p>
+                        <?php } ?>
+                    </div>
                     <span class="text-lg font-bold text-gray-800 dark:text-gray-100">Información del ticket</span>
                     <div class="mb-4 text-base text-gray-500 dark:text-gray-300">
                         <p><span class="font-medium text-gray-700 dark:text-gray-200">Fecha del ticket:
@@ -415,7 +426,7 @@ function getAsignado($asignado)
                                 if ($resultForm && $resultForm->num_rows > 0) {
                                     $formData = $resultForm->fetch_assoc();
                                     $formId = $formData['idForm'];
-                                    ?>
+                                ?>
                                     <p>Contestado completamente. <a href="resultado?id=<?= htmlspecialchars($formId); ?>"
                                             class="text-blue-600 hover:text-blue-800">Ver
                                             resultados</a>.</p>
@@ -467,14 +478,14 @@ function getAsignado($asignado)
                                     <select name="prioridad" id="prioridad"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                         <option value="1" <?php if ($row['prioridad'] == 1) {
-                                            echo 'selected';
-                                        } ?>>Baja</option>
+                                                                echo 'selected';
+                                                            } ?>>Baja</option>
                                         <option value="2" <?php if ($row['prioridad'] == 2) {
-                                            echo 'selected';
-                                        } ?>>Media</option>
+                                                                echo 'selected';
+                                                            } ?>>Media</option>
                                         <option value="3" <?php if ($row['prioridad'] == 3) {
-                                            echo 'selected';
-                                        } ?>>Alta</option>
+                                                                echo 'selected';
+                                                            } ?>>Alta</option>
                                     </select>
                                 </div>
                             <?php endif; ?>
@@ -484,31 +495,31 @@ function getAsignado($asignado)
                                 <select name="estado" id="estado"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <option value="3" <?php if ($row['estado'] == 3) {
-                                        echo 'selected'; 
-                                    } ?>>Arribo a domicilio</option>
+                                                            echo 'selected';
+                                                        } ?>>Arribo a domicilio</option>
                                     <option value="4" <?php if ($row['estado'] == 4) {
-                                        echo 'selected';
-                                    } ?>>Inicio - Antecedentes antes de manipulación
+                                                            echo 'selected';
+                                                        } ?>>Inicio - Antecedentes antes de manipulación
                                     </option>
                                     <option value="5" <?php if ($row['estado'] == 5) {
-                                        echo 'selected';
-                                    } ?>>Realización - Antecedentes de manipulación
+                                                            echo 'selected';
+                                                        } ?>>Realización - Antecedentes de manipulación
                                     </option>
                                     <option value="6" <?php if ($row['estado'] == 6) {
-                                        echo 'selected';
-                                    } ?>>Finalización - Antecedentes de cierre
+                                                            echo 'selected';
+                                                        } ?>>Finalización - Antecedentes de cierre
                                     </option>
                                     <option value="7" <?php if ($row['estado'] == 7) {
-                                        echo 'selected';
-                                    } ?>>Programado
+                                                            echo 'selected';
+                                                        } ?>>Programado
                                     </option>
                                     <option value="8" <?php if ($row['estado'] == 8) {
-                                        echo 'selected';
-                                    } ?>>Congelado
+                                                            echo 'selected';
+                                                        } ?>>Congelado
                                     </option>
                                     <option value="9" <?php if ($row['estado'] == 9) {
-                                        echo 'selected';
-                                    } ?>>Cancelado
+                                                            echo 'selected';
+                                                        } ?>>Cancelado
                                     </option>
                                 </select>
                             </div>
@@ -525,11 +536,16 @@ function getAsignado($asignado)
                                 <label for="evidenciaArribo"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Subir evidencia
                                     de arribo</label>
+                                <!-- typing fix in accept -->
                                 <input type="file" id="evidenciaArribo" name="evidenciaArribo"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                    onchange="loadFile(event)" aaccept="image/*" data-max-size="3145728"
+                                    onchange="loadFile(event)" accept="image/*" multiple="multiple"
                                     aria-describedby="evidencia-arribo">
-                                <div id="evidencia-arribo" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                                <br>
+                                <canvas id="collageCanvas" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"></canvas>
+                                <canvas id="hiddenCanvas"></canvas>
+                                <br>
+                                <div id="evidencia-arribo" class="mt-1 text-sm text-gray-500 dark:tegray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
                             </div>
                             <div class="hidden" id="evidenciaInicio">
@@ -564,15 +580,25 @@ function getAsignado($asignado)
 
                                 <div class="mt-5" id="grabDispositivoBtn">
                                     <button class="text-center inline-flex items-center text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                     type="button" id="btnComenzarGrabacion">
-                                     <svg class="w-4 h-4 text-white me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M9 5a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h0a3 3 0 0 1-3-3z"/><path d="M5 10a7 7 0 0 0 14 0M8 21h8m-4-4v4"/></g></svg>
-                                     Comenzar
+                                        type="button" id="btnComenzarGrabacion">
+                                        <svg class="w-4 h-4 text-white me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                                <path d="M9 5a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3h0a3 3 0 0 1-3-3z" />
+                                                <path d="M5 10a7 7 0 0 0 14 0M8 21h8m-4-4v4" />
+                                            </g>
+                                        </svg>
+                                        Comenzar
                                     </button>
-                                    <button class="text-center inline-flex items-center text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" 
-                                    type="button" id="btnDetenerGrabacion">
-                                    <svg class="w-4 h-4 text-white me-2" xmlns="http://www.w3.org/2000/svg" width="124" height="124" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 12c0-1.886 0-2.828.586-3.414S10.114 8 12 8s2.828 0 3.414.586S16 10.114 16 12s0 2.828-.586 3.414S13.886 16 12 16s-2.828 0-3.414-.586S8 13.886 8 12Z"/></g></svg>
-                                    Detener
-                                </button>
+                                    <button class="text-center inline-flex items-center text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                                        type="button" id="btnDetenerGrabacion">
+                                        <svg class="w-4 h-4 text-white me-2" xmlns="http://www.w3.org/2000/svg" width="124" height="124" viewBox="0 0 24 24">
+                                            <g fill="none" stroke="currentColor" stroke-width="1.5">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <path d="M8 12c0-1.886 0-2.828.586-3.414S10.114 8 12 8s2.828 0 3.414.586S16 10.114 16 12s0 2.828-.586 3.414S13.886 16 12 16s-2.828 0-3.414-.586S8 13.886 8 12Z" />
+                                            </g>
+                                        </svg>
+                                        Detener
+                                    </button>
                                 </div>
                             </div>
 
@@ -600,7 +626,7 @@ function getAsignado($asignado)
                             <img id="output" class="mx-auto h-32 w-32 object-cover my-8 hidden"
                                 onclick="showImageEvidenceInput(this)" alt="Visualización de evidencia">
                             <canvas id="canvas" class="mx-auto h-32 w-32 object-cover my-8 hidden"></canvas>
-                            <div class="flex justify-center items-center">
+                            <div type="button" class="flex justify-center items-center">
                                 <button type="button" id="btnEditar"
                                     class="hidden justify-center me-2 mb-2 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onclick="editImage()" aria-hidden="true">Editar</button>
@@ -608,10 +634,11 @@ function getAsignado($asignado)
                             <div class="mt-6">
                                 <button type="button" onclick="returnBack()"
                                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Regresar</button>
-                                <button type="submit"
+                                <button type="submit" id="submitButton"
                                     class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Enviar</button>
                             </div>
                         </form>
+                        <button onclick="uploadToGoogleDrive()">Enviar a google Drive</button>
 
                         <div id="modalAlerta" class="modal hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 overflow-y-auto">
                             <div class="modal-box bg-white dark:bg-gray-800 dark:text-gray-200 w-96 mx-auto mt-20 p-6 rounded-lg shadow-lg">
@@ -660,10 +687,39 @@ function getAsignado($asignado)
             document.getElementById('modalAlerta').classList.add('hidden');
         });
     </script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        async function uploadToGoogleDrive() {
+            try {
+                const blob = await new Promise(resolve => {
+                    hiddenCanvas.toBlob(resolve, 'image/png');
+                });
+                const formData = new FormData();
+                formData.append('file', blob, 'collage.png');
+                const response = await fetch('../procesos/atender.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('El archivo se subió a Google Drive');
+                } else {
+                    throw new Error(result.error || 'Fallo en el envío');
+                }
+
+            } catch (error) {
+                console.error('Error al subir los archivos', error);
+                alert('Fallo al enviar los archivos');
+            }
+        }
+    </script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="../../assets/js/redir.js"></script>
     <script src="../../assets/js/image.js"></script>
     <script src="js/audio.js"></script>
+    <script src="../../assets/js/collage.js"></script>
 </body>
 
 </html>
