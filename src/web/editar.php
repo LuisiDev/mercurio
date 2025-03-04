@@ -78,7 +78,10 @@ function obtenerNumeroTicket($row)
                         <input type="hidden" name="imagen_actual"
                             value="<?php echo htmlspecialchars($row['evidencia']); ?>">
                         <input type="hidden" name="estado" value="<?php echo htmlspecialchars($row['estado']); ?>">
-                        <input type="hidden" name="prioridad" value="<?php echo htmlspecialchars($row['prioridad']); ?>">
+                        <input type="hidden" name="prioridad"
+                            value="<?php echo htmlspecialchars($row['prioridad']); ?>">
+                        <input type="hidden" name="iccidSIM"
+                            value="<?php echo htmlspecialchars($row['iccidSIM']); ?>">
                         <div class="mb-5">
                             <label for="servicio"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Servicio
@@ -165,6 +168,23 @@ function obtenerNumeroTicket($row)
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     value="<?php echo htmlspecialchars($row['imeiCliente'] ?? ''); ?>"
                                     placeholder="ESN de Dispositivo">
+                            </div>
+                        </div>
+                        <div class="mb-5">
+                            <label for="iccidSIM"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ICCID</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6Zm4.996 2a1 1 0 0 0 0 2h.01a1 1 0 1 0 0-2h-.01ZM11 8a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-6Zm-4.004 3a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2h-.01ZM11 11a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-6Zm-4.004 3a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2h-.01ZM11 14a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-6Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="iccidSIM" name="iccidSIM"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="ICCID de SIM">
                             </div>
                         </div>
                         <input type="hidden" id="fhRevision">

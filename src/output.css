@@ -1324,6 +1324,10 @@ input:checked + .toggle-bg {
   inset-inline-end: 0.625rem;
 }
 
+.end-4 {
+  inset-inline-end: 1rem;
+}
+
 .left-0 {
   left: 0px;
 }
@@ -1368,8 +1372,16 @@ input:checked + .toggle-bg {
   top: 0.75rem;
 }
 
+.top-4 {
+  top: 1rem;
+}
+
 .top-5 {
   top: 1.25rem;
+}
+
+.right-4 {
+  right: 1rem;
 }
 
 .z-10 {
@@ -1757,6 +1769,10 @@ input:checked + .toggle-bg {
   display: none;
 }
 
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
 .h-0 {
   height: 0px;
 }
@@ -1871,6 +1887,10 @@ input:checked + .toggle-bg {
 
 .max-h-full {
   max-height: 100%;
+}
+
+.min-h-screen {
+  min-height: 100vh;
 }
 
 .w-1\/2 {
@@ -2564,6 +2584,11 @@ input:checked + .toggle-bg {
 
 .bg-\[rgba\(255\2c 255\2c 255\2c 0\.2\)\] {
   background-color: rgba(255,255,255,0.2);
+}
+
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 .bg-blue-100 {

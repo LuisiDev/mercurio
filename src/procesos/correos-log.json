@@ -1,0 +1,14 @@
+[
+    {
+        "user": "Admin",
+        "date": "2025-02-26 11:36:41",
+        "process": "Generacion de ticket",
+        "ip": "127.0.0.1"
+    },
+    {
+        "user": "Admin",
+        "date": "2025-02-26 11:37:35",
+        "process": "Edicion de ticket",
+        "ip": "127.0.0.1"
+    }
+]

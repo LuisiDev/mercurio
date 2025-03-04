@@ -148,6 +148,42 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
 
     <h1 class="sr-only">Sistema Mercurio | Grupo Cardinales</h1>
 
+    <!-- Video popup informativo -->
+    <div id="video-popup" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="relative w-full max-w-3xl mx-auto">
+                <div class="relative flex flex-col items-center w-full p-4 bg-white rounded-lg shadow-lg">
+                    <button id="close-video-popup" class="absolute top-4 end-4 text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <div class="aspect-video w-full">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/1y_kfWUCFDQ" title="Video"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoPopup = document.getElementById('video-popup');
+        const closeVideoPopup = document.getElementById('close-video-popup');
+
+        // Show the popup when the page loads
+        window.addEventListener('load', () => {
+            videoPopup.classList.remove('hidden');
+        });
+
+        closeVideoPopup.addEventListener('click', () => {
+            videoPopup.classList.add('hidden');
+        });
+    </script>
+
     <div id="informational-banner" tabindex="-1"
         class="sticky z-30 sm:ml-64 top-16 sm:top-0 start-0 flex flex-col justify-between shadow-sm w-auto p-4 border-b border-gray-200 md:flex-row bg-white dark:bg-gray-800 dark:border-gray-700">
         <div class="mb-4 md:mb-0 md:me-4">
@@ -218,7 +254,8 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
             </div>
 
             <div class="grid justify-items-center grid-cols-1 gap-4 mb-4">
-                <div class="w-full sm:grid lg:flex lg:justify-between px-4 py-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div
+                    class="w-full sm:grid lg:flex lg:justify-between px-4 py-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                     <div class="text-center justify-center lg:flex lg:text-left lg:items-center">
                         <div class="my-5 lg:my-0 grid grid-cols-1 lg:flex justify-items-center lg:justify-between">
                             <div class="mb-2 lg:mb-0 lg:me-3">
@@ -276,7 +313,7 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                                 </svg>
 
                             </div>
-                            <div class="text-end lg:text-start"> 
+                            <div class="text-end lg:text-start">
                                 <p class="text-base font-medium text-gray-900 dark:text-white">
                                     Total atendidos
                                 </p>
@@ -341,7 +378,8 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                             <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
                                 <?php echo $totalFinalizados; ?>
                             </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets finalizados
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
+                                finalizados
                             </p>
                         </div>
                     </div>
@@ -364,7 +402,8 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                             <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
                                 <?php echo $totalEliminados; ?>
                             </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets eliminados
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de tickets
+                                eliminados
                             </p>
                         </div>
                     </div>
@@ -387,7 +426,8 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                             <h5 class="leading-none text-2xl font-bold text-gray-900 dark:text-white pb-1">
                                 <?php echo $totalCorreos; ?>
                             </h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de correos enviados
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Total de correos
+                                enviados
                             </p>
                         </div>
                     </div>
@@ -740,9 +780,10 @@ $categoriasCreadosSinAsignar = implode("','", $categoriasCreadosSinAsignar);
                             <div class="flex items-center">
                                 <div
                                     class="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center me-3">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2"
                                             d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3.5m5.5 7v.01M19 19a2.003 2.003 0 0 0 .914-3.782a1.98 1.98 0 0 0-2.414.483" />
                                     </svg>
                                 </div>

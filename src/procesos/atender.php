@@ -2,10 +2,55 @@
 session_start();
 include '../configuration/connection.php';
 
+use Google\Client;
+use Google\Service\Drive;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require '../../vendor/autoload.php';
+
+function uploadFileToGoogleDrive($filePath, $fileName, $mimeType, $folderId = null) {
+    $client = new Client();
+    $client->setAuthConfig('service account key path desde la nube');
+    $client->addScope(Drive::DRIVE_FILE);
+
+    $driveService = new Drive($client);
+
+    $fileMetadata = new Drive\DriveFile([
+        'name' => $fileName,
+        'parents' => $folderId ? [$folderId] : []
+    ]);
+
+    $content = file_get_contents($filePath);
+
+    $file = $driveService->files->create($fileMetadata, [
+        'data' => $content,
+        'mimeType' => $mimeType,
+        'uploadType' => 'multipart',
+        'fields' => 'id'
+    ]);
+
+    return $file->id;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['file']['tmp_name'];
+        $fileName = $_FILES['file']['name'];
+        $mimeType = mime_content_type($fileTmpPath);
+
+        try {
+            $fileId = uploadFileToGoogleDrive($fileTmpPath, $fileName, $mimeType, 'LLAVE');
+            echo json_encode(['success' => true, 'fileId' => $fileId]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+    } else {
+        echo json_encode(['success' => false, 'error' => 'No se subio ningun archivo']);
+    }
+} else {
+    echo json_encode(['success' => false, 'error' => 'Metodo invalido ']);
+}
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $id = $_POST['idTicket'];

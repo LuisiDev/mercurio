@@ -13,6 +13,36 @@ function generateToken()
     return bin2hex(random_bytes(50));
 }
 
+function getUserIP()
+{
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+}
+
+function logEmail($user, $date, $process, $ip)
+{
+    $logFile = '../../src/procesos/correos-log.json';
+    $logData = [];
+
+    if (file_exists($logFile)) {
+        $logData = json_decode(file_get_contents($logFile), true);
+    }
+
+    $logData[] = [
+        'user' => $user,
+        'date' => $date,
+        'process' => $process,
+        'ip' => $ip
+    ];
+
+    file_put_contents($logFile, json_encode($logData, JSON_PRETTY_PRINT));
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     date_default_timezone_set("America/Mexico_City");
     $fhticket = date('Y-m-d H:i:s');
@@ -75,14 +105,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $mail->CharSet = 'UTF-8';
             $mail->isSMTP();
-            $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
+            $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'AKIA3HJXVSKBEFDT5ML2';
-            $mail->Password = 'BMEcNVN8oRp2GP381twDDdycy3jttJN0eNd+ovvUQqD7';
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
+            $mail->Username = 'pedravi.avi@gmail.com';
+            $mail->Password = 'mkgjgzonblojlctp';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
 
-            $mail->setFrom('mercurio@atlantida.mx');
+            $mail->setFrom('pedravi.avi@gmail.com');
             $mail->addAddress($correo);
             $mail->isHTML(true);
             $mail->Subject = '🎫 Generación de ticket';
@@ -139,6 +169,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>';
             $mail->send();
             echo "<script>alert('Correo enviado exitosamente.');</script>";
+
+            // Log email details
+            logEmail($nombre, $fhticket, 'Generacion de ticket', getUserIP());
+
         } catch (Exception $e) {
             echo "<script>alert('¡No se pudo enviar el correo! Mailer Error: {$mail->ErrorInfo}');</script>";
         }

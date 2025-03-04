@@ -8,6 +8,36 @@ use PHPMailer\PHPMailer\Exception;
 
 require '../../vendor/autoload.php';
 
+function getUserIP()
+{
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+}
+
+function logEmail($user, $date, $process, $ip)
+{
+    $logFile = '../../src/procesos/correos-log.json';
+    $logData = [];
+
+    if (file_exists($logFile)) {
+        $logData = json_decode(file_get_contents($logFile), true);
+    }
+
+    $logData[] = [
+        'user' => $user,
+        'date' => $date,
+        'process' => $process,
+        'ip' => $ip
+    ];
+
+    file_put_contents($logFile, json_encode($logData, JSON_PRETTY_PRINT));
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     date_default_timezone_set("America/Chihuahua");
     $idTicket = $_POST['idTicket'];
@@ -17,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $numCliente = $_POST['numCliente'];
     $dispositivo = $_POST['dispositivo'];
     $imeiCliente = $_POST['imeiCliente'];
+    $iccidSIM = $_POST['iccidSIM'];
     $fhRevision = $_POST['fhRevision'] ?? null;
     $numContacto = $_POST['numContacto'];
     $nomContacto = $_POST['nomContacto'];
@@ -61,9 +92,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $rutaArchivo = $imagen_actual;
     }
 
-    $sql = "UPDATE tbticket SET fhticket=?, nombre=?, numTrabajador=?, numCliente=?, dispositivo=?, imeiCliente=?, fhRevision=?, numContacto=?, nomContacto=?, placasContacto=?, marcaContacto=?, prioridad=?, asunto=?, descripcion=?, estado=?, domicilio=?, ciudad=?, domestado=?, codpostal=?, domdescripcion=?, servicio=?, correo=?, evidencia=? WHERE idTicket=? AND token=?";
+    $sql = "UPDATE tbticket SET fhticket=?, nombre=?, numTrabajador=?, numCliente=?, dispositivo=?, imeiCliente=?, iccidSIM=?, fhRevision=?, numContacto=?, nomContacto=?, placasContacto=?, marcaContacto=?, prioridad=?, asunto=?, descripcion=?, estado=?, domicilio=?, ciudad=?, domestado=?, codpostal=?, domdescripcion=?, servicio=?, correo=?, evidencia=? WHERE idTicket=? AND token=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssssssssssssssssssi", $fhticket, $nombre, $numTrabajador, $numCliente, $dispositivo, $imeiCliente, $fhRevision, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $prioridad, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $correo, $rutaArchivo, $idTicket, $token);
+    $stmt->bind_param("sssssssssssssssssssssssssi", $fhticket, $nombre, $numTrabajador, $numCliente, $dispositivo, $imeiCliente, $iccidSIM, $fhRevision, $numContacto, $nomContacto, $placasContacto, $marcaContacto, $prioridad, $asunto, $descripcion, $estado, $domicilio, $ciudad, $domestado, $codpostal, $domdescripcion, $servicio, $correo, $rutaArchivo, $idTicket, $token);
     $stmt->execute();
 
     if ($stmt->affected_rows > 0) {
@@ -84,14 +115,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $mail->CharSet = 'UTF-8';
             $mail->isSMTP();
-            $mail->Host = 'email-smtp.us-east-1.amazonaws.com';
+            $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'AKIA3HJXVSKBEFDT5ML2';
-            $mail->Password = 'BMEcNVN8oRp2GP381twDDdycy3jttJN0eNd+ovvUQqD7';
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
+            $mail->Username = 'pedravi.avi@gmail.com';
+            $mail->Password = 'mkgjgzonblojlctp';
+            $mail->SMTPSecure = 'ssl';
+            $mail->Port = 465;
 
-            $mail->setFrom('mercurio@atlantida.mx');
+            $mail->setFrom('pedravi.avi@gmail.com');
             $mail->addAddress($correo);
             $mail->isHTML(true);
             $mail->Subject = '🎫 Generación de ticket';
@@ -148,6 +179,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>';
             $mail->send();
             echo "<script>alert('Correo enviado nuevamente exitosamente.');</script>";
+
+            logEmail($nombre, $fhticket, 'Edicion de ticket', getUserIP());
+
         } catch (Exception $e) {
             echo "<script>alert('¡No se pudo enviar el correo! Mailer Error: {$mail->ErrorInfo}');</script>";
         }
