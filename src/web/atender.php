@@ -539,11 +539,12 @@ function getAsignado($asignado)
                                 <!-- typing fix in accept -->
                                 <input type="file" id="evidenciaArribo" name="evidenciaArribo"
                                     class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                    onchange="loadFile(event)" accept="image/*" multiple="multiple"
+                                    onchange="loadFile(event)" accept="image/*" data-max-size="3145728" multiple="multiple"
                                     aria-describedby="evidencia-arribo">
                                 <br>
                                 <canvas id="collageCanvas" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursos-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"></canvas>
-                                <canvas id="hiddenCanvas"></canvas>
+                                <canvas id="hiddenCanvas" class="hidden"></canvas>
+                                <input type="hidden" id="hiddenCanvasInput" name="hiddenCanvasInput">
                                 <br>
                                 <div id="evidencia-arribo" class="mt-1 text-sm text-gray-500 dark:tegray-300">
                                     Solamente se aceptan archivos JPEG, JPG y PNG de menos de 3 MB</div>
@@ -626,7 +627,7 @@ function getAsignado($asignado)
                             <img id="output" class="mx-auto h-32 w-32 object-cover my-8 hidden"
                                 onclick="showImageEvidenceInput(this)" alt="Visualización de evidencia">
                             <canvas id="canvas" class="mx-auto h-32 w-32 object-cover my-8 hidden"></canvas>
-                            <div type="button" class="flex justify-center items-center">
+                            <div class="flex justify-center items-center">
                                 <button type="button" id="btnEditar"
                                     class="hidden justify-center me-2 mb-2 text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onclick="editImage()" aria-hidden="true">Editar</button>
@@ -638,7 +639,6 @@ function getAsignado($asignado)
                                     class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Enviar</button>
                             </div>
                         </form>
-                        <button onclick="uploadToGoogleDrive()">Enviar a google Drive</button>
 
                         <div id="modalAlerta" class="modal hidden fixed inset-0 z-50 bg-gray-900 bg-opacity-50 overflow-y-auto">
                             <div class="modal-box bg-white dark:bg-gray-800 dark:text-gray-200 w-96 mx-auto mt-20 p-6 rounded-lg shadow-lg">
@@ -688,38 +688,11 @@ function getAsignado($asignado)
         });
     </script>
     <script src="https://apis.google.com/js/api.js"></script>
-    <script>
-        async function uploadToGoogleDrive() {
-            try {
-                const blob = await new Promise(resolve => {
-                    hiddenCanvas.toBlob(resolve, 'image/png');
-                });
-                const formData = new FormData();
-                formData.append('file', blob, 'collage.png');
-                const response = await fetch('../procesos/atender.php', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert('El archivo se subió a Google Drive');
-                } else {
-                    throw new Error(result.error || 'Fallo en el envío');
-                }
-
-            } catch (error) {
-                console.error('Error al subir los archivos', error);
-                alert('Fallo al enviar los archivos');
-            }
-        }
-    </script>
     <script src="../../node_modules/flowbite/dist/flowbite.min.js"></script>
     <script src="../../assets/js/redir.js"></script>
     <script src="../../assets/js/image.js"></script>
     <script src="js/audio.js"></script>
-    <script src="../../assets/js/collage.js"></script>
+    <script src="./js/collage.js"></script>
 </body>
 
 </html>

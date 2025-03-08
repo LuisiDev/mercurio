@@ -4,55 +4,47 @@ include '../configuration/connection.php';
 
 use Google\Client;
 use Google\Service\Drive;
+use Google\Cloud\Storage\StorageClient;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require '../../vendor/autoload.php';
 
-function uploadFileToGoogleDrive($filePath, $fileName, $mimeType, $folderId = null) {
-    $client = new Client();
-    $client->setAuthConfig('service account key path desde la nube');
-    $client->addScope(Drive::DRIVE_FILE);
+$client = new Client();
+$client->setAuthConfig('../keys/secret.json');
+$client->setScopes(['https://www.googleapis.com/auth/drive.file']);
+$driveService = new Drive($client);
 
-    $driveService = new Drive($client);
-
-    $fileMetadata = new Drive\DriveFile([
-        'name' => $fileName,
-        'parents' => $folderId ? [$folderId] : []
-    ]);
-
-    $content = file_get_contents($filePath);
-
-    $file = $driveService->files->create($fileMetadata, [
-        'data' => $content,
-        'mimeType' => $mimeType,
-        'uploadType' => 'multipart',
-        'fields' => 'id'
-    ]);
-
-    return $file->id;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        $fileTmpPath = $_FILES['file']['tmp_name'];
-        $fileName = $_FILES['file']['name'];
-        $mimeType = mime_content_type($fileTmpPath);
-
-        try {
-            $fileId = uploadFileToGoogleDrive($fileTmpPath, $fileName, $mimeType, 'LLAVE');
-            echo json_encode(['success' => true, 'fileId' => $fileId]);
-        } catch (Exception $e) {
-            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-        }
-    } else {
-        echo json_encode(['success' => false, 'error' => 'No se subio ningun archivo']);
-    }
-} else {
-    echo json_encode(['success' => false, 'error' => 'Metodo invalido ']);
-}
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    if (isset($_POST['hiddenCanvasInput'])) {
+        try {
+            $imageData = $_POST['hiddenCanvasInput'];
+            $imageData = str_replace('data:image/png;base64,', '', $imageData);
+            $imageData = base64_decode($imageData);
+            $tempFile = tempnam(sys_get_temp_dir(), 'canvas');
+            file_put_contents($tempFile, $imageData);
+
+            $fileMetadata = new Drive\DriveFile([
+                'name' => 'canvas_' . time() . '.png',
+            ]);
+
+            $file = $driveService->files->create($fileMetadata, [
+                'data' => file_get_contents($tempFile),
+                'mimeType' => 'image/png',
+                'uploadType' => 'multipart',
+                'fields' => 'id'
+            ]);
+            echo "<script>alert('Canvas subido correctamente.');</script>";
+
+            unlink($tempFile);
+            $fileId = $file->id;
+        } catch (Exception $e) {
+            echo "<script>alert('Error uploading to Drive: " . $e->getMessage() . "');</script>";
+            echo "<script>window.history.back();</script>";
+            exit();
+        }
+    }
     $id = $_POST['idTicket'];
     $prioridad = $_POST['prioridad'];
     $asignado = $_POST['asignado'];
